@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="/css/all.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <title>Profile</title>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="navbar-brand">matcha</div>
+            <ul class="nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <section class="profile text-break">
+        <div class="container">
+            <div class="float-right">
+                <button type="button" class="btn btn-danger btn-profile-like">Like</button>
+                <button type="button" class="btn btn-secondary btn-profile-edit" data-toggle="modal"
+                    data-target="#staticBackdrop">
+                    Edit profile
+                </button>
+            </div>
+            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <p class="modal-title" id="staticBackdropLabel">Edit</p>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Username</p>
+                            <!-- <label>Username -->
+                                <input type="text" class="form-control" placeholder="Username">
+                            <!-- </label> -->
+
+                            <p>First name</p>
+                            <!-- <label>First name -->
+                                <input type="text" class="form-control" placeholder="Name">
+                            <!-- </label> -->
+
+                            <p>Last name</p>
+                            <!-- <label>Last name -->
+                                <input type="text" class="form-control" placeholder="Surname">
+                            <!-- </label> -->
+
+                            <div class="form-group">
+                                <p>Date of Birth</p>
+                                <input type="date" class="form-control">
+                            </div>
+
+                            <p>Biography</p>
+                            <!-- <label>Biography -->
+                                <textarea class="form-control" aria-label="With textarea">About me...</textarea>
+                            <!-- </label> -->
+
+                            <p>Sex</p>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex" id="inlineRadio1"
+                                    value="option1">
+                                <label class="form-check-label" for="inlineRadio1">male</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex" id="inlineRadio2"
+                                    value="option2">
+                                <label class="form-check-label" for="inlineRadio2">female</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex" id="inlineRadio3"
+                                    value="option3">
+                                <label class="form-check-label" for="inlineRadio3">prefer not to say</label>
+                            </div>
+
+                            <p>Sexual preferences</p>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences" id="inlineRadio4"
+                                    value="option4">
+                                <label class="form-check-label" for="inlineRadio4">bi</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences" id="inlineRadio5"
+                                    value="option5">
+                                <label class="form-check-label" for="inlineRadio5">hetero</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences" id="inlineRadio6"
+                                    value="option6">
+                                <label class="form-check-label" for="inlineRadio6">homo</label>
+                            </div>
+
+                            <p>Current password</p>
+                            <input type="text" class="form-control" placeholder="Current password">
+
+                            <p>New password</p>
+                            <input type="text" class="form-control" placeholder="New password">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-success">Save</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col col-lg-3">
+                    <img src="img/1.jpg" alt="" class="mx-auto d-block img-thumbnail rounded-circle img-fluid">
+                </div>
+                <div class="col col-lg-9">
+
+
+                    <h2>Nickname</h2>
+                    <p>Sex, Sexual preferences</p>
+                    <p>Age</p>
+                    <p>Location</p>
+                    <p>About me: Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi sed obcaecati ullam,
+                        mollitia delectus voluptatibus earum consequuntur perferendis officiis nostrum velit minima
+                        itaque architecto dicta accusantium totam.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    1 of 3
+                </div>
+                <div class="col">
+                    2 of 3
+                </div>
+                <div class="col">
+                    3 of 3
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+
+</html>

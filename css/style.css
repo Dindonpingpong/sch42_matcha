@@ -1,0 +1,65 @@
+/*
+text-break переносит не вмещенный текст
+*/
+
+/* profile */
+.profile {
+  margin-top: 20px;
+}
+
+.nav-item a {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/* .row,
+.col {
+  border: 1px solid black;
+} */
+
+.img-thumbnail {
+  object-fit: cover;
+  width: 200px;
+  height: 200px;
+}
+
+.modal-body input {
+    /* margin: 10px 0; */
+}
+
+/* .btn-profile {
+  position: relative;
+}
+
+.btn-profile-like,
+.btn-profile-edit {
+  position: absolute;
+  top: 0;
+}
+
+.btn-profile-like
+{
+  right: 110px;
+}
+
+.btn-profile-edit {
+  right: 0;
+} */
+
+/* .test {
+  display: block;
+  margin: 0 auto;
+} */
+
+.profile p {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+
+}
+
+.profile p:first-child {
+  margin-top: 0;
+}
+
+/* .profile .modal-dialog p {
+  text-transform: uppercase;
+} */
