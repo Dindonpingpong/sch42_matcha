@@ -44,166 +44,134 @@
 
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <ul class="navbar-nav m-auto">
-                <div class="container">
-                    <div class="row" id="row1">
-                        <div class="col-6 col-sm-2">
-                            <li class="nav-item dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Sort by
-                                </button>
-                                <div class="dropdown-menu px-2 py-2">
-                                    <div class="dropdown-item custom-control custom-radio">
-                                        <input type="radio" id="customRadio1" name="customRadio"
-                                            class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadio1">Age</label>
-                                    </div>
-                                    <div class="dropdown-item custom-control custom-radio">
-                                        <input type="radio" id="customRadio2" name="customRadio"
-                                            class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadio2">Location</label>
-                                    </div>
-                                    <div class="dropdown-item custom-control custom-radio">
-                                        <input type="radio" id="customRadio3" name="customRadio"
-                                            class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadio3">Tags</label>
-                                    </div>
-                                    <div class="dropdown-item custom-control custom-radio">
-                                        <input type="radio" id="customRadio4" name="customRadio"
-                                            class="custom-control-input">
-                                        <label class="custom-control-label" for="customRadio4">Rate</label>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
-                        <div class="col-6 col-sm-2">
-                            <li class="nav-item dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Tags
-                                </button>
-                                <div class="dropdown-menu form-check px-2 py-2">
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            Sport
-                                        </label>
-                                    </div>
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                                        <label class="form-check-label" for="defaultCheck2">
-                                            Food
-                                        </label>
-                                    </div>
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck3">
-                                        <label class="form-check-label" for="defaultCheck3">
-                                            Travel
-                                        </label>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
-                        <div class="col-6 col-sm-2">
-                            <li class="nav-item dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Age
-                                </button>
-                                <div class="dropdown-menu">
-                                    <form class="px-3 py-2">
-                                        <div class="form-group">
-                                            <label for="exampleDropdownFormEmail1">From</label>
-                                            <input type="email" class="form-control" id="exampleDropdownFormEmail1"
-                                                placeholder="18">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleDropdownFormPassword1">To</label>
-                                            <input type="password" class="form-control"
-                                                id="exampleDropdownFormPassword1" placeholder="80">
-                                        </div>
-                                    </form>
-                                </div>
-                            </li>
-                        </div>
-
-                        <div class="col-6 col-sm-2">
-                            <li class="nav-item dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Rate
-                                </button>
-                                <div class="dropdown-menu">
-                                    <form class="px-3 py-2">
-                                        <div class="form-group">
-                                            <label for="exampleDropdownFormEmail1">From</label>
-                                            <input type="email" class="form-control" id="exampleDropdownFormEmail1"
-                                                placeholder="0">
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="exampleDropdownFormPassword1">To</label>
-                                            <input type="password" class="form-control"
-                                                id="exampleDropdownFormPassword1" placeholder="100">
-                                        </div>
-                                    </form>
-                                </div>
-                            </li>
-                        </div>
-
-                        <div class="col-6 col-sm-2">
-                            <li class="nav-item dropdown ">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Location
-                                </button>
-                                <div class="dropdown-menu form-check px-2 py-2">
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            Moscow
-                                        </label>
-                                    </div>
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                                        <label class="form-check-label" for="defaultCheck2">
-                                            Spb
-                                        </label>
-                                    </div>
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck3">
-                                        <label class="form-check-label" for="defaultCheck3">
-                                            Paris
-                                        </label>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
-                        <div class="col-6 col-sm-2">
-                            <li class="nav-item dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
-                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Sex
-                                </button>
-                                <div class="dropdown-menu form-check px-2 py-2">
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                            Male
-                                        </label>
-                                    </div>
-                                    <div class="dropdown-item form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                                        <label class="form-check-label" for="defaultCheck2">
-                                            Female
-                                        </label>
-                                    </div>
-                                </div>
-                            </li>
-                        </div>
+            <ul class="navbar-nav mr-auto">
+                <div class="col-8">
+                    <div class="form-group">
+                        <select class="form-control">
+                            <option>Age ^</option>
+                            <option>Age</option>
+                            <option>Rate ^</option>
+                            <option>Rate</option>
+                            <option>Location A-Z</option>
+                            <option>Location Z-A</option>
+                            <option>Tags A-Z</option>
+                            <option>Tags Z-A</option>
+                        </select>
                     </div>
                 </div>
 
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-profile-edit" data-toggle="modal"
+                        data-target="#staticBackdrop">
+                        Filters
+                    </button>
+                </div>
+                <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <p class="modal-title font-weight-bold" style="font-size: 1.4rem;"
+                                    id="staticBackdropLabel">
+                                    Additional filters</p>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p class="font-profile-head">Age</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputName"
+                                            placeholder="18">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputGroupUsername"
+                                            placeholder="80">
+                                    </div>
+                                </div>
+
+                                <p class="font-profile-head">Rate</p>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputName"
+                                            placeholder="0">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputGroupUsername"
+                                            placeholder="100">
+                                    </div>
+                                </div>
+
+                                <p class="font-profile-head">Sex</p>
+                                <ul class="list-group list-group-horizontal">
+                                    <button type="button" class="list-group-item list-group-item-action">Male</button>
+                                    <button type="button"
+                                        class="list-group-item list-group-item-action active">Female</button>
+                                    <button type="button" class="list-group-item list-group-item-action">Both</button>
+                                </ul>
+
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse"
+                                            data-target="#collapseExample" aria-expanded="false"
+                                            aria-controls="collapseExample">
+                                            Locations
+                                        </button>
+                                        <div class="collapse" id="collapseExample">
+                                            <div class="card card-body">
+                                                Moscow Berlin New-York
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Moscow"
+                                                aria-label="Moscow" aria-describedby="button-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="button-addon2">Добавить</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12">
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse"
+                                            data-target="#collapseExample1" aria-expanded="false"
+                                            aria-controls="collapseExample1">
+                                            Tags
+                                        </button>
+                                        <div class="collapse" id="collapseExample1">
+                                            <div class="card card-body">
+                                                sport movie food travel
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Sport"
+                                                aria-label="Moscow" aria-describedby="button-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="button-addon2">Добавить</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </ul>
         </div>
     </nav>
@@ -262,7 +230,6 @@
                         </ul>
                         <div class="btn-group col">
                             <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
-                            <!-- <a href="#" class="btn btn-primary stretched-link">Chat</a> -->
                         </div>
                     </div>
                 </div>
