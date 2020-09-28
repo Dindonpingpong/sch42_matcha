@@ -18,7 +18,7 @@
             <div class="navbar-brand">matcha</div>
             <ul class="nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="#">
+                    <a class="nav-link" href="#">
                         <i class="fas fa-home"></i>
                     </a>
                 </li>
@@ -38,7 +38,7 @@
 
     <section class="profile text-break">
         <div class="container">
-            <div class="float-right">
+            <div class="ml-auto btn-profile">
                 <button type="button" class="btn btn-danger btn-profile-like">Like</button>
                 <button type="button" class="btn btn-secondary btn-profile-edit" data-toggle="modal"
                     data-target="#staticBackdrop">
@@ -50,75 +50,76 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <p class="modal-title" id="staticBackdropLabel">Edit</p>
+                            <p class="modal-title font-weight-bold" style="font-size: 1.4rem;" id="staticBackdropLabel">
+                                Edit profile info</p>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <div class="modal-body">
-                            <p>Username</p>
+                        <div class="modal-body text-center">
+                            <p class="font-profile-head">Username</p>
                             <!-- <label>Username -->
-                                <input type="text" class="form-control" placeholder="Username">
+                            <input type="text" class="form-control" placeholder="Username">
                             <!-- </label> -->
 
-                            <p>First name</p>
+                            <p class="font-profile-head">First name</p>
                             <!-- <label>First name -->
-                                <input type="text" class="form-control" placeholder="Name">
+                            <input type="text" class="form-control" placeholder="Name">
                             <!-- </label> -->
 
-                            <p>Last name</p>
+                            <p class="font-profile-head">Last name</p>
                             <!-- <label>Last name -->
-                                <input type="text" class="form-control" placeholder="Surname">
+                            <input type="text" class="form-control" placeholder="Surname">
                             <!-- </label> -->
 
-                            <div class="form-group">
-                                <p>Date of Birth</p>
-                                <input type="date" class="form-control">
-                            </div>
+                            <!-- <div class="form-group"> -->
+                            <p class="font-profile-head">Date of Birth</p>
+                            <input type="date" class="form-control">
+                            <!-- </div> -->
 
-                            <p>Biography</p>
+                            <p class="font-profile-head">Biography</p>
                             <!-- <label>Biography -->
-                                <textarea class="form-control" aria-label="With textarea">About me...</textarea>
+                            <textarea class="form-control" aria-label="With textarea">About me...</textarea>
                             <!-- </label> -->
 
-                            <p>Sex</p>
+                            <p class="font-profile-head">Sex</p>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex" id="inlineRadio1"
-                                    value="option1">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex"
+                                    id="inlineRadio1" value="option1">
                                 <label class="form-check-label" for="inlineRadio1">male</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex" id="inlineRadio2"
-                                    value="option2">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex"
+                                    id="inlineRadio2" value="option2">
                                 <label class="form-check-label" for="inlineRadio2">female</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex" id="inlineRadio3"
-                                    value="option3">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex"
+                                    id="inlineRadio3" value="option3">
                                 <label class="form-check-label" for="inlineRadio3">prefer not to say</label>
                             </div>
 
-                            <p>Sexual preferences</p>
+                            <p class="font-profile-head">Sexual preferences</p>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences" id="inlineRadio4"
-                                    value="option4">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences"
+                                    id="inlineRadio4" value="option4">
                                 <label class="form-check-label" for="inlineRadio4">bi</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences" id="inlineRadio5"
-                                    value="option5">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences"
+                                    id="inlineRadio5" value="option5">
                                 <label class="form-check-label" for="inlineRadio5">hetero</label>
                             </div>
                             <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences" id="inlineRadio6"
-                                    value="option6">
+                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences"
+                                    id="inlineRadio6" value="option6">
                                 <label class="form-check-label" for="inlineRadio6">homo</label>
                             </div>
 
-                            <p>Current password</p>
+                            <p class="font-profile-head">Current password</p>
                             <input type="text" class="form-control" placeholder="Current password">
 
-                            <p>New password</p>
+                            <p class="font-profile-head">New password</p>
                             <input type="text" class="form-control" placeholder="New password">
                         </div>
                         <div class="modal-footer">
@@ -134,26 +135,49 @@
                     <img src="img/1.jpg" alt="" class="mx-auto d-block img-thumbnail rounded-circle img-fluid">
                 </div>
                 <div class="col col-lg-9">
-
-
-                    <h2>Nickname</h2>
+                    <p class="font-profile-head">Nickname</p>
                     <p>Sex, Sexual preferences</p>
                     <p>Age</p>
                     <p>Location</p>
-                    <p>About me: Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi sed obcaecati ullam,
+                    <p>
+                        About me: Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi sed obcaecati ullam,
                         mollitia delectus voluptatibus earum consequuntur perferendis officiis nostrum velit minima
-                        itaque architecto dicta accusantium totam.</p>
+                        itaque architecto dicta accusantium totam.
+                    </p>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    1 of 3
+                    <p class="font-profile-head">Biography</p>
+                    <p>
+                        About me: Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi sed obcaecati ullam,
+                        mollitia delectus voluptatibus earum consequuntur perferendis officiis nostrum velit minima
+                        itaque architecto dicta accusantium totam.
+                    </p>
                 </div>
+            </div>
+
+            <div class="row">
                 <div class="col">
-                    2 of 3
+                    <p class="font-profile-head">Tags</p>
+                    <ul class="nav">
+                        <li class="nav-item tags">
+                            <a href="#">#test</a>
+                        </li>
+                        <li class="nav-item tags">
+                            <a href="#">#tet</a>
+                        </li>
+                        <li class="nav-item tags">
+                            <a href="#">#test</a>
+                        </li>
+                    </ul>
                 </div>
+            </div>
+
+            <div class="row">
                 <div class="col">
-                    3 of 3
+                    <p class="font-profile-head">Photo</p>
+
                 </div>
             </div>
         </div>
