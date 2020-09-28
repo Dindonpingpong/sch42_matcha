@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/index.js"></script>
+    <style>
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="navbar-brand">matcha</div>
+            <ul class="nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Out
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <ul class="navbar-nav m-auto">
+                <div class="container">
+                    <div class="row" id="row1">
+                        <div class="col-6 col-sm-2">
+                            <li class="nav-item dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Sort by
+                                </button>
+                                <div class="dropdown-menu px-2 py-2">
+                                    <div class="dropdown-item custom-control custom-radio">
+                                        <input type="radio" id="customRadio1" name="customRadio"
+                                            class="custom-control-input">
+                                        <label class="custom-control-label" for="customRadio1">Age</label>
+                                    </div>
+                                    <div class="dropdown-item custom-control custom-radio">
+                                        <input type="radio" id="customRadio2" name="customRadio"
+                                            class="custom-control-input">
+                                        <label class="custom-control-label" for="customRadio2">Location</label>
+                                    </div>
+                                    <div class="dropdown-item custom-control custom-radio">
+                                        <input type="radio" id="customRadio3" name="customRadio"
+                                            class="custom-control-input">
+                                        <label class="custom-control-label" for="customRadio3">Tags</label>
+                                    </div>
+                                    <div class="dropdown-item custom-control custom-radio">
+                                        <input type="radio" id="customRadio4" name="customRadio"
+                                            class="custom-control-input">
+                                        <label class="custom-control-label" for="customRadio4">Rate</label>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <li class="nav-item dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Tags
+                                </button>
+                                <div class="dropdown-menu form-check px-2 py-2">
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            Sport
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                                        <label class="form-check-label" for="defaultCheck2">
+                                            Food
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck3">
+                                        <label class="form-check-label" for="defaultCheck3">
+                                            Travel
+                                        </label>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <li class="nav-item dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Age
+                                </button>
+                                <div class="dropdown-menu">
+                                    <form class="px-3 py-2">
+                                        <div class="form-group">
+                                            <label for="exampleDropdownFormEmail1">From</label>
+                                            <input type="email" class="form-control" id="exampleDropdownFormEmail1"
+                                                placeholder="18">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleDropdownFormPassword1">To</label>
+                                            <input type="password" class="form-control"
+                                                id="exampleDropdownFormPassword1" placeholder="80">
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        </div>
+
+                        <div class="col-6 col-sm-2">
+                            <li class="nav-item dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu3"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Rate
+                                </button>
+                                <div class="dropdown-menu">
+                                    <form class="px-3 py-2">
+                                        <div class="form-group">
+                                            <label for="exampleDropdownFormEmail1">From</label>
+                                            <input type="email" class="form-control" id="exampleDropdownFormEmail1"
+                                                placeholder="0">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleDropdownFormPassword1">To</label>
+                                            <input type="password" class="form-control"
+                                                id="exampleDropdownFormPassword1" placeholder="100">
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                        </div>
+
+                        <div class="col-6 col-sm-2">
+                            <li class="nav-item dropdown ">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Location
+                                </button>
+                                <div class="dropdown-menu form-check px-2 py-2">
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            Moscow
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                                        <label class="form-check-label" for="defaultCheck2">
+                                            Spb
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck3">
+                                        <label class="form-check-label" for="defaultCheck3">
+                                            Paris
+                                        </label>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                        <div class="col-6 col-sm-2">
+                            <li class="nav-item dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1"
+                                    data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Sex
+                                </button>
+                                <div class="dropdown-menu form-check px-2 py-2">
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                            Male
+                                        </label>
+                                    </div>
+                                    <div class="dropdown-item form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                                        <label class="form-check-label" for="defaultCheck2">
+                                            Female
+                                        </label>
+                                    </div>
+                                </div>
+                            </li>
+                        </div>
+                    </div>
+                </div>
+
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Annie, 27 <span class="badge badge-primary badge-pill">14</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Amelia, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Jason, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">London</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Male</li>
+                            <li class="list-group-item">Bisexual</li>
+                            <li class="list-group-item">#race #footbal #food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <!-- <a href="#" class="btn btn-primary stretched-link">Chat</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Annie, 27 <span class="badge badge-primary badge-pill">14</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Amelia, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Jason, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">London</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Male</li>
+                            <li class="list-group-item">Bisexual</li>
+                            <li class="list-group-item">#race #footbal #food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <!-- <a href="#" class="btn btn-primary stretched-link">Chat</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
