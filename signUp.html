@@ -16,51 +16,58 @@
 <body>
 
     <div class="container">
-        <div class="form-row">
-            <div class="col-md-6 mb-3">
-                <label for="validationServer01">Last name</label>
-                <input type="text" class="form-control is-valid" data-validator="letters" placeholder="Ng" required>
-                <div class="invalid-feedback">
-                    Only symbols are required
+        <div class="row col-md-8 m-auto">
+            <div class="form-row col-12">
+                <div class="col-md-6">
+                    <label for="validationServer01">Last name</label>
+                    <input type="text" class="form-control is-valid" data-validator="letters" placeholder="Ng" required>
+                    <div class="invalid-feedback">
+                        Only symbols are required
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationServer02">First name</label>
+                    <input type="text" class="form-control is-valid" data-validator="letters" placeholder="Dima"
+                        required>
+                    <div class="invalid-feedback">
+                        Only symbols are required
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6 mb-3">
-                <label for="validationServer02">First name</label>
-                <input type="text" class="form-control is-valid" data-validator="letters" placeholder="Dima" required>
-                <div class="invalid-feedback">
-                    Only symbols are required
+            
+            <div class="form-row col-12">
+                <div class="col-12">
+                    <label for="validationServer03">Email</label>
+                    <input type="text" class="form-control is-valid" data-validator="email"
+                        aria-describedby="validationServer03Feedback" placeholder="rkina7@gmail.com" required>
+                    <div id="validationServer03Feedback" class="invalid-feedback">
+                        Incorrect email
+                    </div>
                 </div>
             </div>
+            <div class="form-row col-12">
+                <div class="col-md-6">
+                    <label for="validationServer01">Password</label>
+                    <input type="password" class="form-control is-invalid" data-validator="passwd"
+                        placeholder="Str0ngPa55%" required>
+                    <div class="invalid-feedback">
+                        Too weak password
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <label for="validationServer02">Repeat Password</label>
+                    <input type="password" class="form-control is-invalid" data-validator="repass"
+                        placeholder="Str0ngPa55%" required>
+                    <div class="invalid-feedback">
+                        Password doesn't match
+                    </div>
+                </div>
+            </div>
+            <div class="col-12">
+                <button class="btn btn-primary" type="submit">Sign Up</button>
+            </div>
+            
         </div>
-        <div class="form-row">
-            <div class="col-md-12 mb-3">
-                <label for="validationServer03">Email</label>
-                <input type="text" class="form-control is-valid" data-validator="email"
-                    aria-describedby="validationServer03Feedback" placeholder="rkina7@gmail.com" required>
-                <div id="validationServer03Feedback" class="invalid-feedback">
-                    Incorrect email
-                </div>
-            </div>
-        </div>
-        <div class="form-row">
-            <div class="col-md-6 mb-3">
-                <label for="validationServer01">Password</label>
-                <input type="password" class="form-control is-invalid" data-validator="passwd" placeholder="Str0ngPa55%"
-                    required>
-                <div class="invalid-feedback">
-                    Too weak password
-                </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <label for="validationServer02">Repeat Password</label>
-                <input type="password" class="form-control is-invalid" data-validator="repass" placeholder="Str0ngPa55%"
-                    required>
-                <div class="invalid-feedback">
-                    Password doesn't match
-                </div>
-            </div>
-        </div>
-        <button class="btn btn-primary" type="submit">Sign Up</button>
     </div>
     <script src="js/signUp.js"></script>
 </body>
