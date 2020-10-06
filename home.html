@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.css">
+    <script src="js/bootstrap.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/index.js"></script>
+    <style>
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="navbar-brand">matcha</div>
+            <ul class="nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">
+                        <i class="fas fa-home"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="fas fa-bell"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        Out
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <ul class="navbar-nav mr-auto">
+                <div class="col-8">
+                    <div class="form-group">
+                        <select class="form-control">
+                            <option>Age ^</option>
+                            <option>Age</option>
+                            <option>Rate ^</option>
+                            <option>Rate</option>
+                            <option>Location A-Z</option>
+                            <option>Location Z-A</option>
+                            <option>Tags A-Z</option>
+                            <option>Tags Z-A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <button type="button" class="btn btn-primary btn-profile-edit" data-toggle="modal"
+                        data-target="#staticBackdrop">
+                        Filters
+                    </button>
+                </div>
+                <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+                    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <p class="modal-title font-weight-bold" style="font-size: 1.4rem;"
+                                    id="staticBackdropLabel">
+                                    Additional filters</p>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body text-center">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <p class="font-profile-head">Age</p>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputName"
+                                            placeholder="18">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputGroupUsername"
+                                            placeholder="80">
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <p class="font-profile-head col-12">Rate</p>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputName"
+                                            placeholder="0">
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" id="inlineFormInputGroupUsername"
+                                            placeholder="100">
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <p class="font-profile-head col-12">Sex</p>
+                                    <ul class="list-group list-group-horizontal col-12">
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action">Male</button>
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action active">Female</button>
+                                        <button type="button"
+                                            class="list-group-item list-group-item-action">Both</button>
+                                    </ul>
+                                </div>
+
+
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <button class="btn btn-primary mb-1" type="button" data-toggle="collapse"
+                                            data-target="#collapseExample" aria-expanded="false"
+                                            aria-controls="collapseExample">
+                                            Locations
+                                        </button>
+                                        <div class="collapse" id="collapseExample">
+                                            <div class="card card-body">
+                                                Moscow Berlin New-York
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Moscow"
+                                                aria-label="Moscow" aria-describedby="button-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="button-addon2">Добавить</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row mt-2">
+                                    <div class="col-12 mb-1">
+                                        <button class="btn btn-primary" type="button" data-toggle="collapse"
+                                            data-target="#collapseExample1" aria-expanded="false"
+                                            aria-controls="collapseExample1">
+                                            Tags
+                                        </button>
+                                        <div class="collapse" id="collapseExample1">
+                                            <div class="card card-body">
+                                                sport movie food travel
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <div class="input-group mb-3">
+                                            <input type="text" class="form-control" placeholder="Sport"
+                                                aria-label="Moscow" aria-describedby="button-addon2">
+                                            <div class="input-group-append">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="button-addon2">Добавить</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-success">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Annie, 27 <span class="badge badge-primary badge-pill">14</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Amelia, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Jason, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">London</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Male</li>
+                            <li class="list-group-item">Bisexual</li>
+                            <li class="list-group-item">#race #footbal #food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Annie, 27 <span class="badge badge-primary badge-pill">14</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Amelia, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Moscow</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Female</li>
+                            <li class="list-group-item">Heterosexual</li>
+                            <li class="list-group-item">#food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <a href="#" class="btn btn-primary stretched-link">Chat</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card mb-4">
+                    <img src="images/din.jpg" class="card-img-top" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-title">Jason, 23 <span class="badge badge-primary badge-pill">18</span></h5>
+                        <h6 class="card-subtitle mb-2 text-muted">London</h6>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Male</li>
+                            <li class="list-group-item">Bisexual</li>
+                            <li class="list-group-item">#race #footbal #food #movies #sport #games #travelling</li>
+                        </ul>
+                        <div class="btn-group col">
+                            <a href="#" class="btn btn-primary stretched-link">Go to profile</a>
+                            <!-- <a href="#" class="btn btn-primary stretched-link">Chat</a> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
