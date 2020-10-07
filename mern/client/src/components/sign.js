@@ -5,6 +5,7 @@ import InfoToast from './info';
 class Name extends Component {
     constructor(props) {
         super(props);
+
         this.nameChange = this.nameChange.bind(this);
     }
 
@@ -37,6 +38,7 @@ class Name extends Component {
 class Email extends Component {
     constructor(props) {
         super(props);
+
         this.emailChange = this.emailChange.bind(this);
     }
 
@@ -118,12 +120,9 @@ class Sign extends Component {
             repassword: ''
         };
 
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange = (name, value) => {
-        this.setState({ [name]: value });
+        // Без этого работает, но в документации сказано, что не будет
+        // this.handleSubmit = this.handleSubmit.bind(this);
+        // this.handleChange = this.handleChange.bind(this);
     }
 
     handleSubmit = (event) => {
@@ -164,6 +163,10 @@ class Sign extends Component {
             )
     }
 
+    handleChange = (name, value) => {
+        this.setState({ [name]: value });
+    }
+
     handleToast = () => this.setState({
         isShow: false
     });
@@ -179,7 +182,7 @@ class Sign extends Component {
                     <Name onChange={this.handleChange} />
                     <Email onChange={this.handleChange} />
                     <Password onChange={this.handleChange} />
-                    <SignUpBtn onChange={this.handleChange} />
+                    <SignUpBtn />
                 </form>
             </div>
         )

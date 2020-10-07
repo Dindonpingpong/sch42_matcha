@@ -6,7 +6,7 @@ import Sign from './components/sign';
 import NotFound from './components/notFound';
 import history from './history';
 
-// let isLogged = false;
+sessionStorage.setItem('isLogged', false);
 
 class App extends Component {
     render() {

@@ -19,24 +19,28 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (auth(email, password) == false) {
-            res.status(200).json({
-                message: "Email or pass is incorrect",
-                error: true
-            })
-        }
-        else {
-            res.status(200).json({
-                message: "Okay, br",
-                error: false
-            })
-        }
+        auth(email)
+            .then(data => {
+                const len = data.length;
+                const check = bcrypt.compareSync(password, data[0].password);
 
+                if (len == 0 || check == false) {
+                    res.status(500).json({
+                        message: "Email or pass is incorrect",
+                        error: true
+                    })
+                }
+                else {
+                    res.status(200).json({
+                        message: "Your logged",
+                        error: false
+                    })
+                }
+            })
     } catch (error) {
         res.status(500).json({
             error: true,
-            text: error.message,
-            message: "Oooops"
+            message: error.message
         })
     }
 })
@@ -56,11 +60,13 @@ router.post('/register', async (req, res) => {
             'fell in love'
         ];
 
-        sign(params);
-        res.status(200).json({
-            message: "Okay, br",
-            error: true
-        })
+        sign(params)
+            .then(res = () => {
+                res.status(200).json({
+                    message: "Okay, br",
+                    error: true
+                })
+            })
 
     } catch (error) {
         res.status(500).json({
