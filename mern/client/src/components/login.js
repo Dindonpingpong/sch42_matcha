@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom/cjs/react-router-dom.min';
-import ErrorToast from './error';
+import InfoToast from './info';
 
 class Email extends Component {
     render() {
         return (
             <div className="col-12">
                 <div className="form-group">
-                    <label for="exampleDropdownFormEmail1">Email address</label>
-                    <input type="email" class="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com" />
+                    <label htmlFor="exampleDropdownFormEmail1">Email address</label>
+                    <input type="email" className="form-control" id="exampleDropdownFormEmail1" placeholder="email@example.com" />
                 </div>
             </div>
         )
@@ -18,10 +18,10 @@ class Email extends Component {
 class Password extends Component {
     render() {
         return (
-            <div class="col-12">
-                <div class="form-group">
-                    <label for="exampleDropdownFormPassword1">Password</label>
-                    <input type="password" class="form-control" id="exampleDropdownFormPassword1" placeholder="Password" />
+            <div className="col-12">
+                <div className="form-group">
+                    <label htmlFor="exampleDropdownFormPassword1">Password</label>
+                    <input type="password" className="form-control" id="exampleDropdownFormPassword1" placeholder="Password" />
                 </div>
             </div>
         )
@@ -31,8 +31,8 @@ class Password extends Component {
 class SignInBtn extends Component {
     render() {
         return (
-            <div class="col-12">
-                <button type="submit" class="btn btn-primary">Sign in</button>
+            <div className="col-12">
+                <button type="submit" className="btn btn-primary">Sign in</button>
             </div>
         )
     }
@@ -41,8 +41,8 @@ class SignInBtn extends Component {
 class SignUpBtn extends Component {
     render() {
         return (
-            <div class="col-12">
-                <div class="dropdown-divider"></div>
+            <div className="col-12">
+                <div className="dropdown-divider"></div>
                 <Link to='/register'>
                     Newbee? Sign up
                 </Link>
@@ -57,20 +57,20 @@ class Login extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isError: true,
-            errMessage: "Ooopsy",
+            isShow: false
         };
     }
 
+    
+
     handleSubmit = () => this.setState({
-        isError: false,
-        errMessage: "Wow is clicked"
+        isShow: false
     });
 
     render() {
         return (
             <div className='row col-md-6 m-auto'>
-                <ErrorToast isError={this.state.isError} errMessage={this.state.errMessage} onClick={this.handleSubmit} />
+                <InfoToast isShow={this.state.isShow} message={this.state.errMessage} onClick={this.handleSubmit} />
                 <Email />
                 <Password />
                 <SignInBtn />

@@ -1,5 +1,4 @@
 {
-    "port": 5001,
-    "urlDb": "postgres://dindon:wwq@localhost:5432/dindon",
-    "salt": "_271kweV77"
+    "port": 5000,
+    "urlDb": "postgres://rkina:wwq@localhost:5432/rkina"
 }

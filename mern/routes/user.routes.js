@@ -1,13 +1,12 @@
 const { Router } = require('express');
 const router = Router();
-const sign = require('../models/user');
+const { sign, auth } = require('../models/user');
 const bcrypt = require('bcrypt');
 
-router.get('/:id', async(req, res) => {
+
+router.get('/:id', async (req, res) => {
     try {
-        // console.log(req.body);
-        sign(req);
-        res.json({message: 'ok', re: req.body});
+        res.json({ message: 'ok', re: req.body });
     } catch (e) {
         res.status(500).json({
             text: e.message,
@@ -16,16 +15,43 @@ router.get('/:id', async(req, res) => {
     }
 })
 
-router.post('/register', async(req, res) => {
+router.post('/login', async (req, res) => {
     try {
+        const { email, password } = req.body;
+
+        if (auth(email, password) == false) {
+            res.status(200).json({
+                message: "Email or pass is incorrect",
+                error: true
+            })
+        }
+        else {
+            res.status(200).json({
+                message: "Okay, br",
+                error: false
+            })
+        }
+
+    } catch (error) {
+        res.status(500).json({
+            error: true,
+            text: error.message,
+            message: "Oooops"
+        })
+    }
+})
+
+router.post('/register', async (req, res) => {
+    try {
+        const { firstName, lastName, email, password } = req.body;
         const saltRounds = 10;
-        this.salt = bcrypt.genSaltSync(saltRounds);
-        const hash = bcrypt.hashSync(req.body.password, this.salt);
+        const salt = bcrypt.genSaltSync(saltRounds);
+        const hash = bcrypt.hashSync(password, salt);
 
         const params = [
-            req.body.lastName,
-            req.body.firstName,
-            req.body.email,
+            firstName,
+            lastName,
+            email,
             hash,
             'fell in love'
         ];

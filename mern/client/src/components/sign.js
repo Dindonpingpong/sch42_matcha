@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ErrorToast from './error';
+import InfoToast from './info';
+// import history from '../history';
 
 class Name extends Component {
     constructor(props) {
@@ -11,20 +12,20 @@ class Name extends Component {
 
     render() {
         return (
-            <div class="form-row col-12">
-                <div class="col-md-6">
-                    <label for="validationServer01">Last name</label>
-                    <input type="text" name='lastName' class="form-control" onChange={this.nameChange} data-validator="letters" placeholder="Ng" required />
+            <div className="form-row col-12">
+                <div className="col-md-6">
+                    <label htmlFor="validationServer01">Last name</label>
+                    <input type="text" name='lastName' className="form-control" onChange={this.nameChange} data-validator="letters" placeholder="Ng" required />
                     {/* state  */}
-                    <div class="invalid-feedback">
+                    <div className="invalid-feedback">
                         Only symbols are required
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="validationServer02">First name</label>
-                    <input type="text" name='firstName' class="form-control" onChange={this.nameChange} data-validator="letters" placeholder="Duong" required />
+                <div className="col-md-6">
+                    <label htmlFor="validationServer02">First name</label>
+                    <input type="text" name='firstName' className="form-control" onChange={this.nameChange} data-validator="letters" placeholder="Duong" required />
                     {/* state  */}
-                    <div class="invalid-feedback">
+                    <div className="invalid-feedback">
                         Only symbols are required
                     </div>
                 </div>
@@ -43,13 +44,13 @@ class Email extends Component {
 
     render() {
         return (
-            <div class="form-row col-12">
-                <div class="col-12">
-                    <label for="validationServer03">Email</label>
-                    <input type="text" name='email' onChange={this.emailChange} class="form-control" data-validator="email"
+            <div className="form-row col-12">
+                <div className="col-12">
+                    <label htmlFor="validationServer03">Email</label>
+                    <input type="text" name='email' onChange={this.emailChange} className="form-control" data-validator="email"
                         aria-describedby="validationServer03Feedback" placeholder="rkina7@gmail.com" required />
                     {/* state */}
-                    <div id="validationServer03Feedback" class="invalid-feedback">
+                    <div id="validationServer03Feedback" className="invalid-feedback">
                         Incorrect email
                     </div>
                 </div>
@@ -71,22 +72,22 @@ class Password extends Component {
 
     render() {
         return (
-            <div class="form-row col-12">
-                <div class="col-md-6">
-                    <label for="validationServer01">Password</label>
-                    <input type="password" name='password' onChange={this.passChange} class="form-control" data-validator="password"
+            <div className="form-row col-12">
+                <div className="col-md-6">
+                    <label htmlFor="validationServer01">Password</label>
+                    <input type="password" name='password' onChange={this.passChange} className="form-control" data-validator="password"
                         placeholder="Str0ngPa55%" required />
                     {/* state  */}
-                    <div class="invalid-feedback">
+                    <div className="invalid-feedback">
                         Too weak password
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="validationServer02">Repeat Password</label>
-                    <input type="password" name='repassword' onChange={this.passChange} class="form-control" data-validator="repass"
+                <div className="col-md-6">
+                    <label htmlFor="validationServer02">Repeat Password</label>
+                    <input type="password" name='repassword' onChange={this.passChange} className="form-control" data-validator="repass"
                         placeholder="Str0ngPa55%" required />
                     {/* state  */}
-                    <div class="invalid-feedback">
+                    <div className="invalid-feedback">
                         Password doesn't match
                     </div>
                 </div>
@@ -98,8 +99,8 @@ class Password extends Component {
 class SignUpBtn extends Component {
     render() {
         return (
-            <div class="col-12 mt-3">
-                <button class="btn btn-primary" type='submit' >Sign Up</button>
+            <div className="col-12 mt-3">
+                <button className="btn btn-primary" type='submit' >Sign Up</button>
             </div>
         )
     }
@@ -109,7 +110,7 @@ class Sign extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            isError: false,
+            isShow: false,
             lastName: '',
             firstName: '',
             email: '',
@@ -125,41 +126,55 @@ class Sign extends Component {
         this.setState({ [name]: value });
     }
 
-    handleSubmit = () => {
+    handleSubmit = (event) => {
+        event.preventDefault();
+        const { lastName, firstName, email, password } = this.state;
+
         let data = {
-            lastName: this.state.lastName,
-            firstName: this.state.firstName,
-            email: this.state.email,
-            password: this.state.password
+            lastName: lastName,
+            firstName: firstName,
+            email: email,
+            password: password
         }
-        data = JSON.stringify(data)
-        fetch("/api/user/register", {
+
+        const requestOptions = {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: data
-        })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        };
+
+        fetch("api/user/register", requestOptions)
             .then(res => res.json())
             .then(
                 (result) => {
                     this.setState({
-                        isError: result.error,
-                        errMessage: result.errMessage
+                        isShow: true,
+                        message: result.message,
+                        icon: "success"
                     });
+                    // history.push('/'); redirect or not
                 },
                 (error) => {
                     this.setState({
-                        error
+                        isShow: true,
+                        message: error,
+                        icon: "danger"
                     });
                 }
             )
     }
 
+    handleToast = () => this.setState({
+        isShow: false
+    });
+
+
     render() {
+        const { isShow, icon, message } = this.state;
+
         return (
             <div className='row col-md-8 m-auto'>
-                <ErrorToast isError={this.state.isError} errMessage={this.state.errMessage} onClick={this.handleSubmit} />
+                <InfoToast isShow={isShow} icon={icon} message={message} onClick={this.handleToast} />
                 <form onSubmit={this.handleSubmit}>
                     <Name onChange={this.handleChange} />
                     <Email onChange={this.handleChange} />
