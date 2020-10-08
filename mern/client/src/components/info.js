@@ -11,7 +11,6 @@ class InfoToast extends Component {
     toggle = () => this.props.onClick();
 
     render() {
-
         return (
             <div className="p-3 my-2  rounded">
                 <Toast isOpen={this.props.isShow} >

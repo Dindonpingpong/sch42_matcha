@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom/cjs/react-router-dom.min';
+import { FormGroup, Label, Input} from 'reactstrap';
+import { NavLink } from 'reactstrap';
 import InfoToast from './info';
 
 class Email extends Component {
@@ -15,8 +16,14 @@ class Email extends Component {
         return (
             <div className="col-12">
                 <div className="form-group">
-                    <label htmlFor="exampleDropdownFormEmail1">Email address</label>
-                    <input type="email" name="email" className="form-control" id="exampleDropdownFormEmail1" onChange={this.emailChange} placeholder="email@example.com" />
+                    <Label>Email address</Label>
+                    <Input
+                        type="text"
+                        name="email"
+                        onChange={this.emailChange}
+                        placeholder="email@example.com"
+                        required
+                    />
                 </div>
             </div>
         )
@@ -36,8 +43,16 @@ class Password extends Component {
         return (
             <div className="col-12">
                 <div className="form-group">
-                    <label htmlFor="exampleDropdownFormPassword1">Password</label>
-                    <input type="password" name="password" className="form-control" id="exampleDropdownFormPassword1" onChange={this.passwordChange} placeholder="Password" />
+                    <FormGroup>
+                        <Label>Password</Label>
+                        <Input
+                            type="text"
+                            name='password'
+                            onChange={this.passwordChange}
+                            placeholder="Str0ngPa55%"
+                            required
+                        />
+                    </FormGroup>
                 </div>
             </div>
         )
@@ -59,11 +74,8 @@ class SignUpBtn extends Component {
         return (
             <div className="col-12">
                 <div className="dropdown-divider"></div>
-                <Link to='/register'>
-                    Newbee? Sign up
-                </Link>
-                {/* <a class="dropdown-item" href="/register">Newbee? Sign up</a> */}
-                {/* <a class="dropdown-item" href="remind.html">Forgot password?</a> */}
+                <NavLink href='/register' >Newbee? Sign up</NavLink>
+                <NavLink href='/remind' >Forgot pass? Remind</NavLink>
             </div>
         )
     }

@@ -4,18 +4,18 @@ import { Route, Switch } from 'react-router-dom/cjs/react-router-dom.min';
 import Login from './components/login';
 import Sign from './components/sign';
 import NotFound from './components/notFound';
+import Header from './components/header';
 import history from './history';
 
 sessionStorage.setItem('isLogged', false);
+
 
 class App extends Component {
     render() {
         return (
             <Router history={history}>
-                <div>
-                    
-                </div>
-                <div className='container'>
+                <Header />
+                <div className='container p-5'>
                     <Switch>
                         <Route exact={true} path='/' component={Login} />
                         <Route path='/register' component={Sign} />

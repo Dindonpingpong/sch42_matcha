@@ -1,7 +1,5 @@
-
 const config = require('config');
 const connector = config.get('urlDb');
-const bcrypt = require('bcrypt');
 const pgp = require('pg-promise')();
 const db = pgp(connector);
 

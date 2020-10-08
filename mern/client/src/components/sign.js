@@ -1,34 +1,83 @@
 import React, { Component } from 'react';
 import InfoToast from './info';
-// import history from '../history';
+import { FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
+import history from '../history';
+import { isValidName, isValidEmail, isValidPassword } from '../util/check';
 
 class Name extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            lastNameInvalid: false,
+            lastNameValid: false,
+            firstNameInvalid: false,
+            firstNameValid: false,
+        }
 
-        this.nameChange = this.nameChange.bind(this);
+        // this.nameChange = this.nameChange.bind(this);
     }
 
-    nameChange = (e) => { this.props.onChange(e.target.name, e.target.value) };
+    toggle = (name, status) => {
+        let oppStatus;
+
+        if (status === 'Valid')
+            oppStatus = 'Invalid';
+
+        const oppName = name + oppStatus;
+        name = name + status;
+
+        this.setState({
+            [name]: true,
+            [oppName]: false
+        })
+    }
+
+    nameChange = (e) => {
+        const { name, value } = e.target;
+
+
+        if (isValidName(value) === true)
+            this.toggle(name, 'Valid');
+        else
+            this.toggle(name, 'Invalid');
+
+        this.props.onChange(name, value);
+    };
 
     render() {
+        const { lastNameInvalid, lastNameValid, firstNameInvalid, firstNameValid } = this.state;
+
         return (
             <div className="form-row col-12">
                 <div className="col-md-6">
-                    <label htmlFor="validationServer01">Last name</label>
-                    <input type="text" name='lastName' className="form-control" onChange={this.nameChange} data-validator="letters" placeholder="Ng" required />
-                    {/* state  */}
-                    <div className="invalid-feedback">
-                        Only symbols are required
-                    </div>
+                    <FormGroup>
+                        <Label>Last name</Label>
+                        <Input
+                            type="text"
+                            name='lastName'
+                            onChange={this.nameChange}
+                            placeholder="Ng"
+                            required
+                            invalid={lastNameInvalid}
+                            valid={lastNameValid}
+                        />
+                        <FormFeedback>Only symbols are required</FormFeedback>
+                    </FormGroup>
                 </div>
                 <div className="col-md-6">
-                    <label htmlFor="validationServer02">First name</label>
-                    <input type="text" name='firstName' className="form-control" onChange={this.nameChange} data-validator="letters" placeholder="Duong" required />
-                    {/* state  */}
-                    <div className="invalid-feedback">
-                        Only symbols are required
-                    </div>
+                    <FormGroup>
+                        <Label>First name</Label>
+                        <Input
+                            type="text"
+                            name='firstName'
+                            onChange={this.nameChange}
+                            placeholder="Duong"
+                            required
+                            invalid={firstNameInvalid}
+                            valid={firstNameValid}
+                        />
+                        <FormFeedback>Only symbols are required</FormFeedback>
+                    </FormGroup>
                 </div>
             </div>
         )
@@ -38,23 +87,58 @@ class Name extends Component {
 class Email extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            emailInvalid: false,
+            emailValid: false
+        }
 
-        this.emailChange = this.emailChange.bind(this);
+        // this.emailChange = this.emailChange.bind(this);
     }
 
-    emailChange = (e) => { this.props.onChange(e.target.name, e.target.value) };
+    toggle = (name, status) => {
+        let oppStatus;
+        if (status === 'Valid')
+            oppStatus = 'Invalid';
+
+        const oppName = name + oppStatus;
+        name = name + status;
+
+        this.setState({
+            [name]: true,
+            [oppName]: false
+        });
+    }
+
+    emailChange = (e) => {
+        const { name, value } = e.target;
+
+        if (isValidEmail(value) === true)
+            this.toggle(name, 'Valid');
+        else
+            this.toggle(name, 'Invalid');
+
+        this.props.onChange(e.target.name, e.target.value);
+    };
 
     render() {
+        const { emailInvalid, emailValid } = this.state;
+
         return (
             <div className="form-row col-12">
                 <div className="col-12">
-                    <label htmlFor="validationServer03">Email</label>
-                    <input type="text" name='email' onChange={this.emailChange} className="form-control" data-validator="email"
-                        aria-describedby="validationServer03Feedback" placeholder="rkina7@gmail.com" required />
-                    {/* state */}
-                    <div id="validationServer03Feedback" className="invalid-feedback">
-                        Incorrect email
-                    </div>
+                    <FormGroup>
+                        <Label>Email</Label>
+                        <Input
+                            type="text"
+                            name='email'
+                            onChange={this.emailChange}
+                            placeholder="rkina7@gmail.com"
+                            required
+                            invalid={emailInvalid}
+                            valid={emailValid}
+                        />
+                        <FormFeedback>Incorrect email</FormFeedback>
+                    </FormGroup>
                 </div>
             </div>
         )
@@ -64,34 +148,86 @@ class Email extends Component {
 class Password extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            passwordValid: false,
+            passwordInvalid: false,
+            repasswordValid: false,
+            repasswordInvalid: false
+        }
 
-        this.passChange = this.passChange.bind(this);
+        // this.passChange = this.passChange.bind(this);
+    }
+
+    toggle = (name, status) => {
+        let oppStatus;
+        if (status === 'Valid')
+            oppStatus = 'Invalid';
+
+        const oppName = name + oppStatus;
+        name = name + status;
+
+        this.setState({
+            [name]: true,
+            [oppName]: false
+        });
     }
 
     passChange = (e) => {
-        this.props.onChange(e.target.name, e.target.value);
+        const { name, value } = e.target;
+
+        if (name === 'password') {
+            if (isValidPassword(value) === true)
+                this.toggle(name, 'Valid')
+            else
+                this.toggle(name, 'Invalid')
+        }
+        else {
+            const password = document.querySelector('input[name="password"]').value;
+
+            if (password === value)
+                this.toggle(name, 'Valid')
+            else
+                this.toggle(name, 'Invalid')
+        }
+
+        this.props.onChange(name, value);
     };
 
     render() {
+        const { passwordInvalid, passwordValid, repasswordInvalid, repasswordValid } = this.state;
+
         return (
             <div className="form-row col-12">
                 <div className="col-md-6">
-                    <label htmlFor="validationServer01">Password</label>
-                    <input type="password" name='password' onChange={this.passChange} className="form-control" data-validator="password"
-                        placeholder="Str0ngPa55%" required />
-                    {/* state  */}
-                    <div className="invalid-feedback">
-                        Too weak password
-                    </div>
+                    <FormGroup>
+                        <Label>Password</Label>
+                        <Input
+                            id="1"
+                            type="password"
+                            name='password'
+                            onChange={this.passChange}
+                            placeholder="Str0ngPa55%"
+                            required
+                            invalid={passwordInvalid}
+                            valid={passwordValid}
+                        />
+                        <FormFeedback>Too weak password. 8 symbols is required</FormFeedback>
+                    </FormGroup>
                 </div>
                 <div className="col-md-6">
-                    <label htmlFor="validationServer02">Repeat Password</label>
-                    <input type="password" name='repassword' onChange={this.passChange} className="form-control" data-validator="repass"
-                        placeholder="Str0ngPa55%" required />
-                    {/* state  */}
-                    <div className="invalid-feedback">
-                        Password doesn't match
-                    </div>
+                    <FormGroup>
+                        <Label>Re-Password</Label>
+                        <Input
+                            type="password"
+                            name='repassword'
+                            onChange={this.passChange}
+                            placeholder="Str0ngPa55%"
+                            required
+                            invalid={repasswordInvalid}
+                            valid={repasswordValid}
+                        />
+                        <FormFeedback>Password doesn't match</FormFeedback>
+                    </FormGroup>
                 </div>
             </div>
         )
@@ -99,10 +235,11 @@ class Password extends Component {
 }
 
 class SignUpBtn extends Component {
+
     render() {
         return (
             <div className="col-12 mt-3">
-                <button className="btn btn-primary" type='submit' >Sign Up</button>
+                <Button className="btn btn" color="primary" type="submit" disabled={this.props.isActiveBtn} >Sign Up</Button>
             </div>
         )
     }
@@ -112,6 +249,7 @@ class Sign extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isActiveBtn: true,
             isShow: false,
             lastName: '',
             firstName: '',
@@ -151,7 +289,7 @@ class Sign extends Component {
                         message: result.message,
                         icon: "success"
                     });
-                    // history.push('/'); redirect or not
+                    history.push('/');
                 },
                 (error) => {
                     this.setState({
@@ -165,15 +303,32 @@ class Sign extends Component {
 
     handleChange = (name, value) => {
         this.setState({ [name]: value });
+        this.checkBtn();
     }
 
     handleToast = () => this.setState({
         isShow: false
     });
 
+    checkBtn = () => {
+        const countValidInputs = document.querySelectorAll(".is-valid").length;
+        const countInvalidInputs = document.querySelectorAll(".is-invalid").length;
+
+        console.log(countValidInputs)
+        if (countValidInputs === 3 && countInvalidInputs === 0) {
+            this.setState({
+                isActiveBtn: false
+            })
+        }
+        else {
+            this.setState({
+                isActiveBtn: true
+            })
+        }
+    }
 
     render() {
-        const { isShow, icon, message } = this.state;
+        const { isActiveBtn, isShow, icon, message } = this.state;
 
         return (
             <div className='row col-md-8 m-auto'>
@@ -182,7 +337,7 @@ class Sign extends Component {
                     <Name onChange={this.handleChange} />
                     <Email onChange={this.handleChange} />
                     <Password onChange={this.handleChange} />
-                    <SignUpBtn />
+                    <SignUpBtn isActiveBtn={isActiveBtn} />
                 </form>
             </div>
         )
