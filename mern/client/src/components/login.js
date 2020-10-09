@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { FormGroup, Label, Input} from 'reactstrap';
+import { FormGroup, Label, Input } from 'reactstrap';
 import { NavLink } from 'reactstrap';
 import InfoToast from './info';
 
@@ -46,7 +46,7 @@ class Password extends Component {
                     <FormGroup>
                         <Label>Password</Label>
                         <Input
-                            type="text"
+                            type="password"
                             name='password'
                             onChange={this.passwordChange}
                             placeholder="Str0ngPa55%"
@@ -151,26 +151,18 @@ class Login extends Component {
     });
 
     render() {
-        if (sessionStorage.getItem('isLogged') === true) {
-            return (
-                <div className='row col-md-6 m-auto'>
-                    <SignUpBtn />
-                </div>
-            )
-        }
-        else {
-            return (
-                <div className='row col-md-6 m-auto'>
-                    <InfoToast isShow={this.state.isShow} message={this.state.message} onClick={this.handleToast} />
-                    <form onSubmit={this.handleSubmit}>
-                        <Email onChange={this.handleChange} />
-                        <Password onChange={this.handleChange} />
-                        <SignInBtn />
-                    </form>
-                    <SignUpBtn />
-                </div>
-            )
-        }
+        return (
+            <div className='row col-md-6 m-auto'>
+                <InfoToast isShow={this.state.isShow} message={this.state.message} onClick={this.handleToast} />
+                <form onSubmit={this.handleSubmit}>
+                    <Email onChange={this.handleChange} />
+                    <Password onChange={this.handleChange} />
+                    <SignInBtn />
+                </form>
+                <SignUpBtn />
+            </div>
+        )
+
     }
 }
 

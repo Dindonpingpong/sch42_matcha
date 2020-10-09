@@ -8,9 +8,35 @@ import {
 } from 'reactstrap';
 
 class Header extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+
+        }
+    }
+
+    inOut = () => {
+        const isLogged = sessionStorage.getItem('isLogged');
+        const location = window.location.pathname;
+        const name = isLogged === 'true' ? 'Out' : 'In';
+
+        if (location === '/login')
+            return
+
+        return (
+            <NavItem>
+                <NavLink
+                    href='/login'
+                    onClick={ () => sessionStorage.setItem('isLogged', false) }
+                >
+                    {name}
+                </NavLink>
+            </NavItem>
+        )
+    }
 
     render() {
-        const test = true;
 
         return (
             <Navbar color="light" light expand="xs">
@@ -21,11 +47,9 @@ class Header extends Component {
                             <NavLink href="/people">People</NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="https://github.com/reactstrap/reactstrap" disabled={test}>GitHub</NavLink>
+                            <NavLink href="https://github.com/reactstrap/reactstrap" disabled={true}>GitHub</NavLink>
                         </NavItem>
-                        <NavItem>
-                            <NavLink href="/components/">Out</NavLink>
-                        </NavItem>
+                        {this.inOut()}
                     </Nav>
                 </div>
             </Navbar>

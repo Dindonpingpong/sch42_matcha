@@ -226,6 +226,9 @@ class Password extends Component {
     render() {
         const { passwordInvalid, passwordValid, repasswordInvalid, repasswordValid } = this.state;
 
+        if (sessionStorage.getItem('isLogged') === 'true')
+            history.push('/login')
+
         return (
             <div className="form-row col-12">
                 <div className="col-md-6">
@@ -326,22 +329,18 @@ class Sign extends Component {
             )  
     }
 
-    handleChange = (name, value) => { this.setState({ [name]: value }); }
+    handleChange = (name, value) => { this.setState({ [name]: value }) };
 
-    handleToast = () => this.setState({ isShow: false });
+    handleToast = () => { this.setState({ isShow: false }) };
 
     checkBtn = () => {
         const countValidInputs = document.querySelectorAll(".is-valid").length;
         const countInvalidInputs = document.querySelectorAll(".is-invalid").length;
 
         if (countValidInputs === 5 && countInvalidInputs === 0)
-            this.setState({
-                isActiveBtn: false
-            })
+            this.setState({ isActiveBtn: false });
         else
-            this.setState({
-                isActiveBtn: true
-            })
+            this.setState({ isActiveBtn: true });
     }
 
     render() {

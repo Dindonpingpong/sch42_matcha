@@ -9,7 +9,6 @@ import history from './history';
 
 sessionStorage.setItem('isLogged', false);
 
-
 class App extends Component {
     render() {
         return (
@@ -17,7 +16,7 @@ class App extends Component {
                 <Header />
                 <div className='container p-5'>
                     <Switch>
-                        <Route exact={true} path='/' component={Login} />
+                        <Route exact={true} path='/login' component={Login} />
                         <Route path='/register' component={Sign} />
                         <Route component={NotFound} />
                     </Switch>
