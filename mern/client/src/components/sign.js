@@ -3,6 +3,7 @@ import InfoToast from './info';
 import { FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
 import history from '../history';
 import { isValidName, isValidEmail, isValidPassword } from '../util/check';
+import { request } from '../util/http';
 
 class Name extends Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class Name extends Component {
 
         this.setState({
             [name]: true,
-            [oppName]: false
+            [oppName]: ''
         })
     }
 
@@ -56,6 +57,7 @@ class Name extends Component {
                             type="text"
                             name='lastName'
                             onChange={this.nameChange}
+                            onBlur={() => this.props.onBlur()}
                             placeholder="Ng"
                             required
                             invalid={lastNameInvalid}
@@ -71,6 +73,7 @@ class Name extends Component {
                             type="text"
                             name='firstName'
                             onChange={this.nameChange}
+                            onBlur={() => this.props.onBlur()}
                             placeholder="Duong"
                             required
                             invalid={firstNameInvalid}
@@ -89,7 +92,8 @@ class Email extends Component {
         super(props);
         this.state = {
             emailInvalid: false,
-            emailValid: false
+            emailValid: false,
+            feedback: ''
         }
 
         // this.emailChange = this.emailChange.bind(this);
@@ -109,19 +113,44 @@ class Email extends Component {
         });
     }
 
+    checkExist = (name, value) => {
+        request("api/user/register/check/" + value)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (result.error === true) {
+                        this.toggle(name, 'Invalid');
+                        this.setState({ feedback: 'Email is already taken' })
+                    }
+                },
+                (error) => {
+                    this.setState({
+                        isShow: true,
+                        message: error,
+                        icon: "danger"
+                    });
+                }
+            )  
+    }
+
     emailChange = (e) => {
         const { name, value } = e.target;
 
-        if (isValidEmail(value) === true)
+        if (isValidEmail(value) === true) {
             this.toggle(name, 'Valid');
-        else
+            this.checkExist(name, value);
+        }
+
+        else {
             this.toggle(name, 'Invalid');
+            this.setState({ feedback: 'Invalid email' })
+        }
 
         this.props.onChange(e.target.name, e.target.value);
     };
 
     render() {
-        const { emailInvalid, emailValid } = this.state;
+        const { emailInvalid, emailValid, feedback } = this.state;
 
         return (
             <div className="form-row col-12">
@@ -132,12 +161,13 @@ class Email extends Component {
                             type="text"
                             name='email'
                             onChange={this.emailChange}
+                            onBlur={() => this.props.onBlur()}
                             placeholder="rkina7@gmail.com"
                             required
                             invalid={emailInvalid}
                             valid={emailValid}
                         />
-                        <FormFeedback>Incorrect email</FormFeedback>
+                        <FormFeedback>{feedback}</FormFeedback>
                     </FormGroup>
                 </div>
             </div>
@@ -176,6 +206,8 @@ class Password extends Component {
         const { name, value } = e.target;
 
         if (name === 'password') {
+            this.props.onChange(name, value);
+
             if (isValidPassword(value) === true)
                 this.toggle(name, 'Valid')
             else
@@ -189,8 +221,6 @@ class Password extends Component {
             else
                 this.toggle(name, 'Invalid')
         }
-
-        this.props.onChange(name, value);
     };
 
     render() {
@@ -206,6 +236,7 @@ class Password extends Component {
                             type="password"
                             name='password'
                             onChange={this.passChange}
+                            onBlur={() => this.props.onBlur()}
                             placeholder="Str0ngPa55%"
                             required
                             invalid={passwordInvalid}
@@ -221,6 +252,7 @@ class Password extends Component {
                             type="password"
                             name='repassword'
                             onChange={this.passChange}
+                            onBlur={() => this.props.onBlur()}
                             placeholder="Str0ngPa55%"
                             required
                             invalid={repasswordInvalid}
@@ -254,8 +286,7 @@ class Sign extends Component {
             lastName: '',
             firstName: '',
             email: '',
-            password: '',
-            repassword: ''
+            password: ''
         };
 
         // Без этого работает, но в документации сказано, что не будет
@@ -274,13 +305,7 @@ class Sign extends Component {
             password: password
         }
 
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data)
-        };
-
-        fetch("api/user/register", requestOptions)
+        request("api/user/register", data, 'POST')
             .then(res => res.json())
             .then(
                 (result) => {
@@ -298,33 +323,25 @@ class Sign extends Component {
                         icon: "danger"
                     });
                 }
-            )
+            )  
     }
 
-    handleChange = (name, value) => {
-        this.setState({ [name]: value });
-        this.checkBtn();
-    }
+    handleChange = (name, value) => { this.setState({ [name]: value }); }
 
-    handleToast = () => this.setState({
-        isShow: false
-    });
+    handleToast = () => this.setState({ isShow: false });
 
     checkBtn = () => {
         const countValidInputs = document.querySelectorAll(".is-valid").length;
         const countInvalidInputs = document.querySelectorAll(".is-invalid").length;
 
-        console.log(countValidInputs)
-        if (countValidInputs === 3 && countInvalidInputs === 0) {
+        if (countValidInputs === 5 && countInvalidInputs === 0)
             this.setState({
                 isActiveBtn: false
             })
-        }
-        else {
+        else
             this.setState({
                 isActiveBtn: true
             })
-        }
     }
 
     render() {
@@ -334,10 +351,10 @@ class Sign extends Component {
             <div className='row col-md-8 m-auto'>
                 <InfoToast isShow={isShow} icon={icon} message={message} onClick={this.handleToast} />
                 <form onSubmit={this.handleSubmit}>
-                    <Name onChange={this.handleChange} />
-                    <Email onChange={this.handleChange} />
-                    <Password onChange={this.handleChange} />
-                    <SignUpBtn isActiveBtn={isActiveBtn} />
+                    <Name onChange={this.handleChange} onBlur={this.checkBtn} />
+                    <Email onChange={this.handleChange} onBlur={this.checkBtn} />
+                    <Password onChange={this.handleChange} onBlur={this.checkBtn} />
+                    <SignUpBtn isActiveBtn={isActiveBtn} onBlur={this.checkBtn} />
                 </form>
             </div>
         )

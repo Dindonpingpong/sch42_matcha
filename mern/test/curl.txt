@@ -4,3 +4,6 @@ curl -X POST -H 'Content-Type: application/json' -d '{"lastName":"GGDGD","firstN
 
 log in
 curl -X POST -H 'Content-Type: application/json' -d '{"email":"rkina@mail.ru", "password": "123fdasfsa"}' http://localhost:5000/api/user/login
+
+get email
+curl "http://localhost:5000/api/user/register/check/rkinfdsaa@mail.ru"
