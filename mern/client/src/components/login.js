@@ -129,7 +129,6 @@ class Login extends Component {
                         message: result.message,
                         icon: "success"
                     });
-                    // if (result.error === false)
                     sessionStorage.setItem('isLogged', true);
                 },
                 (error) => {

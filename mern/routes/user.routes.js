@@ -2,6 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getEmail } = require('../models/user');
 const bcrypt = require('bcrypt');
+const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
     try {
@@ -80,6 +81,7 @@ router.post('/register', async (req, res) => {
                     message: data.id,
                     error: false
                 })
+                // sendMail(email, )
             })
 
     } catch (e) {

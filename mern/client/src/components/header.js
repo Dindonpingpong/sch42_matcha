@@ -37,7 +37,6 @@ class Header extends Component {
     }
 
     render() {
-
         return (
             <Navbar color="light" light expand="xs">
                 <div className="container">

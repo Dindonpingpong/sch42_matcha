@@ -5,9 +5,8 @@ import Login from './components/login';
 import Sign from './components/sign';
 import NotFound from './components/notFound';
 import Header from './components/header';
+import People from './components/people';
 import history from './history';
-
-sessionStorage.setItem('isLogged', false);
 
 class App extends Component {
     render() {
@@ -16,8 +15,9 @@ class App extends Component {
                 <Header />
                 <div className='container p-5'>
                     <Switch>
-                        <Route exact={true} path='/login' component={Login} />
+                        <Route path='/login' component={Login} />
                         <Route path='/register' component={Sign} />
+                        <Route exact={true} path='/' component={People} />
                         <Route component={NotFound} />
                     </Switch>
                 </div>
