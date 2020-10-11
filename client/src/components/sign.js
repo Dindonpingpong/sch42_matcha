@@ -1,93 +1,69 @@
 import React, { Component } from 'react';
 import InfoToast from './info';
-import { FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
+import { Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
 import history from '../history';
 import { isValidName, isValidEmail, isValidPassword } from '../util/check';
 import { request } from '../util/http';
 
-class Name extends Component {
+class NameInputForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            lastNameInvalid: false,
-            lastNameValid: false,
-            firstNameInvalid: false,
-            firstNameValid: false,
+            Invalid: false,
+            Valid: false,
         }
 
         // this.nameChange = this.nameChange.bind(this);
     }
 
-    toggle = (name, status) => {
+    toggle = (status) => {
         let oppStatus;
 
         if (status === 'Valid')
             oppStatus = 'Invalid';
 
-        const oppName = name + oppStatus;
-        name = name + status;
-
         this.setState({
-            [name]: true,
-            [oppName]: ''
+            [status]: true,
+            [oppStatus]: ''
         })
     }
 
     nameChange = (e) => {
         const { name, value } = e.target;
 
-
         if (isValidName(value) === true)
-            this.toggle(name, 'Valid');
+            this.toggle('Valid');
         else
-            this.toggle(name, 'Invalid');
+            this.toggle('Invalid');
 
         this.props.onChange(name, value);
     };
 
     render() {
-        const { lastNameInvalid, lastNameValid, firstNameInvalid, firstNameValid } = this.state;
+        const { Invalid, Valid } = this.state;
 
         return (
-            <div className="form-row col-12">
-                <div className="col-md-6">
-                    <FormGroup>
-                        <Label>Last name</Label>
-                        <Input
-                            type="text"
-                            name='lastName'
-                            onChange={this.nameChange}
-                            onBlur={() => this.props.onBlur()}
-                            placeholder="Ng"
-                            required
-                            invalid={lastNameInvalid}
-                            valid={lastNameValid}
-                        />
-                        <FormFeedback>Only symbols are required</FormFeedback>
-                    </FormGroup>
-                </div>
-                <div className="col-md-6">
-                    <FormGroup>
-                        <Label>First name</Label>
-                        <Input
-                            type="text"
-                            name='firstName'
-                            onChange={this.nameChange}
-                            onBlur={() => this.props.onBlur()}
-                            placeholder="Duong"
-                            required
-                            invalid={firstNameInvalid}
-                            valid={firstNameValid}
-                        />
-                        <FormFeedback>Only symbols are required</FormFeedback>
-                    </FormGroup>
-                </div>
-            </div>
+            <Col sm={6}>
+                <FormGroup>
+                    <Label>{this.props.labelName}</Label>
+                    <Input
+                        type="text"
+                        name={this.props.name}
+                        onChange={this.nameChange}
+                        onBlur={() => this.props.onBlur()}
+                        placeholder={this.props.placeholder}
+                        required
+                        invalid={Invalid}
+                        valid={Valid}
+                    />
+                    <FormFeedback>Only symbols are required</FormFeedback>
+                </FormGroup>
+            </Col>
         )
     }
 }
 
-class Email extends Component {
+class LoginName extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -130,7 +106,7 @@ class Email extends Component {
                         icon: "danger"
                     });
                 }
-            )  
+            )
     }
 
     emailChange = (e) => {
@@ -153,8 +129,8 @@ class Email extends Component {
         const { emailInvalid, emailValid, feedback } = this.state;
 
         return (
-            <div className="form-row col-12">
-                <div className="col-12">
+            <Row>
+                <Col sm={6}>
                     <FormGroup>
                         <Label>Email</Label>
                         <Input
@@ -169,8 +145,97 @@ class Email extends Component {
                         />
                         <FormFeedback>{feedback}</FormFeedback>
                     </FormGroup>
-                </div>
-            </div>
+                </Col>
+            </Row>
+        )
+    }
+}
+
+class Email extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            emailInvalid: false,
+            emailValid: false,
+            feedback: ''
+        }
+
+        // this.emailChange = this.emailChange.bind(this);
+    }
+
+    toggle = (name, status) => {
+        let oppStatus;
+        
+        if (status === 'Valid')
+            oppStatus = 'Invalid';
+
+        const oppName = name + oppStatus;
+        name = name + status;
+
+        this.setState({
+            [name]: true,
+            [oppName]: false
+        });
+    }
+
+    checkExist = (name, value) => {
+        request("api/user/register/check/" + value)
+            .then(res => res.json())
+            .then(
+                (result) => {
+                    if (result.error === true) {
+                        this.toggle(name, 'Invalid');
+                        this.setState({ feedback: 'Email is already taken' })
+                    }
+                },
+                (error) => {
+                    this.setState({
+                        isShow: true,
+                        message: error,
+                        icon: "danger"
+                    });
+                }
+            )
+    }
+
+    emailChange = (e) => {
+        const { name, value } = e.target;
+
+        if (isValidEmail(value) === true) {
+            this.toggle(name, 'Valid');
+            this.checkExist(name, value);
+        }
+
+        else {
+            this.toggle(name, 'Invalid');
+            this.setState({ feedback: 'Invalid email' })
+        }
+
+        this.props.onChange(e.target.name, e.target.value);
+    };
+
+    render() {
+        const { emailInvalid, emailValid, feedback } = this.state;
+
+        return (
+            <Row>
+                <Col sm={6}>
+                    <FormGroup>
+                        <Label>Email</Label>
+                        <Input
+                            type="text"
+                            name='email'
+                            onChange={this.emailChange}
+                            onBlur={() => this.props.onBlur()}
+                            placeholder="rkina7@gmail.com"
+                            required
+                            invalid={emailInvalid}
+                            valid={emailValid}
+                        />
+                        <FormFeedback>{feedback}</FormFeedback>
+                    </FormGroup>
+                </Col>
+            </Row>
         )
     }
 }
@@ -230,8 +295,8 @@ class Password extends Component {
             history.push('/login')
 
         return (
-            <div className="form-row col-12">
-                <div className="col-md-6">
+            <Row>
+                <Col sm={6}>
                     <FormGroup>
                         <Label>Password</Label>
                         <Input
@@ -247,8 +312,8 @@ class Password extends Component {
                         />
                         <FormFeedback>Too weak password. 8 symbols is required</FormFeedback>
                     </FormGroup>
-                </div>
-                <div className="col-md-6">
+                </Col>
+                <Col sm={6}>
                     <FormGroup>
                         <Label>Re-Password</Label>
                         <Input
@@ -263,8 +328,8 @@ class Password extends Component {
                         />
                         <FormFeedback>Password doesn't match</FormFeedback>
                     </FormGroup>
-                </div>
-            </div>
+                </Col>
+            </Row>
         )
     }
 }
@@ -273,9 +338,9 @@ class SignUpBtn extends Component {
 
     render() {
         return (
-            <div className="col-12 mt-3">
+            <Col>
                 <Button className="btn btn" color="primary" type="submit" disabled={this.props.isActiveBtn} >Sign Up</Button>
-            </div>
+            </Col>
         )
     }
 }
@@ -326,7 +391,7 @@ class Sign extends Component {
                         icon: "danger"
                     });
                 }
-            )  
+            )
     }
 
     handleChange = (name, value) => { this.setState({ [name]: value }) };
@@ -347,15 +412,21 @@ class Sign extends Component {
         const { isActiveBtn, isShow, icon, message } = this.state;
 
         return (
-            <div className='row col-md-8 m-auto'>
-                <InfoToast isShow={isShow} icon={icon} message={message} onClick={this.handleToast} />
-                <form onSubmit={this.handleSubmit}>
-                    <Name onChange={this.handleChange} onBlur={this.checkBtn} />
-                    <Email onChange={this.handleChange} onBlur={this.checkBtn} />
-                    <Password onChange={this.handleChange} onBlur={this.checkBtn} />
-                    <SignUpBtn isActiveBtn={isActiveBtn} onBlur={this.checkBtn} />
-                </form>
-            </div>
+            <Row>
+                <Col md={8} className="m-auto">
+                    <InfoToast isShow={isShow} icon={icon} message={message} onClick={this.handleToast} />
+                    <form onSubmit={this.handleSubmit}>
+                        <Row>
+                            <NameInputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='Last name' name='lastName' placeholder='Ng' />
+                            <NameInputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='First name' name='firstName' placeholder='Duong' />
+                        </Row>
+                        <Email onChange={this.handleChange} onBlur={this.checkBtn} />
+                        <LoginName onChange={this.handleChange} onBlur={this.checkBtn} />
+                        <Password onChange={this.handleChange} onBlur={this.checkBtn} />
+                        <SignUpBtn isActiveBtn={isActiveBtn} onBlur={this.checkBtn} />
+                    </form>
+                </Col>
+            </Row>
         )
     }
 }
