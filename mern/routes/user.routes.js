@@ -51,7 +51,6 @@ router.get('/register/check/:email', async (req, res) => {
                         error: false
                     })
             })
-
     } catch (e) {
         res.status(500).json({
             message: e.message,

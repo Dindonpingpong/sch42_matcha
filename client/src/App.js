@@ -5,7 +5,7 @@ import Login from './components/login';
 import Sign from './components/sign';
 import NotFound from './components/notFound';
 import Header from './components/header';
-import People from './components/people';
+import Users from './components/users';
 import history from './history';
 
 class App extends Component {
@@ -17,7 +17,7 @@ class App extends Component {
                     <Switch>
                         <Route path='/login' component={Login} />
                         <Route path='/register' component={Sign} />
-                        <Route exact={true} path='/' component={People} />
+                        <Route exact={true} path='/' component={Users} />
                         <Route component={NotFound} />
                     </Switch>
                 </div>

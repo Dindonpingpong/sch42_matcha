@@ -43,7 +43,7 @@ class Header extends Component {
                     <NavbarBrand href="/">Matcha</NavbarBrand>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
-                            <NavLink href="/people">People</NavLink>
+                            <NavLink href="/">Users</NavLink>
                         </NavItem>
                         <NavItem>
                             <NavLink href="https://github.com/reactstrap/reactstrap" disabled={true}>GitHub</NavLink>
