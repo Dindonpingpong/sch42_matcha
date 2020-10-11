@@ -1,0 +1,6 @@
+{
+    "port": 5000,
+    "urlDb": "postgres://rkina:wwq@localhost:5432/rkina",
+    "email": "no.reply.matcha.rm@gmail.com",
+    "emailPass": "Macho123"
+}

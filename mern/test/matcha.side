@@ -1,0 +1,118 @@
+{
+  "id": "2215ce31-24b7-4fcd-bbf5-a1c451a8cf20",
+  "version": "2.0",
+  "name": "matcha",
+  "url": "http://localhost:3000/register",
+  "tests": [{
+    "id": "2bb567d7-8a22-4c75-99e6-4d99e2fa7076",
+    "name": "Untitled",
+    "commands": []
+  }, {
+    "id": "f8027467-d29d-4c9c-a658-46793860d2a4",
+    "name": "register",
+    "commands": [{
+      "id": "5df7e791-5d87-4bc9-aaa4-ca4299633afe",
+      "comment": "",
+      "command": "open",
+      "target": "http://localhost:3000/register",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9579e5a2-f5e0-4eab-b529-9b9bf1b8108e",
+      "comment": "",
+      "command": "setWindowSize",
+      "target": "1632x1336",
+      "targets": [],
+      "value": ""
+    }, {
+      "id": "9cebc923-6aa2-4339-a212-70bccae1d409",
+      "comment": "",
+      "command": "click",
+      "target": "name=lastName",
+      "targets": [
+        ["name=lastName", "name"],
+        ["css=.form-row:nth-child(1) > .col-md-6:nth-child(1) .form-control", "css:finder"],
+        ["xpath=//input[@name='lastName']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": ""
+    }, {
+      "id": "bfb42e9e-b65a-4ad9-8924-429a3efb25c1",
+      "comment": "",
+      "command": "type",
+      "target": "name=lastName",
+      "targets": [
+        ["name=lastName", "name"],
+        ["css=.is-valid", "css:finder"],
+        ["xpath=//input[@name='lastName']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div/div/div/input", "xpath:idRelative"],
+        ["xpath=//input", "xpath:position"]
+      ],
+      "value": "Dima"
+    }, {
+      "id": "1f959de4-62ee-4e52-b3ff-33d040262718",
+      "comment": "",
+      "command": "type",
+      "target": "name=firstName",
+      "targets": [
+        ["name=firstName", "name"],
+        ["css=.col-md-6:nth-child(2) .is-valid", "css:finder"],
+        ["xpath=//input[@name='firstName']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/input", "xpath:position"]
+      ],
+      "value": "Ng"
+    }, {
+      "id": "7d2360bc-d5d4-458d-8f78-62f35b9effb2",
+      "comment": "",
+      "command": "type",
+      "target": "name=email",
+      "targets": [
+        ["name=email", "name"],
+        ["css=.col-12 > .form-group > .is-valid", "css:finder"],
+        ["xpath=//input[@name='email']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div[2]/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[2]/div/div/input", "xpath:position"]
+      ],
+      "value": "rkina@mail.ru"
+    }, {
+      "id": "50c2d739-e977-4058-ae98-a99e61b0d7f0",
+      "comment": "",
+      "command": "type",
+      "target": "id=1",
+      "targets": [
+        ["id=1", "id"],
+        ["name=password", "name"],
+        ["css=#\\31", "css:finder"],
+        ["xpath=//input[@id='1']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div[3]/div/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div/div/input", "xpath:position"]
+      ],
+      "value": "12345678"
+    }, {
+      "id": "fff2f7a6-21fb-47a6-9db6-21372ee13a81",
+      "comment": "",
+      "command": "type",
+      "target": "name=repassword",
+      "targets": [
+        ["name=repassword", "name"],
+        ["css=.form-row:nth-child(3) > .col-md-6:nth-child(2) .is-valid", "css:finder"],
+        ["xpath=//input[@name='repassword']", "xpath:attributes"],
+        ["xpath=//div[@id='root']/div/div/form/div[3]/div[2]/div/input", "xpath:idRelative"],
+        ["xpath=//div[3]/div[2]/div/input", "xpath:position"]
+      ],
+      "value": "12345678"
+    }]
+  }],
+  "suites": [{
+    "id": "79ba6360-d10b-4f9e-be3d-622bb9630dbd",
+    "name": "Default Suite",
+    "persistSession": false,
+    "parallel": false,
+    "timeout": 300,
+    "tests": ["2bb567d7-8a22-4c75-99e6-4d99e2fa7076"]
+  }],
+  "urls": ["http://localhost:3000/register"],
+  "plugins": []
+}
