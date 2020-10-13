@@ -15,7 +15,7 @@ CREATE TABLE  Users (
     firstName text NOT NULL,
     lastName text NOT NULL,
     email text DEFAULT NULL,
-    dateBirth timestamp NOT NULL,
+    dateBirth date NOT NULL,
     password text NOT NULL,
     confirm boolean DEFAULT FALSE,
     sexPreferences preferences DEFAULT 'bisexual', 
@@ -60,4 +60,40 @@ CREATE TABLE Chat (
     FOREIGN KEY (idTo) REFERENCES Users (id)
 );
 
--- INSERT INTO Users (nickName, firstName, lastName, email, )
+INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, password, location) VALUES
+    ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('mgrass', 'nya', 'milk', 'nyamilk@yandex.ru', '1990-12-26', '$2b$10$9jPn1ZpuXtOCA3dmO4gkeuj5749pfppkjd4jb.jbKKrrZ38S08rLu' , ARRAY['Russia','Moscow','Podolsk']),
+    ('kusmene', 'kus', 'mene', 'kus@mene.ru', '1995-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test4', 'test4', 'test4', 'test4@test4.ru', '1990-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test5', 'test5', 'test5', 'test5@test5.ru', '1985-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test6', 'test6', 'test6', 'test6@test6.ru', '1980-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']);
+
+UPDATE Users SET sexPreferences = 'heterosexual' WHERE id IN (1, 2, 4);
+UPDATE Users SET sexPreferences = 'homosexual' WHERE id IN (3, 5, 6);
+
+UPDATE Users SET confirm = true WHERE id IN (1, 2, 3, 5, 7);
+
+UPDATE Users SET sex = 'male' WHERE id IN (1, 3, 4);
+UPDATE Users SET sex = 'female' WHERE id IN (2, 6, 7);
+
+UPDATE Users SET about = 'About me... test...' WHERE id IN (1, 2, 5);
+
+UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg'] WHERE id IN (1, 5);
+UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg'] WHERE id IN (2);
+
+INSERT INTO Connections (idFrom, idTo, status) VALUES
+    ('4', '6', 'like'),
+    ('6', '4', 'like'),
+    ('5', '7', 'ignore'),
+    ('5', '6', 'like'),
+    ('8', '7', 'like'),
+    ('7', '6', 'like');
+
+INSERT INTO History (idVisitor, idVisited) VALUES
+    ('4', '5'),
+    ('4', '6'),
+    ('5', '7'),
+    ('6', '7'),
+    ('7', '8');

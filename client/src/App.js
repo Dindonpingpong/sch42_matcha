@@ -19,7 +19,7 @@ class App extends Component {
                         <Route path='/login' component={Login} />
                         <Route path='/register' component={Sign} />
                         <Route exact={true} path='/users' component={Users} />
-                        <Route path='/user/:id' component={Profile} />
+                        <Route path='/users/:id' component={Profile} />
                         <Route component={NotFound} />
                     </Switch>
                 </div>

@@ -7,8 +7,8 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-
-        request('api/user/check/' + this.props.match.params.id)
+        // this.props.match.params.id
+        request('api/user/check/' + 'teste')
             .then(res => res.json())
             .then(res => console.log(res))
             .catch(err => console.log(err))

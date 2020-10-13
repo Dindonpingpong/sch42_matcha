@@ -30,18 +30,7 @@ class InputForm extends Component {
 
     nameChange = (e) => {
         const { name, value } = e.target;
-        let tmp = value.split('-');
-        console.log(tmp)
-        let birthday = new Date(tmp[0], tmp[1] - 1, tmp[2]);
-        console.log(birthday);
-        console.log(Date.now())
-        let ageDiffMs = Date.now() - birthday.getTime();
-        console.log(ageDiffMs);
-        let ageTime = new Date(ageDiffMs);
-        console.log(ageTime)
-        let age = Math.floor(ageDiffMs/ 3.15576e+10);
 
-        console.log(age);
         if (isValidInput(name, value))
             this.toggle('Valid');
         else
@@ -341,7 +330,7 @@ class Sign extends Component {
                         <InputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='Date birth' name='birthDate' type='date' feedback='You too young for this'/>
                         <InputFormWithFetch onChange={this.handleChange} onBlur={this.checkBtn} labelName='Email' placeholder='rkina@mail.ru'/>
                         <InputFormWithFetch onChange={this.handleChange} onBlur={this.checkBtn} labelName='Login' placeholder='rkina7'/>
-                        <Password onChange={this.handleChange} onBlur={this.checkBtn} />
+                        {/* <Password onChange={this.handleChange} onBlur={this.checkBtn} /> */}
                         <SignUpBtn isActiveBtn={isActiveBtn} onBlur={this.checkBtn} />
                     </form>
                 </Col>

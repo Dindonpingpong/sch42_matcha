@@ -119,8 +119,6 @@ router.post('/register', async (req, res) => {
 router.get('/check/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
 
         getProfile(nickname)
             .then(data => {
