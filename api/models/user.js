@@ -16,14 +16,13 @@ const getPassword = (email) => {
 };
 
 const getEmail = (email) => {
-  const sql = 'SELECT user_id FROM Users WHERE email=$1';
+  const sql = 'SELECT id FROM Users WHERE email=$1';
 
   return db.any(sql, email);
 }
 
 const getProfile = (nickname) => {
-  const sql = 'SELECT firstname, lastname, sex, about FROM Users WHERE firstname=$1';
-  // const sql = 'SELECT firstname, lastname, nickname, age, sex, orientation, about, location FROM Users WHERE nickname=$1';
+  const sql = 'SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
 
   return db.any(sql, nickname);
 }

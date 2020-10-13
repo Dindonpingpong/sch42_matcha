@@ -99,7 +99,7 @@ class InputFormWithFetch extends Component {
     }
 
     checkExist = (name, value) => {
-        request("api/user/register/check/" + name + value)
+        request("/api/user/register/check/" + name + value)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -341,7 +341,7 @@ class Sign extends Component {
                         <InputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='Date birth' name='birthDate' type='date' feedback='You too young for this'/>
                         <InputFormWithFetch onChange={this.handleChange} onBlur={this.checkBtn} labelName='Email' placeholder='rkina@mail.ru'/>
                         <InputFormWithFetch onChange={this.handleChange} onBlur={this.checkBtn} labelName='Login' placeholder='rkina7'/>
-                        <Password onChange={this.handleChange} onBlur={this.checkBtn} />
+                        {/* <Password onChange={this.handleChange} onBlur={this.checkBtn} /> */}
                         <SignUpBtn isActiveBtn={isActiveBtn} onBlur={this.checkBtn} />
                     </form>
                 </Col>

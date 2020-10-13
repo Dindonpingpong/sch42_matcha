@@ -8,4 +8,4 @@ curl -X POST -H 'Content-Type: application/json' -d '{"email":"rkina@mail.ru", "
 get email
 curl "http://localhost:5000/api/user/register/check/rkinfdsaa@mail.ru"
 curl "http://localhost:5000/api/user/profile/Rt"
-curl "http://localhost:5000/api/user/profile/mgrass"
+curl "http://localhost:5000/api/user/mgrass"

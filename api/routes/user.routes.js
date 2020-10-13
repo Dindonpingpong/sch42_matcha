@@ -92,13 +92,14 @@ router.post('/register', async (req, res) => {
     }
 })
 
-// router.get('/users/:nickname', async (req, res) => {
-router.get('/users/:nickname', async (req, res) => {
+router.get('/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
 
+        console.log(nickname);
         getProfile(nickname)
             .then(data => {
+                console.log(data);
                 if (data.length > 0)
                     res.status(200).json({
                         result: data[0],
