@@ -61,17 +61,18 @@ router.get('/register/check/:email', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
-        const { firstName, lastName, email, password } = req.body;
+        const { nickName, firstName, lastName, email, password, date } = req.body;
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
 
         const params = [
+            nickName,
             firstName,
             lastName,
             email,
             hash,
-            'fell in love'
+            date
         ];
 
         sign(params)
@@ -91,7 +92,8 @@ router.post('/register', async (req, res) => {
     }
 })
 
-router.get('/profile/:nickname', async (req, res) => {
+// router.get('/users/:nickname', async (req, res) => {
+router.get('/users/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
 

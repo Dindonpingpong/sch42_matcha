@@ -4,7 +4,7 @@ const pgp = require('pg-promise')();
 const db = pgp(connector);
 
 const sign = (params) => {
-  const sql = 'INSERT INTO Users (firstName, lastName, email, password, about) VALUES ($1, $2, $3, $4, $5) RETURNING user_id';
+  const sql = 'INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id';
 
   return db.one(sql, params);
 };

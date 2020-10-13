@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import InfoToast from './info';
 import { Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
 import history from '../history';
-import { isValidName, isValidEmail, isValidPassword } from '../util/check';
+import { isValidInput, isValidPassword } from '../util/check';
 import { request } from '../util/http';
 
-class NameInputForm extends Component {
+class InputForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -30,8 +30,19 @@ class NameInputForm extends Component {
 
     nameChange = (e) => {
         const { name, value } = e.target;
+        let tmp = value.split('-');
+        console.log(tmp)
+        let birthday = new Date(tmp[0], tmp[1] - 1, tmp[2]);
+        console.log(birthday);
+        console.log(Date.now())
+        let ageDiffMs = Date.now() - birthday.getTime();
+        console.log(ageDiffMs);
+        let ageTime = new Date(ageDiffMs);
+        console.log(ageTime)
+        let age = Math.floor(ageDiffMs/ 3.15576e+10);
 
-        if (isValidName(value) === true)
+        console.log(age);
+        if (isValidInput(name, value))
             this.toggle('Valid');
         else
             this.toggle('Invalid');
@@ -47,7 +58,7 @@ class NameInputForm extends Component {
                 <FormGroup>
                     <Label>{this.props.labelName}</Label>
                     <Input
-                        type="text"
+                        type={this.props.type}
                         name={this.props.name}
                         onChange={this.nameChange}
                         onBlur={() => this.props.onBlur()}
@@ -56,47 +67,45 @@ class NameInputForm extends Component {
                         invalid={Invalid}
                         valid={Valid}
                     />
-                    <FormFeedback>Only symbols are required</FormFeedback>
+                    <FormFeedback>{this.props.feedback}</FormFeedback>
                 </FormGroup>
             </Col>
         )
     }
 }
 
-class LoginName extends Component {
+class InputFormWithFetch extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            emailInvalid: false,
-            emailValid: false,
+            Invalid: false,
+            Valid: false,
             feedback: ''
         }
 
         // this.emailChange = this.emailChange.bind(this);
     }
 
-    toggle = (name, status) => {
+    toggle = (status) => {
         let oppStatus;
+
         if (status === 'Valid')
             oppStatus = 'Invalid';
 
-        const oppName = name + oppStatus;
-        name = name + status;
-
         this.setState({
-            [name]: true,
-            [oppName]: false
-        });
+            [status]: true,
+            [oppStatus]: ''
+        })
     }
 
     checkExist = (name, value) => {
-        request("api/user/register/check/" + value)
+        request("api/user/register/check/" + name + value)
             .then(res => res.json())
             .then(
                 (result) => {
                     if (result.error === true) {
-                        this.toggle(name, 'Invalid');
-                        this.setState({ feedback: 'Email is already taken' })
+                        this.toggle('Invalid');
+                        this.setState({ feedback: name + 'is taken' })
                     }
                 },
                 (error) => {
@@ -111,126 +120,36 @@ class LoginName extends Component {
 
     emailChange = (e) => {
         const { name, value } = e.target;
-
-        if (isValidEmail(value) === true) {
-            this.toggle(name, 'Valid');
+        if (isValidInput(name, value) === true) {
+            this.toggle('Valid');
             this.checkExist(name, value);
         }
 
         else {
-            this.toggle(name, 'Invalid');
-            this.setState({ feedback: 'Invalid email' })
+            this.toggle('Invalid');
+            this.setState({ feedback: name + ' is invalid' })
         }
 
         this.props.onChange(e.target.name, e.target.value);
     };
 
     render() {
-        const { emailInvalid, emailValid, feedback } = this.state;
+        const { Invalid, Valid, feedback } = this.state;
 
         return (
             <Row>
                 <Col sm={6}>
                     <FormGroup>
-                        <Label>Email</Label>
+                        <Label>{this.props.labelName}</Label>
                         <Input
                             type="text"
-                            name='email'
+                            name={this.props.labelName}
                             onChange={this.emailChange}
                             onBlur={() => this.props.onBlur()}
-                            placeholder="rkina7@gmail.com"
+                            placeholder={this.props.placeholder}
                             required
-                            invalid={emailInvalid}
-                            valid={emailValid}
-                        />
-                        <FormFeedback>{feedback}</FormFeedback>
-                    </FormGroup>
-                </Col>
-            </Row>
-        )
-    }
-}
-
-class Email extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            emailInvalid: false,
-            emailValid: false,
-            feedback: ''
-        }
-
-        // this.emailChange = this.emailChange.bind(this);
-    }
-
-    toggle = (name, status) => {
-        let oppStatus;
-        
-        if (status === 'Valid')
-            oppStatus = 'Invalid';
-
-        const oppName = name + oppStatus;
-        name = name + status;
-
-        this.setState({
-            [name]: true,
-            [oppName]: false
-        });
-    }
-
-    checkExist = (name, value) => {
-        request("api/user/register/check/" + value)
-            .then(res => res.json())
-            .then(
-                (result) => {
-                    if (result.error === true) {
-                        this.toggle(name, 'Invalid');
-                        this.setState({ feedback: 'Email is already taken' })
-                    }
-                },
-                (error) => {
-                    this.setState({
-                        isShow: true,
-                        message: error,
-                        icon: "danger"
-                    });
-                }
-            )
-    }
-
-    emailChange = (e) => {
-        const { name, value } = e.target;
-
-        if (isValidEmail(value) === true) {
-            this.toggle(name, 'Valid');
-            this.checkExist(name, value);
-        }
-
-        else {
-            this.toggle(name, 'Invalid');
-            this.setState({ feedback: 'Invalid email' })
-        }
-
-        this.props.onChange(e.target.name, e.target.value);
-    };
-
-    render() {
-        const { emailInvalid, emailValid, feedback } = this.state;
-
-        return (
-            <Row>
-                <Col sm={6}>
-                    <FormGroup>
-                        <Label>Email</Label>
-                        <Input
-                            type="text"
-                            name='email'
-                            onChange={this.emailChange}
-                            onBlur={() => this.props.onBlur()}
-                            placeholder="rkina7@gmail.com"
-                            required
-                            invalid={emailInvalid}
-                            valid={emailValid}
+                            invalid={Invalid}
+                            valid={Valid}
                         />
                         <FormFeedback>{feedback}</FormFeedback>
                     </FormGroup>
@@ -292,7 +211,7 @@ class Password extends Component {
         const { passwordInvalid, passwordValid, repasswordInvalid, repasswordValid } = this.state;
 
         if (sessionStorage.getItem('isLogged') === 'true')
-            history.push('/login')
+            // history.push('/login')
 
         return (
             <Row>
@@ -335,7 +254,6 @@ class Password extends Component {
 }
 
 class SignUpBtn extends Component {
-
     render() {
         return (
             <Col>
@@ -382,7 +300,7 @@ class Sign extends Component {
                         message: result.message,
                         icon: "success"
                     });
-                    history.push('/');
+                    // history.push('/');
                 },
                 (error) => {
                     this.setState({
@@ -417,11 +335,12 @@ class Sign extends Component {
                     <InfoToast isShow={isShow} icon={icon} message={message} onClick={this.handleToast} />
                     <form onSubmit={this.handleSubmit}>
                         <Row>
-                            <NameInputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='Last name' name='lastName' placeholder='Ng' />
-                            <NameInputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='First name' name='firstName' placeholder='Duong' />
+                            <InputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='Last name' name='lastName' placeholder='Ng' type='text' feedback='Only symbols are required'/>
+                            <InputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='First name' name='firstName' placeholder='Duong' type='text' feedback='Only symbols are required'/>
                         </Row>
-                        <Email onChange={this.handleChange} onBlur={this.checkBtn} />
-                        <LoginName onChange={this.handleChange} onBlur={this.checkBtn} />
+                        <InputForm onChange={this.handleChange} onBlur={this.checkBtn} labelName='Date birth' name='birthDate' type='date' feedback='You too young for this'/>
+                        <InputFormWithFetch onChange={this.handleChange} onBlur={this.checkBtn} labelName='Email' placeholder='rkina@mail.ru'/>
+                        <InputFormWithFetch onChange={this.handleChange} onBlur={this.checkBtn} labelName='Login' placeholder='rkina7'/>
                         <Password onChange={this.handleChange} onBlur={this.checkBtn} />
                         <SignUpBtn isActiveBtn={isActiveBtn} onBlur={this.checkBtn} />
                     </form>

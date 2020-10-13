@@ -50,38 +50,38 @@ class Profile extends Component {
     }
 
     componentDidMount() {
-        // fetch('api/user/profile/Tr')
-        //     .then(response => {
-        //         console.log(response.body);
-        //         response.json();
-        //     })
-        //     .then(result => {
-        //         console.log("Res " + result.message);
-        //         // this.setState({ data: result.result, isLoaded: false })
-        //     })
-        // .catch(e => {
-        //     console.log(e);
-        //     // this.setState({ data: result, isLoaded: false, error: e })
-        // });
-        request("api/user/register/check/" + "Tr")
-            .then(res => { return res.json(); })
-            .then(
-                (result) => {
-                    console.log(result.message);
-                    // if (result.error === true) {
-                    // this.toggle(name, 'Invalid');
-                    // this.setState({ feedback: 'Email is already taken' })
-                    // }
-                },
-                (error) => {
-                    console.log(error);
-                    // this.setState({
-                    //     isShow: true,
-                    //     message: error,
-                    //     icon: "danger"
-                    // });
-                }
-            )
+        fetch('/api/user/users/test')
+            .then(response => {
+                console.log(response);
+                response.json();
+            })
+            .then(result => {
+                console.log("Res " + result.message);
+                // this.setState({ data: result.result, isLoaded: false })
+            })
+        .catch(e => {
+            console.log(e);
+            // this.setState({ data: result, isLoaded: false, error: e })
+        });
+        // request("api/getinfo")
+        //     .then(res => { return res.json(); })
+        //     .then(
+        //         (result) => {
+        //             console.log(result.message);
+        //             // if (result.error === true) {
+        //             // this.toggle(name, 'Invalid');
+        //             // this.setState({ feedback: 'Email is already taken' })
+        //             // }
+        //         },
+        //         (error) => {
+        //             console.log(error);
+        //             // this.setState({
+        //             //     isShow: true,
+        //             //     message: error,
+        //             //     icon: "danger"
+        //             // });
+        //         }
+        //     )
     }
 
     render() {
