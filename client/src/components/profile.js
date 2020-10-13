@@ -64,56 +64,56 @@ class Profile extends Component {
         //     // this.setState({ data: result, isLoaded: false, error: e })
         // });
         request("api/user/register/check/" + "Tr")
-        .then(res => {return res.json();})
-        .then(
-            (result) => {
-                console.log(result.message);
-                // if (result.error === true) {
+            .then(res => { return res.json(); })
+            .then(
+                (result) => {
+                    console.log(result.message);
+                    // if (result.error === true) {
                     // this.toggle(name, 'Invalid');
                     // this.setState({ feedback: 'Email is already taken' })
-                // }
-            },
-            (error) => {
-                console.log(error);
-                // this.setState({
-                //     isShow: true,
-                //     message: error,
-                //     icon: "danger"
-                // });
-            }
-        )
+                    // }
+                },
+                (error) => {
+                    console.log(error);
+                    // this.setState({
+                    //     isShow: true,
+                    //     message: error,
+                    //     icon: "danger"
+                    // });
+                }
+            )
     }
 
     render() {
-        // return (
-        const { data, isLoaded, error } = this.state;
+        return (
+            <div>Hello</div>
+            // const { data, isLoaded, error } = this.state;
 
-        // if (isLoaded) return <div>...Loading</div>;
+            // if (isLoaded) return <div>...Loading</div>;
 
-        // if (error) return <div>{`Error: ${e.message}`}</div>;
+            // if (error) return <div>{`Error: ${e.message}`}</div>;
 
-        // return <h1>{this.state.data.firstname}</h1>;
-        // // <section class="profile text-break">
-        // <div className="container">
-        //     <div className="row">
-        //         <div className="col-12">
-        //             {/* <h3>{props.prof.firstname}</h3> */}
-        //             {/* <h3>{this.prof.firstname}</h3> */}
-        //             {/* <h3>{prof.firstname}</h3> */}
-        //             <hr />
-        //         </div>
-        //     </div>
-        //     <div className="row">
-        //         {/* <RenderProfile prof={props.prof} /> */}
-        //         {/* <RenderComments comments={props.comments}
-        //                         postComment={props.postComment}
-        //                         dishId={props.dish.id} /> */}
-        //     </div>
-        // </div>
-        //     // </section>
-        // );
+            // return <h1>{this.state.data.firstname}</h1>;
+            // // <section class="profile text-break">
+            // <div className="container">
+            //     <div className="row">
+            //         <div className="col-12">
+            //             {/* <h3>{props.prof.firstname}</h3> */}
+            //             {/* <h3>{this.prof.firstname}</h3> */}
+            //             {/* <h3>{prof.firstname}</h3> */}
+            //             <hr />
+            //         </div>
+            //     </div>
+            //     <div className="row">
+            //         {/* <RenderProfile prof={props.prof} /> */}
+            //         {/* <RenderComments comments={props.comments}
+            //                         postComment={props.postComment}
+            //                         dishId={props.dish.id} /> */}
+            //     </div>
+            // </div>
+            //     // </section>
+        );
     }
 }
 
 export default Profile;
-
