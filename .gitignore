@@ -1,3 +1,2 @@
-/mern/node_modules
-/mern/client/node_modules
-/mern/config
+/api/node_modules
+/api/config

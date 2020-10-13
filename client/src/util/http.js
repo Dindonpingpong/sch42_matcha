@@ -1,7 +1,9 @@
 const request = (url, data = [], method = 'GET') => {
     const requestOptions = {
         method: method,
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json'
+         },
     };
 
     if (method === 'POST')

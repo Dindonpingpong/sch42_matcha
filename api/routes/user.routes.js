@@ -34,7 +34,7 @@ router.post('/login', async (req, res) => {
     }
 })
 
-router.get('/register/check/:email', async (req, res) => {
+router.get('/register/check/email/:email', async (req, res) => {
     try {
         const email = [req.params.email];
 
@@ -43,6 +43,31 @@ router.get('/register/check/:email', async (req, res) => {
                 if (data.length > 0)
                     res.status(200).json({
                         message: "Email is exist",
+                        error: true
+                    })
+                else
+                    res.status(200).json({
+                        message: "Ok",
+                        error: false
+                    })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            error: true
+        })
+    }
+})
+
+router.get('/register/check/login/:login', async (req, res) => {
+    try {
+        const email = [req.params.email];
+
+        getLogin(email)
+            .then(data => {
+                if (data.length > 0)
+                    res.status(200).json({
+                        message: "Login is exist",
                         error: true
                     })
                 else
@@ -83,6 +108,34 @@ router.post('/register', async (req, res) => {
                 // sendMail(email, )
             })
 
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            error: true
+        })
+    }
+})
+
+router.get('/check/:nickname', async (req, res) => {
+    try {
+        const nickname = [req.params.nickname];
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Headers', 'origin, content-type, accept');
+
+        getProfile(nickname)
+            .then(data => {
+                if (data.length > 0)
+                    res.status(200).json({
+                        result: data[0],
+                        message: "Ok",
+                        error: false
+                    })
+                else
+                    res.status(200).json({
+                        message: "Profile not found",
+                        error: true
+                    })
+            })
     } catch (e) {
         res.status(500).json({
             message: e.message,
