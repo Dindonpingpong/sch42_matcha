@@ -11,3 +11,5 @@ curl "http://localhost:5000/api/user/register/check/rkinfdsaa@mail.ru"
 get pg
 
 curl "http://localhost:5000/api/card/rkina/1"
+
+curl "http://localhost:5000/api/user/rkina"

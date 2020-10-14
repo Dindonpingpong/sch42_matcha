@@ -27,7 +27,14 @@ const getLogin = (login) => {
   return db.any(sql, login);
 }
 
+const getProfile = (nickname) => {
+  const sql = 'SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
+
+  return db.any(sql, nickname);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
 exports.getLogin = getLogin;
+exports.getProfile = getProfile;

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile } = require('../models/user');
 const bcrypt = require('bcrypt');
 // const { sendMail } = require('../util/mail');
 
@@ -129,6 +129,34 @@ router.get('/check/:nickname', async (req, res) => {
                     })
                 else
                     res.status(200).json({
+                        message: "Profile not found",
+                        error: true
+                    })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            error: true
+        })
+    }
+})
+
+router.get('/:nickname', async (req, res) => {
+    try {
+        const nickname = [req.params.nickname];
+
+        console.log(nickname);
+        getProfile(nickname)
+            .then(data => {
+                console.log(data);
+                if (data.length > 0)
+                    res.status(200).json({
+                        result: data[0],
+                        message: "Ok",
+                        error: false
+                    })
+                else
+                    res.status(500).json({
                         message: "Profile not found",
                         error: true
                     })
