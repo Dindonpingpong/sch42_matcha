@@ -94,7 +94,7 @@ INSERT INTO Connections (idFrom, idTo, status) VALUES
     ('5', '7', 'ignore'),
     ('5', '6', 'like'),
     ('8', '7', 'like'),
-    ('7', '6', 'like');
+    ('7', '2', 'ignore');
 
 INSERT INTO History (idVisitor, idVisited) VALUES
     ('4', '5'),
