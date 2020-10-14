@@ -67,8 +67,13 @@ INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, password, lo
     ('test4', 'test4', 'test4', 'test4@test4.ru', '1990-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
     ('test5', 'test5', 'test5', 'test5@test5.ru', '1985-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
     ('test6', 'test6', 'test6', 'test6@test6.ru', '1980-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']);
+    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Troitsk']),
+    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test9', 'test9', 'test9', 'test8@test8.ru', '1965-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test10', 'test10', 'test10', 'test5@test5.ru', '1985-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test11', 'test11', 'test11', 'test6@test6.ru', '1980-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test12', 'test12', 'test12', 'test7@test7.ru', '1975-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
+    ('test13', 'test13', 'test13', 'test8@test8.ru', '1965-02-23', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']);
 
 UPDATE Users SET sexPreferences = 'heterosexual' WHERE id IN (1, 2, 4);
 UPDATE Users SET sexPreferences = 'homosexual' WHERE id IN (3, 5, 6);

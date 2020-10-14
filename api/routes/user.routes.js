@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getEmail } = require('../models/user');
 const bcrypt = require('bcrypt');
-const { sendMail } = require('../util/mail');
+// const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
     try {
@@ -35,28 +35,27 @@ router.post('/login', async (req, res) => {
 })
 
 router.get('/register/check/email/:email', async (req, res) => {
-    try {
-        const email = [req.params.email];
+    const email = [req.params.email];
 
-        getEmail(email)
-            .then(data => {
-                if (data.length > 0)
-                    res.status(200).json({
-                        message: "Email is exist",
-                        error: true
-                    })
-                else
-                    res.status(200).json({
-                        message: "Ok",
-                        error: false
-                    })
-            })
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            error: true
+    getEmail(email)
+        .then(data => {
+            if (data.length > 0)
+                res.status(200).json({
+                    message: "Email is exist",
+                    error: true
+                })
+            else
+                res.status(200).json({
+                    message: "Ok",
+                    error: false
+                })
         })
-    }
+        .catch(() => {
+            res.status(200).json({
+                message: "Ooopsy",
+                error: true
+            })
+        })
 })
 
 router.get('/register/check/login/:login', async (req, res) => {

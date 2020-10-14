@@ -7,3 +7,7 @@ curl -X POST -H 'Content-Type: application/json' -d '{"email":"rkina@mail.ru", "
 
 get email
 curl "http://localhost:5000/api/user/register/check/rkinfdsaa@mail.ru"
+
+get pg
+
+curl "http://localhost:5000/api/card/rkina/1"
