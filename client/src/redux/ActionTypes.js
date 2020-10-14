@@ -1,0 +1,4 @@
+export const PROFILE_ADD = 'PROFILE_ADD';
+export const PROFILE_LOADING = 'PROFILE_LOADING';
+export const PROFILE_FAILED = 'PROFILE_FAILED';
+

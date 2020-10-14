@@ -1,27 +1,13 @@
 import React, { Component } from 'react';
-import { request } from '../util/http'
 
-class Profile extends Component {
-    constructor(props) {
-        super(props);
-    }
+const Profile = (props) => {
 
-    componentDidMount() {
-        // this.props.match.params.id
-        request('api/user/check/' + 'teste')
-            .then(res => res.json())
-            .then(res => console.log(res))
-            .catch(err => console.log(err))
-    }
-
-    render() {
-        return(
-            <div>
-                {this.props.match.params.id}
+    return (
+        <div>
+            {props.info.info}
                 Hello
-            </div>
-        )
-    }
+        </div>
+    )
 }
 
 export default Profile;
