@@ -10,8 +10,9 @@ const isValidInput = (type, value) => {
     if (type === 'dateBirth') {
         let tmp = value.split('-');
         let birthday = new Date(tmp[0], tmp[1] - 1, tmp[2]);
-        let ageDiffMs = Date.now() - birthday.getTime;
-        let age = Math.abs(new Date(ageDiffMs).getUTCFullYear - 1970);
+        let ageDiffMs = Date.now() - birthday.getTime();
+        let age = Math.floor(ageDiffMs/ 3.15576e+10);
+
 
         if (age < 18)
             return false;

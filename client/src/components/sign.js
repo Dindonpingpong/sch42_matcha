@@ -30,18 +30,7 @@ class InputForm extends Component {
 
     nameChange = (e) => {
         const { name, value } = e.target;
-        let tmp = value.split('-');
-        console.log(tmp)
-        let birthday = new Date(tmp[0], tmp[1] - 1, tmp[2]);
-        console.log(birthday);
-        console.log(Date.now())
-        let ageDiffMs = Date.now() - birthday.getTime();
-        console.log(ageDiffMs);
-        let ageTime = new Date(ageDiffMs);
-        console.log(ageTime)
-        let age = Math.floor(ageDiffMs/ 3.15576e+10);
 
-        console.log(age);
         if (isValidInput(name, value))
             this.toggle('Valid');
         else
