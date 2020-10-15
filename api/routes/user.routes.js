@@ -8,10 +8,15 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
+
         getPassword(email)
             .then(data => {
+                console.log(data)
                 const len = data.length;
-                const check = bcrypt.compareSync(password, data[0].password);
+                let check;
+
+                if (len > 0)
+                    check = bcrypt.compareSync(password, data[0].password);
 
                 if (len == 0 || check == false) {
                     res.status(500).json({
@@ -90,7 +95,7 @@ router.post('/register', async (req, res) => {
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
-
+        
         const params = [
             firstName,
             lastName,
