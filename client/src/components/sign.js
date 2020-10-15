@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import InfoToast from './info';
 import { Row, Col, FormGroup, Label, Input, FormFeedback, Button } from 'reactstrap';
-import history from '../history';
 import { isValidInput, isValidPassword } from '../util/check';
 import { request } from '../util/http';
 
