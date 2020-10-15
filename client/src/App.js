@@ -6,9 +6,10 @@ import Login from './components/login';
 import Sign from './components/sign';
 import NotFound from './components/notFound';
 import Header from './components/header';
-import Profile from './components/profile';
+import Profile from './components/profile/profile';
 import Users from './components/users';
 // import history from './history';
+import './App.css';
 
 class App extends Component {
     
@@ -18,7 +19,7 @@ class App extends Component {
             // <Router history={history}>
              <Router>
                 <Header />
-                <div className='container p-5'>
+                {/* <div className='container p-5'> */}
                     <Switch>
                         <Route path='/login' component={Login} />
                         <Route path='/register' component={Sign} />
@@ -26,7 +27,7 @@ class App extends Component {
                         <Route path='/users/:nickname' component={Profile} />
                         <Route component={NotFound} />
                     </Switch>
-                </div>
+                {/* </div> */}
             </Router>
         )
     }

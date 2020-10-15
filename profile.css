@@ -1,0 +1,44 @@
+/*
+text-break переносит не вмещенный текст
+*/
+
+/* profile */
+
+.profile {
+  margin-top: 20px;
+}
+
+.nav-item a {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+/*like 161px*/
+.btn-profile {
+  width: 180px;
+}
+
+.img-thumbnail {
+  object-fit: cover;
+  width: 200px;
+  height: 200px;
+}
+
+.font-profile-head {
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #5a6268;
+}
+
+.font-profile-head:first-child {
+  margin-top: 0;
+}
+
+.tags {
+  margin-right: 10px;
+}
+
+.tags:last-child {
+  margin-right: 0;
+}
