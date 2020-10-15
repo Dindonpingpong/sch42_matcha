@@ -16,20 +16,21 @@ router.post('/login', async (req, res) => {
                 if (len == 0 || check == false) {
                     res.status(500).json({
                         message: "Email or pass is incorrect",
-                        error: true
+                        success: false
                     })
                 }
                 else {
                     res.status(200).json({
                         message: "Your logged",
-                        error: false
+                        profile: data,
+                        success: true
                     })
                 }
             })
     } catch (e) {
         res.status(500).json({
             message: e.message,
-            error: true
+            success: false
         })
     }
 })
