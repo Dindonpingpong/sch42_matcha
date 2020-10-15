@@ -9,10 +9,10 @@ import Users from './users';
 import { connect } from 'react-redux';
 import { fetchProfile } from '../redux/ActionCreators';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
     return {
         info: state.info,
-        test: 'here'
+        test: ""
     }
 }
 
@@ -21,14 +21,17 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 class Main extends Component {
-    
+    // componentDidMount( ) {
+    //     this.props.fetchProfile(this.props.test);
+    // }
+
     render() {
-        const ProfileInfo = ( ) => {
-            // this.props.fetchProfile(match.params.nickname);
-            // console.log('here' + this.props.info);
-        
+        const ProfileInfo = ( {match } ) => {
+            this.props.fetchProfile(match.params.nickname);
+            // console.log('fds', this.props.info);
+
             return (
-                <Profile info={this.props.info} fetchProfile={this.props.fetchProfile}/>
+                <Profile info={this.props.info}/>
             );
         }
 

@@ -1,12 +1,14 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import { Profile }from './profile';
+import { ProfileReducer }from './profile.reducer';
+import { LoginReducer } from './login.reducer';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 
 export const ConfigureStore = () => {
     const store = createStore(
         combineReducers({
-            info: Profile
+            profile: ProfileReducer,
+            login: LoginReducer
         }),
         applyMiddleware(thunk, logger)
     );
