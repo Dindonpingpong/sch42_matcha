@@ -10,7 +10,6 @@ const store = ConfigureStore();
 class App extends Component {
     
     render() {
-        console.log('here',store);
         return (
             <Provider store={store}>
                 <Router >

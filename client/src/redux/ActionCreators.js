@@ -38,10 +38,20 @@ export const loginFailed = (msg) => ({
     payload: msg
 });
 
+export const loginEmailAdd = (email) => ({
+    type: ActionTypes.LOGIN_EMAIL_ADD,
+    email: email
+})
+
+export const loginPasswordAdd = (password) => ({
+    type: ActionTypes.LOGIN_PASSWORD_ADD,
+    password: password
+})
+
 export const fetchLogin = (email, password) => (dispatch) => {
     dispatch(loginLoading());
 
-    data = {
+    const data = {
         email: email,
         password: password
     }
@@ -52,5 +62,17 @@ export const fetchLogin = (email, password) => (dispatch) => {
             if (result.success) {
                 dispatch(loginAdd(result.profile))
             }
+            else {
+                dispatch(loginFailed(result.message))
+            }
         })
+        .catch(error => dispatch(loginFailed(error.message)));
+}
+
+export const setEmail = (email) => (dispatch) => {
+    return dispatch(loginEmailAdd(email));
+}
+
+export const setPassword = (password) => (dispatch) => {
+    return dispatch(loginPasswordAdd(password));
 }

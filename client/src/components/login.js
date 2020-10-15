@@ -1,19 +1,55 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { Row, Col, Button, FormGroup, Label, Input } from 'reactstrap';
 import { NavLink } from 'reactstrap';
-import InfoToast from './info';
+import { useState } from 'react';
+import { fetchLogin, setEmail, setPassword } from '../redux/ActionCreators';
+import { isValidInput, isValidPassword } from '../util/check';
+
+const mapStateToProps = (state) => {
+    return {
+        login: state.login
+    }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchLogin: (email, password) => dispatch(fetchLogin(email, password)),
+    setEmail: (email) => dispatch(setEmail(email)),
+    setPassword: (password) => dispatch(setPassword(password))
+});
 
 function Email(props) {
+    const [valid, setValid] = useState(false);
+    const [inValid, setInvalid] = useState(false);
+
+    const emailChange = (e) => {
+        const { name, value } = e.target;
+
+        if (isValidInput(name, value)) {
+            props.setEmail(value);
+
+            setInvalid(false);
+            setValid(true);
+        }
+        else {
+            setInvalid(true);
+            setValid(false);
+        }
+    }
+
     return (
         <Col>
             <FormGroup>
                 <Label>Email address</Label>
                 <Input
                     type="text"
-                    name="email"
-                    onChange={props.emailChange}
+                    name="Email"
+                    onChange={emailChange}
                     placeholder="email@example.com"
                     required
+                    valid={valid}
+                    invalid={inValid}
                 />
             </FormGroup>
         </Col>
@@ -21,6 +57,24 @@ function Email(props) {
 }
 
 function Password(props) {
+    const [valid, setValid] = useState(false);
+    const [inValid, setInvalid] = useState(false);
+
+    const passChange = (e) => {
+        const { name, value } = e.target;
+
+        if (isValidPassword(value)) {
+            props.setPass(value);
+
+            setInvalid(false);
+            setValid(true);
+        }
+        else {
+            setInvalid(true);
+            setValid(false);
+        }
+    }
+
     return (
         <Col>
             <FormGroup>
@@ -28,9 +82,11 @@ function Password(props) {
                 <Input
                     type="password"
                     name='password'
-                    onChange={props.passwordChange}
+                    onChange={passChange}
                     placeholder="Str0ngPa55%"
                     required
+                    valid={valid}
+                    invalid={inValid}
                 />
             </FormGroup>
         </Col>
@@ -38,15 +94,25 @@ function Password(props) {
 }
 
 function Login(props) {
+    
+
+    const Sign = () => {
+        const { email, password } = props.login;
+        
+        props.fetchLogin(email, password);
+        console.log(props.login);
+    }
+
     return (
         <Row>
             <Col md={6} className="m-auto">
                 {/* <InfoToast isShow={this.state.isShow} message={this.state.message} onClick={this.handleToast} /> */}
+                <span>{props.login.errMsg}</span>
                 <form >
-                    <Email />
-                    <Password />
+                    <Email setEmail={props.setEmail} />
+                    <Password setPass={props.setPassword} />
                     <Col>
-                        <Button type="submit" color="primary">Sign in</Button>
+                        <Button color="primary" onClick={Sign} >Sign in</Button>
                     </Col>
                 </form>
                 <Col>
@@ -58,6 +124,9 @@ function Login(props) {
         </Row>
     )
 }
+
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
 
 // class Login extends Component {
 //     constructor(props) {
@@ -118,4 +187,4 @@ function Login(props) {
 //     }
 // }
 
-export default Login;
+// export default Login;
