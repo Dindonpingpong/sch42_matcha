@@ -1,5 +1,5 @@
 import * as ActionTypes from './ActionTypes';
-import { request } from '../util/http';
+import { request } from '../../util/http';
 
 export const profileLoading = () => ({
     type: ActionTypes.PROFILE_LOADING

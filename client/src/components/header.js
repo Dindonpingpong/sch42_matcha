@@ -4,7 +4,8 @@ import {
     NavbarBrand,
     Nav,
     NavItem,
-    NavLink
+    NavLink,
+    Container
 } from 'reactstrap';
 
 class Header extends Component {
@@ -19,40 +20,42 @@ class Header extends Component {
     inOut = () => {
         const isLogged = sessionStorage.getItem('isLogged');
         const location = window.location.pathname;
-        const name = isLogged === 'true' ? 'Out' : 'In';
-
+        // const name = isLogged === 'true' ? 'Out' : 'In';
+        const name = isLogged === 'true' ? <i className="fa fa-sign-out"></i> : <i className="fa fa-sign-in"></i>;
+        
         if (location === '/login')
-            return
+            return;
 
         return (
             <NavItem>
-                <NavLink
-                    href='/login'
-                    onClick={ () => sessionStorage.setItem('isLogged', false) }
-                >
+                <NavLink href='/login' onClick={() => sessionStorage.setItem('isLogged', false)}>
                     {name}
                 </NavLink>
             </NavItem>
-        )
+        );
     }
 
     render() {
         return (
             <Navbar color="light" light expand="xs">
-                <div className="container">
-                    <NavbarBrand href="/">Matcha</NavbarBrand>
+                <Container>
+                    <NavbarBrand href="/users">Matcha</NavbarBrand>
                     <Nav className="ml-auto" navbar>
-                        <NavItem>
-                            <NavLink href="/">Users</NavLink>
+                    <NavItem>
+                            <NavLink href="/#">
+                                <i className="fa fa-bell"></i>
+                            </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="https://github.com/reactstrap/reactstrap" disabled={true}>GitHub</NavLink>
+                            <NavLink href="/users">
+                                <i className="fa fa-home"></i>
+                            </NavLink>
                         </NavItem>
                         {this.inOut()}
                     </Nav>
-                </div>
+                </Container>
             </Navbar>
-        )
+        );
     }
 }
 

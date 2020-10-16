@@ -1,11 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
     Container, Row, Col, Nav, NavItem, NavLink, Card, CardImg, CardBody, TabContent, TabPane, Button, Media, Input, Label
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import './EditProfile';
+import EditProfile from './EditProfile';
+import { fetchProfile } from '../../redux/profile/ActionCreators';
 import './Profile.css';
+
+const mapStateToProps = (state) => {
+    return {
+        login: state.login,
+        profile: state.profile
+    }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchProfile: (nickname) => dispatch(fetchProfile(nickname))
+});
 
 function TagsList(props) {
     const listItems = props.tags.map((tag, item) =>
@@ -63,6 +77,8 @@ function ViewsList(props) {
 
 
 const Profile = (props) => {
+    console.log(props.match.params.nickname);
+    useEffect(() => {props.fetchProfile(props.match.params.nickname)}, []);
     const tags = ["test1", "test2", "test3"];
     const photos = ["../img/avatar.svg", "../img/photo.svg", "../img/photo.svg", "../img/photo.svg", "../img/photo.svg"];
     const views = [{ name: "name1", about: "about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 " }, { name: "name2", about: "about2" }, { name: "name3", about: "about3" }];
@@ -73,11 +89,13 @@ const Profile = (props) => {
         if (activeTab !== tab) setActiveTab(tab);
     }
 
+    console.log(props.profile);
     return (
         <section className="profile text-break">
             <Container>
-                <Button color="danger ml-auto d-block">Like</Button>
-                <Button className="ml-auto d-block" data-toggle="modal" data-target="#staticBackdrop">Edit profile</Button>
+                {/* проставить в зависимости от акка (свой - edit, чужой - like) */}
+                {/* <Button color="danger ml-auto d-block">Like</Button> */}
+                {/* <ViewsList views={EditProfile} /> */}
 
                 <Row>
                     <Col className="col-lg-3">
@@ -88,7 +106,7 @@ const Profile = (props) => {
                         <p>Sex, Sexual preferences</p>
                         <p>Age</p>
                         <p>Location</p>
-                        <p>About</p>
+                        <p>{props.profile.info.nickname}</p>
                     </Col>
                 </Row>
 
@@ -138,4 +156,5 @@ const Profile = (props) => {
     );
 }
 
-export default Profile;
+// export default Profile;
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));
