@@ -22,6 +22,9 @@ export const UserFormReducer = (state = initialState, action) => {
         case ActionTypes.USER_FORM_LOADING:
             return { ...state, isLoading: false, errMsg: action.message };
 
+        case ActionTypes.USER_FORM_FAILED:
+            return { ...state, isLoading: false, errMsg: payload.payload };
+
         case ActionTypes.USER_FORM_FIRSTNAME_ADD:
             return { ...state, isLoading: false, errMsg: null, firstName: action.firstName };
 
@@ -58,8 +61,8 @@ export const UserFormReducer = (state = initialState, action) => {
         case ActionTypes.USER_FORM_SUBMIT_EDIT:
             return { ...initialState, success: action.payload };
 
-        // case ActionTypes.USER_FORM_SUBMIT_REGISTER:
-        //     return { ...initialState, success: action.payload };
+        case ActionTypes.USER_FORM_SUBMIT_REGISTER:
+            return { ...initialState, success: action.payload };
 
         default:
             return state;

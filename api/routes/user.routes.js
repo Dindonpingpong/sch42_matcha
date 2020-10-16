@@ -8,7 +8,6 @@ router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-
         getPassword(email)
             .then(data => {
                 console.log(data)
@@ -85,43 +84,21 @@ router.post('/register', async (req, res) => {
             .then(data => {
                 res.status(200).json({
                     message: data.id,
-                    error: false
+                    success: true
                 })
                 // sendMail(email, )
             })
-
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            error: true
-        })
-    }
-})
-
-router.get('/:nickname', async (req, res) => {
-    try {
-        const nickname = [req.params.nickname];
-
-        console.log(nickname);
-        getProfile(nickname)
-            .then(data => {
-                console.log(data);
-                if (data.length > 0)
-                    res.status(200).json({
-                        result: data[0],
-                        message: "Ok",
-                        error: false
-                    })
-                else
-                    res.status(200).json({
-                        message: "Profile not found",
-                        error: true
-                    })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
             })
+
     } catch (e) {
         res.status(500).json({
             message: e.message,
-            error: true
+            success: false
         })
     }
 })
@@ -141,7 +118,7 @@ router.get('/:nickname', async (req, res) => {
                         error: false
                     })
                 else
-                    res.status(500).json({
+                    res.status(200).json({
                         message: "Profile not found",
                         error: true
                     })

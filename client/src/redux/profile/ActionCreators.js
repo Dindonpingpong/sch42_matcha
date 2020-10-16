@@ -23,4 +23,3 @@ export const fetchProfile = (nickname) => (dispatch) => {
         .then(result => dispatch(profileAdd(result)))
         .catch(error => dispatch(profileFailed(error.message)));
 };
-
