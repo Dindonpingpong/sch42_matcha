@@ -6,10 +6,10 @@ import Login from './components/login';
 import Sign from './components/sign';
 import NotFound from './components/notFound';
 import Header from './components/header';
-import Profile from './components/profile/profile';
+import Profile from './components/Profile/Profile';
 import Users from './components/users';
 // import history from './history';
-import './App.css';
+// import './App.css';
 
 class App extends Component {
     

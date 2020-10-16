@@ -4,7 +4,7 @@ import Login from './login';
 import Sign from './sign';
 import NotFound from './notFound';
 import Header from './header';
-import Profile from './profile';
+import Profile from './Profile';
 import Users from './users';
 import { connect } from 'react-redux';
 import { fetchProfile } from '../redux/ActionCreators';

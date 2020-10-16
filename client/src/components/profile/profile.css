@@ -12,12 +12,7 @@ text-break переносит не вмещенный текст
   color: rgba(0, 0, 0, 0.5);
 }
 
-/*like 161px*/
-.btn-profile {
-  width: 180px;
-}
-
-.img-thumbnails {
+.profile-avatar {
   object-fit: cover;
   width: 200px;
   height: 200px;
@@ -47,6 +42,25 @@ text-break переносит не вмещенный текст
   margin-right: 0;
 }
 
-.profile-input {
+.profile .profile-input {
   display: none;
+}
+
+.btn-success {
+  margin: 0;
+}
+
+.nav-tabs .nav-link {
+  cursor: pointer;
+}
+
+.profile-tabs .nav-tabs {
+  margin-bottom: 1rem;
+}
+
+.media-object {
+  width: 75px;
+  height: 75px;
+  object-fit: cover;
+  border-radius: 50%;
 }
