@@ -1,4 +1,4 @@
-import * as ActionTypes from './ActionTypes';
+import * as ActionTypes from '../userForm/ActionTypes';
 
 export const ProfileReducer = (state = {
     isLoading: true,

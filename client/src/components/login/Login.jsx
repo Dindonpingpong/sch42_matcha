@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { NavLink } from 'reactstrap';
 import { useState } from 'react';
-import { fetchLogin, setEmail, setPassword } from '../../redux/ActionCreators';
+import { fetchLogin, setEmail, setPassword } from '../../redux/login/ActionCreators';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { useHistory } from "react-router-dom";
 

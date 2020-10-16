@@ -58,6 +58,9 @@ export const UserFormReducer = (state = initialState, action) => {
         case ActionTypes.USER_FORM_SUBMIT_EDIT:
             return { ...initialState, success: action.payload };
 
+        // case ActionTypes.USER_FORM_SUBMIT_REGISTER:
+        //     return { ...initialState, success: action.payload };
+
         default:
             return state;
     }
