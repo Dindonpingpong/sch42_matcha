@@ -1,7 +1,7 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, Button, FormGroup, Label, Input } from 'reactstrap';
+import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { NavLink } from 'reactstrap';
 import { useState } from 'react';
 import { fetchLogin, setEmail, setPassword } from '../redux/ActionCreators';
@@ -94,11 +94,10 @@ function Password(props) {
 }
 
 function Login(props) {
-    
 
     const Sign = () => {
         const { email, password } = props.login;
-        
+
         props.fetchLogin(email, password);
         console.log(props.login);
     }
@@ -106,8 +105,10 @@ function Login(props) {
     return (
         <Row>
             <Col md={6} className="m-auto">
+                <Alert color="primary" isOpen={true}>
+                    {props.login.errMsg}
+                </Alert>
                 {/* <InfoToast isShow={this.state.isShow} message={this.state.message} onClick={this.handleToast} /> */}
-                <span>{props.login.errMsg}</span>
                 <form >
                     <Email setEmail={props.setEmail} />
                     <Password setPass={props.setPassword} />
@@ -125,66 +126,4 @@ function Login(props) {
     )
 }
 
-
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
-
-// class Login extends Component {
-//     constructor(props) {
-//         super(props);
-//         this.state = {
-//             isShow: false,
-//             email: '',
-//             password: ''
-//         };
-
-//         // this.loggedIn = sessionStorage.getItem('isLogged') === 'true';
-//         // Без этого работает, но в документации сказано, что не будет
-//         // this.handleSubmit = this.handleSubmit.bind(this);
-//         // this.handleChange = this.handleChange.bind(this);
-//     }
-
-//     handleSubmit = (event) => {
-//         event.preventDefault();
-//         const { email, password } = this.state;
-
-//         if (email === '' || password === '') {
-//             this.setState({
-//                 isShow: true,
-//                 message: "Wow",
-//                 icon: "danger"
-//             });
-//             return
-//         }
-
-//         let data = {
-//             email: email,
-//             password: password
-//         }
-
-//     }
-
-//     handleChange = (name, value) => {
-//         this.setState({ [name]: value });
-//     }
-
-//     handleToast = () => this.setState({
-//         isShow: false
-//     });
-
-//     render() {
-//         return (
-//             <div className='row col-md-6 m-auto'>
-//                 <InfoToast isShow={this.state.isShow} message={this.state.message} onClick={this.handleToast} />
-//                 <form onSubmit={this.handleSubmit}>
-//                     <Email onChange={this.handleChange} />
-//                     <Password onChange={this.handleChange} />
-//                     <SignInBtn />
-//                 </form>
-//                 <SignUpBtn />
-//             </div>
-//         )
-
-//     }
-// }
-
-// export default Login;

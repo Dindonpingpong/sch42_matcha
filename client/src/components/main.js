@@ -26,27 +26,26 @@ class Main extends Component {
     // }
 
     render() {
-        const ProfileInfo = ( {match } ) => {
+        const ProfileInfo = ({ match }) => {
             this.props.fetchProfile(match.params.nickname);
             // console.log('fds', this.props.info);
 
             return (
-                <Profile info={this.props.info}/>
+                <Profile info={this.props.info} />
             );
         }
 
         return (
             <div>
                 <Header />
-                <div className='container p-5'>
-                    <Switch>
-                        <Route path='/login' component={Login} />
-                        <Route path='/register' component={Sign} />
-                        <Route exact={true} path='/users' component={Users} />
-                        <Route path='/users/:nickname' component={ProfileInfo} />
-                        <Route component={NotFound} />
-                    </Switch>
-                </div>
+                
+                <Switch>
+                    <Route path='/login' component={Login} />
+                    <Route path='/register' component={Sign} />
+                    <Route exact={true} path='/users' component={Users} />
+                    <Route path='/users/:nickname' component={ProfileInfo} />
+                    <Route component={NotFound} />
+                </Switch>
             </div>
         )
     }
