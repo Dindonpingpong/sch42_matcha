@@ -1,25 +1,15 @@
 sign up
-<<<<<<< HEAD
-curl -X POST -H 'Content-Type: application/json' -d '{"lastName":"GGDGD","firstName":"Tset", "email":"t@t", "password": "123"}' http://localhost:5000/api/user/register
-curl -X POST -H 'Content-Type: application/json' -d '{"nickName":"mgrass", "firstName":"nya", "lastName":"milk", "email":"nya@t.com", "password":"123","date":"1990-12-26"}' http://localhost:5000/api/user/register
-=======
 curl -X POST -H 'Content-Type: application/json' -d '{"lastName":"GGDGD","firstName":"Tset", "email":"t@t", "password": "1"}' http://localhost:5000/api/user/register
 
->>>>>>> master
 
 log in
-curl -X POST -H 'Content-Type: application/json' -d '{"email":"rkina@mail.ru", "password": "123fdasfsa"}' http://localhost:5000/api/user/login
+curl -X POST -H 'Content-Type: application/json' -d '{"email":"d_ng@mail.ru", "password": "1"}' http://localhost:5000/api/user/login
 
 get email
 curl "http://localhost:5000/api/user/register/check/rkinfdsaa@mail.ru"
-<<<<<<< HEAD
-curl "http://localhost:5000/api/user/profile/Rt"
-curl "http://localhost:5000/api/user/mgrass"
-=======
 
 get pg
 
 curl "http://localhost:5000/api/card/rkina/1"
 
 curl "http://localhost:5000/api/user/rkina"
->>>>>>> master

@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { NavLink } from 'reactstrap';
 import { useState } from 'react';
-import { fetchLogin, setEmail, setPassword } from '../redux/ActionCreators';
-import { isValidInput, isValidPassword } from '../util/check';
+import { fetchLogin, setEmail, setPassword } from '../../redux/ActionCreators';
+import { isValidInput, isValidPassword } from '../../util/check';
+import { useHistory } from "react-router-dom";
 
 const mapStateToProps = (state) => {
     return {
@@ -61,7 +62,7 @@ function Password(props) {
     const [inValid, setInvalid] = useState(false);
 
     const passChange = (e) => {
-        const { name, value } = e.target;
+        const { value } = e.target;
 
         if (isValidPassword(value)) {
             props.setPass(value);
@@ -94,6 +95,7 @@ function Password(props) {
 }
 
 function Login(props) {
+    const history = useHistory();
 
     const Sign = () => {
         const { email, password } = props.login;
@@ -102,11 +104,15 @@ function Login(props) {
         console.log(props.login);
     }
 
+    if (props.login.isLogged) {
+        history.push("/users");
+    }
+
     return (
         <Row>
             <Col md={6} className="m-auto">
                 <Alert color="primary" isOpen={true}>
-                    {props.login.errMsg}
+                    {props.login.me.nickname}
                 </Alert>
                 {/* <InfoToast isShow={this.state.isShow} message={this.state.message} onClick={this.handleToast} /> */}
                 <form >

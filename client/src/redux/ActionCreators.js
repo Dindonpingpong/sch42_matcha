@@ -30,7 +30,7 @@ export const loginLoading = () => ({
 
 export const loginAdd = (info) => ({
     type: ActionTypes.LOGIN_ADD,
-    payload: info.result
+    payload: info
 });
 
 export const loginFailed = (msg) => ({
@@ -59,7 +59,7 @@ export const fetchLogin = (email, password) => (dispatch) => {
     return request('/api/user/login', data, 'POST')
         .then(res => res.json())
         .then( result => {
-            if (result.success) {
+            if (result.success === true) {
                 dispatch(loginAdd(result.profile))
             }
             else {

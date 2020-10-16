@@ -1,7 +1,4 @@
-const config = require('config');
-const connector = config.get('urlDb');
-const pgp = require('pg-promise')();
-const db = pgp(connector);
+const db = require('../config/Connector');
 
 const getPage = (id, location, offset) => {
     const sql = `SELECT nickName, firstName, lastName, rate FROM Users 

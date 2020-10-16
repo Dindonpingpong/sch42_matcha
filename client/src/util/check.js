@@ -1,5 +1,5 @@
 const isValidPassword = (value) => {
-    if (value.length > 7)
+    if (value.length > 0)
         return true;
     return false;
 }

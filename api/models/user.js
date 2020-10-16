@@ -10,7 +10,9 @@ const sign = (params) => {
 };
 
 const getPassword = (email) => {
-  const sql = 'SELECT password FROM Users WHERE email=$1';
+  const sql = `SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, 
+  sex, rate, about, photos, location, password 
+  FROM Users WHERE email=$1`;
 
   return db.any(sql, email);
 };
@@ -30,5 +32,4 @@ const getProfile = (nickname) => {
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
-
 exports.getProfile = getProfile;
