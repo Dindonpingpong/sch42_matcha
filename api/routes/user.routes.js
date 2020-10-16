@@ -10,8 +10,12 @@ router.post('/login', async (req, res) => {
 
         getPassword(email)
             .then(data => {
+                console.log(data)
                 const len = data.length;
-                const check = bcrypt.compareSync(password, data[0].password);
+                let check;
+
+                if (len > 0)
+                    check = bcrypt.compareSync(password, data[0].password);
 
                 if (len == 0 || check == false) {
                     res.status(500).json({
@@ -20,9 +24,10 @@ router.post('/login', async (req, res) => {
                     })
                 }
                 else {
+                    delete data[0].password;
                     res.status(200).json({
                         message: "Your logged",
-                        profile: data,
+                        profile: data[0],
                         success: true
                     })
                 }
@@ -65,7 +70,7 @@ router.post('/register', async (req, res) => {
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
-
+        
         const params = [
             nickName,
             firstName,
@@ -79,43 +84,21 @@ router.post('/register', async (req, res) => {
             .then(data => {
                 res.status(200).json({
                     message: data.id,
-                    error: false
+                    success: true
                 })
                 // sendMail(email, )
             })
-
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            error: true
-        })
-    }
-})
-
-router.get('/:nickname', async (req, res) => {
-    try {
-        const nickname = [req.params.nickname];
-
-        console.log(nickname);
-        getProfile(nickname)
-            .then(data => {
-                console.log(data);
-                if (data.length > 0)
-                    res.status(200).json({
-                        result: data[0],
-                        message: "Ok",
-                        error: false
-                    })
-                else
-                    res.status(200).json({
-                        message: "Profile not found",
-                        error: true
-                    })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
             })
+
     } catch (e) {
         res.status(500).json({
             message: e.message,
-            error: true
+            success: false
         })
     }
 })
@@ -135,7 +118,7 @@ router.get('/:nickname', async (req, res) => {
                         error: false
                     })
                 else
-                    res.status(500).json({
+                    res.status(200).json({
                         message: "Profile not found",
                         error: true
                     })
