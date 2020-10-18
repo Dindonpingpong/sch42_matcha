@@ -22,7 +22,7 @@ CREATE TABLE  Users (
     sex sexType NOT NULL DEFAULT 'prefer not to say',
     rate int DEFAULT 0,
     about text,
-    photos text[5] DEFAULT ARRAY['../img/avatar.jpg','../img/photo.jpg','../img/photo.jpg', '../img/photo.jpg', '../img/photo.jpg'],
+    photos text[5] DEFAULT ARRAY['../img/avatar.svg','../img/photo.svg','../img/photo.svg', '../img/photo.svg', '../img/photo.svg'],
     location text[3],
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
@@ -85,10 +85,11 @@ UPDATE Users SET sex = 'female' WHERE id IN (2, 6, 7);
 
 UPDATE Users SET about = 'About me... test...' WHERE id IN (1, 2, 5);
 
-UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg'] WHERE id IN (1, 5);
+UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/photo.svg','../img/1.jpg','../img/1.jpg','../img/2.jpg'] WHERE id IN (1, 5);
 UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg'] WHERE id IN (2);
 
 INSERT INTO Connections (idFrom, idTo, status) VALUES
+    ('4', '1', 'like'),
     ('4', '6', 'like'),
     ('6', '4', 'like'),
     ('5', '7', 'ignore'),
@@ -97,8 +98,16 @@ INSERT INTO Connections (idFrom, idTo, status) VALUES
     ('7', '2', 'ignore');
 
 INSERT INTO History (idVisitor, idVisited) VALUES
+    ('4', '1'),
+    ('2', '1'),
     ('4', '5'),
     ('4', '6'),
     ('5', '7'),
     ('6', '7'),
     ('7', '8');
+
+
+-- update Users set photos[2]='../img/1.jpg' where id=1;
+-- SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN History h ON u.id = h.idvisitor WHERE h.idvisited = 1;
+-- INSERT INTO Connections (idFrom, idTo, status) VALUES ('4', '1', 'like');
+-- SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN Connections c ON u.id = c.idFrom WHERE c.idTo = 1;

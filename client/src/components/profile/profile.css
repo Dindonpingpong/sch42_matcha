@@ -5,7 +5,7 @@ text-break переносит не вмещенный текст
 /* profile */
 
 .profile {
-  margin-top: 20px;
+  padding: 20px 0;
 }
 
 .nav-item a {
@@ -22,6 +22,10 @@ text-break переносит не вмещенный текст
   max-width: 100%;
 }
 
+h2 {
+  margin-bottom: 1.5rem;
+}
+
 .font-profile-head {
   margin-top: 1.5rem;
   margin-bottom: 0.5rem;
@@ -30,7 +34,7 @@ text-break переносит не вмещенный текст
   color: #5a6268;
 }
 
-.font-profile-head:first-child {
+.font-profile-head:nth-child(2) {
   margin-top: 0;
 }
 
@@ -63,4 +67,9 @@ text-break переносит не вмещенный текст
   height: 75px;
   object-fit: cover;
   border-radius: 50%;
+}
+
+.card img {
+  height: 320px;
+  object-fit: cover;
 }

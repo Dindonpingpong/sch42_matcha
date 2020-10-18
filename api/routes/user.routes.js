@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getView, getLike } = require('../models/user');
 const bcrypt = require('bcrypt');
 // const { sendMail } = require('../util/mail');
 
@@ -70,7 +70,7 @@ router.post('/register', async (req, res) => {
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
-        
+
         const params = [
             nickName,
             firstName,
@@ -107,22 +107,31 @@ router.get('/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
 
-        console.log(nickname);
         getProfile(nickname)
             .then(data => {
-                console.log(data);
-                if (data.length > 0)
+                console.log('data:\n', data);
+                console.log('id:', data[0].id);
+
+                if (data.length > 0) {
                     res.status(200).json({
                         result: data[0],
                         message: "Ok",
                         error: false
-                    })
+                    });
+
+                    // const id = data[0];
+                    // console.log(id);
+                    // return id;
+                }
                 else
                     res.status(200).json({
                         message: "Profile not found",
                         error: true
                     })
             })
+            // .then(res => {
+            //     console.log('res', res);  
+            // })
     } catch (e) {
         res.status(500).json({
             message: e.message,

@@ -28,12 +28,20 @@ const getEmail = (email) => {
 }
 
 const getProfile = (nickname) => {
-  const sql = 'SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
+  const sql = 'SELECT id, nickName, firstName, lastName, email, date_part(\'year\', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
+  // const sql = 'SELECT nickName, firstName, lastName, email, date_part(\'year\', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
 
   return db.any(sql, nickname);
 }
+
+// const getView = (id) => {
+//   const sql = 'SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN History h ON u.id = h.idvisitor WHERE h.idvisited=$1';
+
+//   return db.any(sql, id);
+// }
 
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
 exports.getProfile = getProfile;
+// exports.getProfile = getView;

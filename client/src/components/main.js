@@ -6,6 +6,7 @@ import NotFound from './notFound';
 import Header from './header';
 import Users from './users';
 import Profile from './profile/Profile';
+import Footer from './Footer';
 
 export function Main() {
 
@@ -21,6 +22,7 @@ export function Main() {
                     <Route component={NotFound} />
                 </Switch>
             </Router>
+            <Footer />
         </div>
     )
 }

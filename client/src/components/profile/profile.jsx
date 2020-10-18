@@ -8,6 +8,8 @@ import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import EditProfile from './EditProfile';
 import { fetchProfile } from '../../redux/profile/ActionCreators';
+import { Loading } from '../Loading';
+import NotFound from '../notFound';
 import './Profile.css';
 
 const mapStateToProps = (state) => {
@@ -77,10 +79,8 @@ function ViewsList(props) {
 
 
 const Profile = (props) => {
-    console.log(props.match.params.nickname);
-    useEffect(() => {props.fetchProfile(props.match.params.nickname)}, []);
+    useEffect(() => { props.fetchProfile(props.match.params.nickname) }, []);
     const tags = ["test1", "test2", "test3"];
-    const photos = ["../img/avatar.svg", "../img/photo.svg", "../img/photo.svg", "../img/photo.svg", "../img/photo.svg"];
     const views = [{ name: "name1", about: "about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 about1 " }, { name: "name2", about: "about2" }, { name: "name3", about: "about3" }];
 
     const [activeTab, setActiveTab] = useState('1');
@@ -89,7 +89,21 @@ const Profile = (props) => {
         if (activeTab !== tab) setActiveTab(tab);
     }
 
-    console.log(props.profile);
+    if (props.profile.isLoading) {
+        return (
+            <Loading />
+        );
+    }
+    else if (props.profile.errMess) {
+        return (
+            <Container>
+                <Row>
+                    <h4>{props.profile.errMess}</h4>
+                </Row>
+            </Container>
+        );
+    }
+    else if (props.profile.info != null)
     return (
         <section className="profile text-break">
             <Container>
@@ -101,19 +115,19 @@ const Profile = (props) => {
                     <Col className="col-lg-3">
                         <img src="../img/1.jpg" alt="avatar" className="mx-auto d-block profile-avatar rounded-circle" />
                     </Col>
-                    <Col className="col-lg-9">
-                        <p className="font-profile-head">Nickname</p>
-                        <p>Sex, Sexual preferences</p>
-                        <p>Age</p>
-                        <p>Location</p>
-                        <p>{props.profile.info.nickname}</p>
+                    <Col ls="9" className="font-profile-head">
+                        <h2>{props.profile.info.nickname}</h2>
+                        <p>{props.profile.info.firstname} {props.profile.info.lastname}, {props.profile.info.age}</p>
+                        <p>{props.profile.info.sex}</p>
+                        <p>{props.profile.info.sexpreferences}</p>
+                        {/* <p>{props.profile.info.location[0]}, {props.profile.info.location[2]}</p> */}
                     </Col>
                 </Row>
 
                 <Row>
                     <Col>
                         <p className="font-profile-head">Biography</p>
-                        <p>About</p>
+                        <p>{props.profile.info.about}</p>
                     </Col>
                 </Row>
 
@@ -125,7 +139,7 @@ const Profile = (props) => {
                 </Row>
 
                 <p className="font-profile-head">Photo</p>
-                <PhotoList photos={photos} />
+                {/* <PhotoList photos={props.profile.info.photos} /> */}
 
                 <Row className="profile-tabs">
                     <Col>
@@ -154,6 +168,10 @@ const Profile = (props) => {
             </Container>
         </section>
     );
+    else
+return (
+    <NotFound />
+);
 }
 
 // export default Profile;
