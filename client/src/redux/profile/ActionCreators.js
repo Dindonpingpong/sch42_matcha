@@ -23,3 +23,41 @@ export const fetchProfile = (nickname) => (dispatch) => {
         .then(result => dispatch(profileAdd(result)))
         .catch(error => dispatch(profileFailed(error.message)));
 };
+
+export const viewAdd = (views) => ({
+    type: ActionTypes.VIEW_ADD,
+    payload: views.result
+});
+
+export const viewFailed = (msg) => ({
+    type: ActionTypes.VIEW_FAILED,
+    payload: msg
+});
+
+export const fetchView = (nickname) => (dispatch) => {
+    dispatch(profileLoading());
+
+    return request('/api/user/views/' + nickname)
+        .then(response => response.json())
+        .then(result => dispatch(viewAdd(result)))
+        .catch(error => dispatch(viewFailed(error.message)));
+};
+
+export const likeAdd = (likes) => ({
+    type: ActionTypes.LIKE_ADD,
+    payload: likes.result
+});
+
+export const likeFailed = (msg) => ({
+    type: ActionTypes.LIKE_FAILED,
+    payload: msg
+});
+
+export const fetchLike = (nickname) => (dispatch) => {
+    dispatch(profileLoading());
+
+    return request('/api/user/likes/' + nickname)
+        .then(response => response.json())
+        .then(result => dispatch(likeAdd(result)))
+        .catch(error => dispatch(likeFailed(error.message)));
+};

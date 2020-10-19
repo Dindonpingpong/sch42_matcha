@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getView, getLike } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getViews, getLikes } = require('../models/user');
 const bcrypt = require('bcrypt');
 // const { sendMail } = require('../util/mail');
 
@@ -109,33 +109,99 @@ router.get('/:nickname', async (req, res) => {
 
         getProfile(nickname)
             .then(data => {
-                console.log('data:\n', data);
-                console.log('id:', data[0].id);
-
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data[0],
                         message: "Ok",
-                        error: false
+                        success: true
                     });
-
-                    // const id = data[0];
-                    // console.log(id);
-                    // return id;
                 }
                 else
                     res.status(200).json({
                         message: "Profile not found",
-                        error: true
+                        success: false
                     })
             })
-            // .then(res => {
-            //     console.log('res', res);  
-            // })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
     } catch (e) {
         res.status(500).json({
             message: e.message,
-            error: true
+            success: false
+        })
+    }
+})
+
+router.get('/views/:nickname', async (req, res) => {
+    try {
+        const nickname = [req.params.nickname];
+
+        getViews(nickname)
+            .then(data => {
+                if (data.length > 0) {
+                    // console.log(data);
+                    res.status(200).json({
+                        result: data,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        result: [],
+                        message: "Profile not found",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.get('/likes/:nickname', async (req, res) => {
+    try {
+        const nickname = [req.params.nickname];
+
+        getLikes(nickname)
+            .then(data => {
+                if (data.length > 0) {
+                    // console.log(data);
+                    res.status(200).json({
+                        result: data,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        result: [],
+                        message: "Profile not found",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
         })
     }
 })
