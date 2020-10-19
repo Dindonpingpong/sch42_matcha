@@ -20,3 +20,9 @@ curl "http://localhost:5000/api/user/rkina"
 get view
 curl "http://localhost:5000/api/user/views/rkina"
 curl "http://localhost:5000/api/user/likess/rkina"
+
+send message
+curl -X POST -H 'Content-Type: application/json' -d '{"from":"mgrass","to":"rkina", "message":"kus"}' http://localhost:5000/api/user/message
+
+get message
+curl "http://localhost:5000/api/user/message/rkina/mgrass"

@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getViews, getLikes } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage } = require('../models/user');
 const bcrypt = require('bcrypt');
 // const { sendMail } = require('../util/mail');
 
@@ -189,6 +189,73 @@ router.get('/likes/:nickname', async (req, res) => {
                     res.status(200).json({
                         result: [],
                         message: "Profile not found",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/message', async (req, res) => {
+    try {
+        const { from, to, message } = req.body;
+
+        const params = [
+            from,
+            to,
+            message
+        ];
+
+        sendMessage(params)
+            .then(data => {
+                res.status(200).json({
+                    message: data.id,
+                    success: true
+                })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.get('/message/:from/:to', async (req, res) => {
+    try {
+        const { from, to } = req.params;
+
+        getMessage([from, to])
+            .then(data => {
+                if (data.length > 0) {
+                    // console.log(data);
+                    res.status(200).json({
+                        result: data,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        result: [],
+                        message: "No messages",
                         success: false
                     })
             })

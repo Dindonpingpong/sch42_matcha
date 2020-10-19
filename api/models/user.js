@@ -56,9 +56,32 @@ const getLikes = (nickname) => {
   return db.any(sql, nickname);
 }
 
+const sendMessage = (params) => {
+  const sql = `INSERT INTO Chat (idFrom, idTo, message) VALUES
+  ( 
+      (SELECT id FROM Users WHERE nickName = $1),
+      (SELECT id FROM Users WHERE nickName = $2),
+      $3
+  )
+  RETURNING id`;
+
+  return db.one(sql, params);
+}
+
+const getMessage = (params) => {
+  const sql = `SELECT a.nickName, b.nickName, c.message FROM Chat c
+  JOIN Users a ON a.id = c.idFrom
+  JOIN Users b ON b.id = c.idTo
+  WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)`;
+
+  return db.any(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
 exports.getProfile = getProfile;
 exports.getViews = getViews;
 exports.getLikes = getLikes;
+exports.sendMessage = sendMessage;
+exports.getMessage = getMessage;
