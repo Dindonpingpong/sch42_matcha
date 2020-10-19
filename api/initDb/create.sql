@@ -93,6 +93,7 @@ INSERT INTO Connections (idFrom, idTo, status) VALUES
     ('4', '6', 'like'),
     ('6', '4', 'like'),
     ('5', '7', 'ignore'),
+    ('7', '5', 'like'),
     ('5', '6', 'like'),
     ('8', '7', 'like'),
     ('7', '2', 'ignore');
@@ -107,7 +108,3 @@ INSERT INTO History (idVisitor, idVisited) VALUES
     ('7', '8');
 
 
--- update Users set photos[2]='../img/1.jpg' where id=1;
--- SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN History h ON u.id = h.idvisitor WHERE h.idvisited = 1;
--- INSERT INTO Connections (idFrom, idTo, status) VALUES ('4', '1', 'like');
--- SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN Connections c ON u.id = c.idFrom WHERE c.idTo = 1;

@@ -4,8 +4,8 @@ const pgp = require('pg-promise')();
 const db = pgp(connector);
 
 const sign = (params) => {
-  const sql = 
-  `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) 
+  const sql =
+    `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) 
   VALUES ($1, $2, $3, $4, $5, $6) 
   RETURNING id`;
 
@@ -13,8 +13,8 @@ const sign = (params) => {
 };
 
 const getPassword = (email) => {
-  const sql = 
-  `SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, 
+  const sql =
+    `SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, 
   sex, rate, about, photos, location, password 
   FROM Users WHERE email=$1`;
 
@@ -28,20 +28,37 @@ const getEmail = (email) => {
 }
 
 const getProfile = (nickname) => {
-  const sql = 'SELECT id, nickName, firstName, lastName, email, date_part(\'year\', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
-  // const sql = 'SELECT nickName, firstName, lastName, email, date_part(\'year\', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location FROM Users WHERE nickName=$1';
+  const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
+  sexPreferences, sex, rate, about, photos, location 
+  FROM Users WHERE nickName=$1`;
 
   return db.any(sql, nickname);
 }
 
-// const getView = (id) => {
-//   const sql = 'SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN History h ON u.id = h.idvisitor WHERE h.idvisited=$1';
+const getViews = (nickname) => {
+  const sql =
+    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about 
+    FROM Users u JOIN History h ON u.id = h.idvisitor 
+    WHERE h.idvisited = 
+    (SELECT id FROM Users WHERE nickName=$1)`;
 
-//   return db.any(sql, id);
-// }
+  return db.any(sql, nickname);
+}
+
+const getLikes = (nickname) => {
+  const sql = 
+  `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about
+  FROM Users u JOIN Connections c ON u.id = c.idFrom
+  WHERE c.idTo = 
+  (SELECT id FROM Users WHERE nickName=$1)
+  AND status='like'`;
+
+  return db.any(sql, nickname);
+}
 
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
 exports.getProfile = getProfile;
-// exports.getProfile = getView;
+exports.getViews = getViews;
+exports.getLikes = getLikes;
