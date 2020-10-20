@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards } = require('../models/user');
 const bcrypt = require('bcrypt');
 // const { sendMail } = require('../util/mail');
 
@@ -244,6 +244,43 @@ router.get('/message/:from/:to', async (req, res) => {
 
         getMessage([from, to])
             .then(data => {
+                if (data.length > 0) {
+                    // console.log(data);
+                    res.status(200).json({
+                        result: data,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        result: [],
+                        message: "No messages",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.get('/cards/:user/:page', async (req, res) => {
+    try {
+        const user = req.params.user;
+        const page = (req.params.page - 1) * 3;
+
+        getCards([user, page])
+            .then(data => {
+                console.log(data);
                 if (data.length > 0) {
                     // console.log(data);
                     res.status(200).json({

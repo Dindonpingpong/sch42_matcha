@@ -77,6 +77,18 @@ const getMessage = (params) => {
   return db.any(sql, params);
 }
 
+const getCards = (params) => {
+  const sql = `
+  SELECT nickName, firstName, lastName, rate FROM Users 
+  WHERE nickName != $1 
+  AND id !=( coalesce((SELECT  idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
+  AND status = 'ignore'), 0)) AND location[3] =
+  (SELECT location[3] FROM Users WHERE nickName=$1)
+  LIMIT 3 OFFSET $2`;
+
+  return db.any(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
@@ -85,3 +97,4 @@ exports.getViews = getViews;
 exports.getLikes = getLikes;
 exports.sendMessage = sendMessage;
 exports.getMessage = getMessage;
+exports.getCards = getCards;

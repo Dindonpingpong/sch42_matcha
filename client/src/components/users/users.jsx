@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import {
     Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Collapse, Card, CardBody, CardImg, CardTitle,
     CardSubtitle, Badge, InputGroup, InputGroupAddon,
-    FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter
+    FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink
 } from 'reactstrap';
 
 class Filter extends Component {
@@ -247,24 +247,48 @@ class UserCard extends Component {
     }
 }
 
-class Users extends Component {
-    render() {
-        // if (sessionStorage.getItem('isLogged') === 'true')
-        //     history.push('/login')
+function CardsPagination(props) {
+    return (
+        <Pagination>
+            <PaginationItem>
+                <PaginationLink first href="#" />
+            </PaginationItem>
+            <PaginationItem>
+                <PaginationLink href="#">
+                    1
+            </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+                <PaginationLink href="#">
+                    2
+            </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+                <PaginationLink href="#">
+                    3
+            </PaginationLink>
+            </PaginationItem>
+            <PaginationItem>
+                <PaginationLink last href="#" />
+            </PaginationItem>
+        </Pagination>
+    );
+}
 
-        return (
-            <div>
-                <Filter></Filter>
-                <Container>
-                    <Row>
-                        <UserCard />
-                        <UserCard />
-                        <UserCard />
-                    </Row>
-                </Container>
-            </div>
-        )
-    }
+function Users(props) {
+    return (
+        <div>
+            <Filter></Filter>
+            <Container>
+                <Row>
+                    <UserCard />
+                    <UserCard />
+                    <UserCard />
+                </Row>
+                <CardsPagination />
+            </Container>
+        </div>
+    );
 }
 
 export default Users;
