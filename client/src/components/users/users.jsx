@@ -210,44 +210,56 @@ class Filter extends Component {
     }
 }
 
-class UserCard extends Component {
-    constructor(props) {
-        super(props);
+function UserCards(props) {
 
-        this.state = {
-            name: "Annie",
-            age: 14,
-            location: "Moscow",
-            sex: "Female",
-            preference: "Heteresexual",
-            tags: ['food', 'movies']
-        }
-    }
+    const listCards = props.cards.map((card, item) =>
+        <Col md={4} key={item}>
+            <Card className="mb-4">
+                <CardImg width="100%" top src={'../' + card.photos} />
+                <CardBody>
+                    <CardTitle>
+                        {card.firstname}
+                        <Badge color="primary" pill>{card.age}</Badge>
+                    </CardTitle>
+                    <CardSubtitle className="mb-2 text-muted">{card.region}, {card.city}</CardSubtitle>
+                    <ListGroup flush>
+                        <ListGroupItem>{card.sex}</ListGroupItem>
+                        <ListGroupItem>{card.sexpreferences}</ListGroupItem>
+                        <ListGroupItem>{card.tags}</ListGroupItem>
+                    </ListGroup>
+                    <Button color="primary" >Go to profile</Button>
+                </CardBody>
+            </Card>
+        </Col>
+    );
+    return(
+        <Row>
+            {listCards}
+        </Row>
+    )
 
-    render() {
-        return (
-            <Col md={4}>
-                <Card className="mb-4">
-                    <CardImg width="100%" top src="https://i.pinimg.com/originals/08/5e/9f/085e9fa1ee1b67a3d338313c0b024061.png" />
-                    <CardBody>
-                        <CardTitle>{this.state.name}
-                            <Badge color="primary" pill>{this.state.age}</Badge>
-                        </CardTitle>
-                        <CardSubtitle className="mb-2 text-muted">{this.state.location}</CardSubtitle>
-                        <ListGroup flush>
-                            <ListGroupItem>{this.state.sex}</ListGroupItem>
-                            <ListGroupItem>{this.state.preference}</ListGroupItem>
-                            <ListGroupItem>{this.state.tags}</ListGroupItem>
-                        </ListGroup>
-                        <Button color="primary" >Go to profile</Button>
-                    </CardBody>
-                </Card>
-            </Col>
-        )
-    }
+    return (
+        <Col md={4}>
+            <Card className="mb-4">
+                <CardImg width="100%" top src={props.photos[1]} />
+                <CardBody>
+                    <CardTitle>{props.name}
+                        <Badge color="primary" pill>{props.age}</Badge>
+                    </CardTitle>
+                    <CardSubtitle className="mb-2 text-muted">{props.location}</CardSubtitle>
+                    <ListGroup flush>
+                        <ListGroupItem>{props.sex}</ListGroupItem>
+                        <ListGroupItem>{props.preference}</ListGroupItem>
+                        <ListGroupItem>{props.tags}</ListGroupItem>
+                    </ListGroup>
+                    <Button color="primary" >Go to profile</Button>
+                </CardBody>
+            </Card>
+        </Col>
+    )
 }
 
-function CardsPagination(props) {
+function CardsPagination() {
     return (
         <Pagination>
             <PaginationItem>
@@ -276,15 +288,47 @@ function CardsPagination(props) {
 }
 
 function Users(props) {
+    const mock = [
+        {
+            nickname: 'test12',
+            firstname: 'test12',
+            age: 45,
+            rate: 0,
+            sex: 'prefer not to say',
+            sexpreferences: 'bisexual',
+            region: 'Moscow',
+            city: 'Moscow',
+            photos: '../img/avatar.svg'
+        },
+        {
+            nickname: 'test13',
+            firstname: 'test13',
+            age: 55,
+            rate: 0,
+            sex: 'prefer not to say',
+            sexpreferences: 'bisexual',
+            region: 'Moscow',
+            city: 'Moscow',
+            photos: '../img/avatar.svg'
+        },
+        {
+            nickname: 'test12',
+            firstname: 'test12',
+            age: 45,
+            rate: 0,
+            sex: 'prefer not to say',
+            sexpreferences: 'bisexual',
+            region: 'Moscow',
+            city: 'Moscow',
+            photos: '../img/avatar.svg'
+        }
+    ]
+
     return (
         <div>
             <Filter></Filter>
             <Container>
-                <Row>
-                    <UserCard />
-                    <UserCard />
-                    <UserCard />
-                </Row>
+                <UserCards cards={mock} />
                 <CardsPagination />
             </Container>
         </div>

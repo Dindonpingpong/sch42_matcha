@@ -79,7 +79,8 @@ const getMessage = (params) => {
 
 const getCards = (params) => {
   const sql = `
-  SELECT nickName, firstName, lastName, rate FROM Users 
+  SELECT nickName, firstName, date_part('year', age(dateBirth::date)) AS age, rate, sex, sexPreferences, location[2] as region, location[3] as city, photos[1]
+  FROM Users 
   WHERE nickName != $1 
   AND id !=( coalesce((SELECT  idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
   AND status = 'ignore'), 0)) AND location[3] =
