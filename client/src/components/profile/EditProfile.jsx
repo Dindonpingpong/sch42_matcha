@@ -1,97 +1,85 @@
-import React, { useState } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { Container, Input, Button, Label } from 'reactstrap';
 
+const mapStateToProps = (state) => {
+    return {
+        login: state.login,
+        profile: state.profile
+    }
+}
 
 const EditProfile = (props) => {
-    const {
-        buttonLabel,
-        className
-    } = props;
-
-    const [modal, setModal] = useState(false);
-
-    const toggle = () => setModal(!modal);
-
+    console.log("edit", props);
     return (
-        <div>
-            <Button className="ml-auto d-block" onClick={toggle}>Edit profile</Button>
-            <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
-                aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <p class="modal-title font-weight-bold" style="font-size: 1.4rem;" id="staticBackdropLabel">
-                                Edit profile info</p>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <ModalBody>
-                            {/* <ModalBody className="text-center"> */}
-                            <p class="font-profile-head">Username</p>
-                            <input type="text" class="form-control" placeholder="Username" />
+        <section className="profile-edit">
+            <Container>
+                {/* <ModalBody className="text-center"> */}
+                <p className="font-profile-head">Username</p>
+                <Input type="text" className="form-control" value={props.login.me.nickname} />
 
-                            <p class="font-profile-head">First name</p>
-                            <input type="text" class="form-control" placeholder="Name" />
+                <p className="font-profile-head">First name</p>
+                <Input type="text" className="form-control" value={props.login.me.firstname} />
 
-                            <p class="font-profile-head">Last name</p>
-                            <input type="text" class="form-control" placeholder="Surname" />
+                <p className="font-profile-head">Last name</p>
+                <Input type="text" className="form-control" value={props.login.me.lastname} />
 
-                            <p class="font-profile-head">Date of Birth</p>
-                            <input type="date" class="form-control" />
+                <p className="font-profile-head">Date of Birth</p>
+                <Input type="date" className="form-control" value={props.login.me.datebirth.split("T")[0]} />
 
-                            <p class="font-profile-head">Biography</p>
-                            <textarea class="form-control" aria-label="With textarea">About me...</textarea>
+                <p className="font-profile-head">Biography</p>
+                <Input type="textarea" className="form-control" value={props.login.me.about} />
 
-                            <p class="font-profile-head">Sex</p>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex"
-                                    id="inlineRadio1" value="option1" />
-                                <label class="form-check-label" for="inlineRadio1">male</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex"
-                                    id="inlineRadio2" value="option2" />
-                                <label class="form-check-label" for="inlineRadio2">female</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsSex"
-                                    id="inlineRadio3" value="option3" />
-                                <label class="form-check-label" for="inlineRadio3">prefer not to say</label>
-                            </div>
-
-                            <p class="font-profile-head">Sexual preferences</p>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences"
-                                    id="inlineRadio4" value="option4" />
-                                <label class="form-check-label" for="inlineRadio4">bi</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences"
-                                    id="inlineRadio5" value="option5" />
-                                <label class="form-check-label" for="inlineRadio5">hetero</label>
-                            </div>
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="inlineRadioOptionsPreferences"
-                                    id="inlineRadio6" value="option6" />
-                                <label class="form-check-label" for="inlineRadio6">homo</label>
-                            </div>
-
-                            <p class="font-profile-head">Current password</p>
-                            <input type="text" class="form-control" placeholder="Current password" />
-
-                            <p class="font-profile-head">New password</p>
-                            <input type="text" class="form-control" placeholder="New password" />
-                        </ModalBody>
-                        <ModalFooter>
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-success">Save</button>
-                        </ModalFooter>
-                    </div>
+                <p className="font-profile-head">Sex</p>
+                <div className="form-check-inline">
+                    <Label className="profile-edit-label">
+                        <Input type="radio" name="OptionsSex" value="sexMale" />
+                        male
+                    </Label>
+                    <Label className="profile-edit-label">
+                        <Input type="radio" name="OptionsSex" value="sexFamale" />
+                        female
+                    </Label>
+                    <Label className="profile-edit-label">
+                        <Input type="radio" name="OptionsSex" value="sexNot" />
+                        prefer not to say
+                    </Label>
                 </div>
-            </div>
-        </div>
+
+                <p className="font-profile-head">Sexual preferences</p>
+                <div className="form-check-inline">
+                    <Label className="profile-edit-label">
+                        <Input type="radio" name="OptionsSexPreferences" value="sexPreferencesBi" />
+                        bi
+                    </Label>
+                    <Label className="profile-edit-label">
+                        <Input type="radio" name="OptionsSexPreferences" value="sexPreferencesHetero" />
+                        hetero
+                    </Label>
+                    <Label className="profile-edit-label">
+                        <Input type="radio" name="OptionsSexPreferences" value="sexPreferencesHomo" />
+                        homo
+                    </Label>
+                </div>
+
+                <p className="font-profile-head">Current password</p>
+                <Input type="password" className="form-control" placeholder="Current password" />
+
+                <p className="font-profile-head">New password</p>
+                <Input type="password" className="form-control" placeholder="New password" />
+
+                <div className="d-flex justify-content-between align-items-center">
+                    {/* <Button href="#" as="input" type="button" value="Save" className="btn-success">Save</Button> */}
+                    <Button href="#" className="btn-success" value="Save" >Save</Button>
+                    {/* ml-auto d-block */}
+                    <Link to={`/users/${props.login.me.nickname}`} className="btn btn-secondary">Close</Link>
+                </div>
+            </Container>
+        </section >
     );
 }
 
-export default EditProfile;
+export default withRouter(connect(mapStateToProps)(EditProfile));
+// export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditProfile));

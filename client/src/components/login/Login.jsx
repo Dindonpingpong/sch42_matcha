@@ -105,7 +105,7 @@ function Login(props) {
     }
 
     if (props.login.isLogged) {
-        history.push("/users");
+        history.push("/");
     }
 
     return (

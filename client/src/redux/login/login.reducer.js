@@ -13,7 +13,7 @@ export const LoginReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case ActionTypes.LOGIN_ADD:
-            return { ...state, isLoading: false, errMsg: 'Cool', isLogged: true, me: action.payload };
+            return { ...state, isLoading: false, errMsg: null, isLogged: true, me: action.payload };
 
         case ActionTypes.LOGIN_LOADING:
             return { ...state, isLoading: true, errMsg: null };

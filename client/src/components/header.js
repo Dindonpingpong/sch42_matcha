@@ -22,7 +22,7 @@ class Header extends Component {
         const location = window.location.pathname;
         // const name = isLogged === 'true' ? 'Out' : 'In';
         const name = isLogged === 'true' ? <i className="fa fa-sign-out"></i> : <i className="fa fa-sign-in"></i>;
-        
+
         if (location === '/login')
             return;
 
@@ -39,15 +39,15 @@ class Header extends Component {
         return (
             <Navbar color="light" light expand="xs">
                 <Container>
-                    <NavbarBrand href="/users">Matcha</NavbarBrand>
+                    <NavbarBrand href="/">Matcha</NavbarBrand>
                     <Nav className="ml-auto" navbar>
-                    <NavItem>
+                        <NavItem>
                             <NavLink href="/#">
                                 <i className="fa fa-bell"></i>
                             </NavLink>
                         </NavItem>
                         <NavItem>
-                            <NavLink href="/users">
+                            <NavLink href="/">
                                 <i className="fa fa-home"></i>
                             </NavLink>
                         </NavItem>

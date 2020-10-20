@@ -4,7 +4,7 @@ text-break переносит не вмещенный текст
 
 /* profile */
 
-.profile {
+.profile, .profile-edit {
   padding: 20px 0;
 }
 
@@ -72,4 +72,26 @@ h2 {
 .card img {
   height: 320px;
   object-fit: cover;
+}
+
+.aside-button {
+  width: 113px;
+  margin-bottom: 20px;
+}
+
+.profile-edit .align-items-center {
+  padding-top: 20px;
+}
+
+.profile-edit .form-check-inline {
+  width: 100%;
+  justify-content: center;
+}
+
+.profile-edit-label {
+  margin-right: 15px;
+}
+
+.profile-edit .font-profile-head {
+  text-align: center;
 }
