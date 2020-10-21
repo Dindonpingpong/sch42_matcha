@@ -6,6 +6,7 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
+import EditProfile from './EditProfile';
 import { fetchProfile, fetchView, fetchLike } from '../../redux/profile/ActionCreators';
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
@@ -36,26 +37,27 @@ function TagsList(props) {
 }
 
 function PhotoList(props) {
-    let listItems;
-    if (props.photos) {
-        listItems = props.photos.map((photo, item) =>
-            <Col md="4" key={item}>
-                <Card className="mb-4 shadow-sm">
-                    <CardImg src={photo} alt={"Photo profile"} />
-                    <CardBody>
-                        <div className="d-flex justify-content-between align-items-center">
-                            {/* <input className="profile-input" type="file" id={`customFile${item}`} />
-                        <label className="btn btn-sm btn-success" htmlFor={`customFile${item}`}>Add</label> */}
-                            <Label className="btn btn-sm btn-success">Add
-                            <Input className="profile-input" type="file" />
-                            </Label>
-                            <Button size="sm" color="danger">Delete</Button>
-                        </div>
-                    </CardBody>
-                </Card>
-            </Col>
+    if (props.views)
+        return (
+            <Loading />
         );
-    }
+    const listItems = props.photos.map((photo, item) =>
+        <Col md="4" key={item}>
+            <Card className="mb-4 shadow-sm">
+                <CardImg src={photo} alt={"Photo profile"} />
+                <CardBody>
+                    <div className="d-flex justify-content-between align-items-center">
+                        {/* <input className="profile-input" type="file" id={`customFile${item}`} />
+                        <label className="btn btn-sm btn-success" htmlFor={`customFile${item}`}>Add</label> */}
+                        <Label className="btn btn-sm btn-success">Add
+                            <Input className="profile-input" type="file" />
+                        </Label>
+                        <Button size="sm" color="danger">Delete</Button>
+                    </div>
+                </CardBody>
+            </Card>
+        </Col>
+    );
     return (
         <Row>{listItems}</Row>
     );
@@ -64,7 +66,7 @@ function PhotoList(props) {
 function ViewsList(props) {
     if (props.views.length > 0) {
         const listItems = props.views.map((view, item) =>
-            <Col xs="12" className="mt-4" key={item}>
+            <div className="col-12 mt-4" key={item}>
                 <Media>
                     <Media left middle>
                         <Media object src={view.photos} alt="Profile photo _ name" />
@@ -72,11 +74,10 @@ function ViewsList(props) {
                     <Media body className="ml-4">
                         <Media heading>{view.nickname}, {view.age}</Media>
                         <p>{view.about}</p>
-                        <Link to={`/users/${view.nickname}`} className="btn btn-secondary">Go to profile</Link>
+                        <Link to="#" className="btn btn-secondary">Go to profile</Link>
                     </Media>
                 </Media>
-            </Col>
-
+            </div>
         );
 
         return (
@@ -91,8 +92,9 @@ function ViewsList(props) {
 
 function LikesList(props) {
     if (props.likes.length > 0) {
+        console.log(props.likes);
         const listItems = props.likes.map((like, item) =>
-            <Col xs="12" className="mt-4" key={item}>
+            <div className="col-12 mt-4" key={item}>
                 <Media>
                     <Media left middle>
                         <Media object src={like.photos} alt="Profile photo _ name" />
@@ -100,10 +102,10 @@ function LikesList(props) {
                     <Media body className="ml-4">
                         <Media heading>{like.nickname}, {like.age}</Media>
                         <p>{like.about}</p>
-                        <Link to={`/users/${like.nickname}`} className="btn btn-secondary">Go to profile</Link>
+                        <Link to="#" className="btn btn-secondary">Go to profile</Link>
                     </Media>
                 </Media>
-            </Col>
+            </div>
         );
         return (
             <Row>{listItems}</Row>
@@ -115,29 +117,19 @@ function LikesList(props) {
         );
 }
 
-function AsideButton(props) {
-    if (props.nickname === props.check) {
-        return (
-            <Link to="/edit" className="btn btn-secondary ml-auto d-block aside-button">
-                Edit profile
-            </Link>
-        );
-    }
-    return (
-        <div>Like</div>
-    );
-}
 
 const Profile = (props) => {
     useEffect(() => {
         props.fetchProfile(props.match.params.nickname);
         props.fetchView(props.match.params.nickname);
         props.fetchLike(props.match.params.nickname);
-    }, [props.match.params.nickname]);
-
+    }, []);
+    console.log(props.profile);
+    // console.log(props.profile.likes.length);
     const tags = ["test1", "test2", "test3"];
 
     const [activeTab, setActiveTab] = useState('1');
+
     const toggle = tab => {
         if (activeTab !== tab) setActiveTab(tab);
     }
@@ -147,21 +139,23 @@ const Profile = (props) => {
             <Loading />
         );
     }
-    else if (props.profile.errProfile) {
+    if (props.profile.errMsg || props.profile.errLike || props.profile.errView) {
         return (
             <Container>
                 <Row>
-                    {/* <h4>{props.profile.errProfile}</h4> */}
+                    {/* <h4>{props.profile.errMsg}</h4> */}
                     <h4>Error</h4>
                 </Row>
             </Container>
         );
     }
-    else if (props.profile.info != null)
+    if (props.profile.info != null)
         return (
             <section className="profile text-break">
                 <Container>
-                    <AsideButton nickname={props.login.me.nickname} check={props.match.params.nickname} />
+                    {/* проставить в зависимости от акка (свой - edit, чужой - like) */}
+                    {/* <Button color="danger ml-auto d-block">Like</Button> */}
+                    {/* <ViewsList views={EditProfile} /> */}
 
                     <Row>
                         <Col className="col-lg-3">
@@ -172,7 +166,7 @@ const Profile = (props) => {
                             <p>{props.profile.info.firstname} {props.profile.info.lastname}, {props.profile.info.age}</p>
                             <p>{props.profile.info.sex}</p>
                             <p>{props.profile.info.sexpreferences}</p>
-                            <p>{props.profile.info.country}, {props.profile.info.city}</p>
+                            <p>{props.profile.info.location[0]}, {props.profile.info.location[2]}</p>
                         </Col>
                     </Row>
 
@@ -226,4 +220,5 @@ const Profile = (props) => {
         );
 }
 
+// export default Profile;
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

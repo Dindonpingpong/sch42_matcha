@@ -86,7 +86,7 @@ UPDATE Users SET sex = 'female' WHERE id IN (2, 6, 7);
 UPDATE Users SET about = 'About me... test...' WHERE id IN (1, 2, 5);
 
 UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/photo.svg','../img/1.jpg','../img/1.jpg','../img/2.jpg'] WHERE id IN (1, 5);
-UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/1.jpg','../img/1.jpg','../img/1.jpg'] WHERE id IN (2);
+UPDATE Users SET photos[1] = '../img/1.jpg', photos[2] = '../img/1.jpg', photos[3] = '../img/1.jpg', photos[4] = '../img/1.jpg' WHERE id IN (2);
 
 INSERT INTO Connections (idFrom, idTo, status) VALUES
     ('4', '1', 'like'),

@@ -2,35 +2,34 @@ import * as ActionTypes from './ActionTypes';
 
 export const ProfileReducer = (state = {
     isLoading: true,
-    errMsg: null,
-    errView: null,
-    errLike: null,
-    info: {},
+    errProfile: null,
+    info: {
+    },
     views: [],
     likes: []
 }, action) => {
 
     switch (action.type) {
         case ActionTypes.PROFILE_ADD:
-            return { ...state, isLoading: false, errMsg: null, info: action.payload };
-
-        case ActionTypes.VIEW_ADD:
-            return { ...state, isLoading: false, errMsg: null, views: action.payload };
-
-        case ActionTypes.LIKE_ADD:
-            return { ...state, isLoading: false, errMsg: null, likes: action.payload };
+            return { ...state, isLoading: false, errProfile: null, info: action.payload };
 
         case ActionTypes.PROFILE_LOADING:
-            return { ...state, isLoading: true, errMsg: null, info: {} };
+            return { ...state, isLoading: true, errProfile: null, info: {} };
 
         case ActionTypes.PROFILE_FAILED:
-            return { ...state, isLoading: false, errMsg: action.payload, info: {} };
+            return { ...state, isLoading: false, errProfile: action.payload, info: {} };
+
+        case ActionTypes.VIEW_ADD:
+            return { ...state, isLoading: false, errProfile: null, views: action.payload };
 
         case ActionTypes.VIEW_FAILED:
-            return { ...state, isLoading: false, errView: action.payload, likes: [] };
+            return { ...state, isLoading: false, errProfile: action.payload, views: [] };
+
+        case ActionTypes.LIKE_ADD:
+            return { ...state, isLoading: false, errProfile: null, likes: action.payload };
 
         case ActionTypes.LIKE_FAILED:
-            return { ...state, isLoading: false, errLike: action.payload, views: [] };
+            return { ...state, isLoading: false, errProfile: action.payload, likes: [] };
 
         default:
             return state;

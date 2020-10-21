@@ -7,9 +7,9 @@ import { ConfigureStore } from './redux/configStore';
 
 const store = ConfigureStore();
 
-store.subscribe(()=>{
+store.subscribe(() => {
     localStorage.setItem('reduxState', JSON.stringify(store.getState()))
-  })
+})
 
 class App extends Component {
 

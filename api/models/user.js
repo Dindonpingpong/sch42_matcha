@@ -29,7 +29,7 @@ const getEmail = (email) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
-  sexPreferences, sex, rate, about, photos, location 
+  dateBirth::date, sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city 
   FROM Users WHERE nickName=$1`;
 
   return db.any(sql, nickname);

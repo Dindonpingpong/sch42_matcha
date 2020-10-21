@@ -6,6 +6,7 @@ import NotFound from './notFound';
 import Header from './header';
 import Users from './users/users';
 import Profile from './profile/Profile';
+import EditProfile from './profile/EditProfile';
 import Footer from './Footer';
 
 export function Main() {
@@ -19,6 +20,7 @@ export function Main() {
                     <Route path='/register' component={Sign} />
                     <Route exact={true} path='/users/page/:page' component={Users} />
                     <Route path='/users/:nickname' component={Profile} />
+                    <Route path='/edit' component={EditProfile} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>

@@ -5,3 +5,4 @@ export const VIEW_ADD = 'VIEW_ADD';
 export const VIEW_FAILED = 'VIEW_FAILED';
 export const LIKE_ADD = 'LIKE_ADD';
 export const LIKE_FAILED = 'LIKE_FAILED';
+
