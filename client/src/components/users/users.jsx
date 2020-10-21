@@ -237,26 +237,6 @@ function UserCards(props) {
             {listCards}
         </Row>
     )
-
-    return (
-        <Col md={4}>
-            <Card className="mb-4">
-                <CardImg width="100%" top src={props.photos[1]} />
-                <CardBody>
-                    <CardTitle>{props.name}
-                        <Badge color="primary" pill>{props.age}</Badge>
-                    </CardTitle>
-                    <CardSubtitle className="mb-2 text-muted">{props.location}</CardSubtitle>
-                    <ListGroup flush>
-                        <ListGroupItem>{props.sex}</ListGroupItem>
-                        <ListGroupItem>{props.preference}</ListGroupItem>
-                        <ListGroupItem>{props.tags}</ListGroupItem>
-                    </ListGroup>
-                    <Button color="primary" >Go to profile</Button>
-                </CardBody>
-            </Card>
-        </Col>
-    )
 }
 
 function CardsPagination() {
@@ -289,6 +269,39 @@ function CardsPagination() {
 
 function Users(props) {
     const mock = [
+        {
+            nickname: 'test12',
+            firstname: 'test12',
+            age: 45,
+            rate: 0,
+            sex: 'prefer not to say',
+            sexpreferences: 'bisexual',
+            region: 'Moscow',
+            city: 'Moscow',
+            photos: '../img/avatar.svg'
+        },
+        {
+            nickname: 'test13',
+            firstname: 'test13',
+            age: 55,
+            rate: 0,
+            sex: 'prefer not to say',
+            sexpreferences: 'bisexual',
+            region: 'Moscow',
+            city: 'Moscow',
+            photos: '../img/avatar.svg'
+        },
+        {
+            nickname: 'test12',
+            firstname: 'test12',
+            age: 45,
+            rate: 0,
+            sex: 'prefer not to say',
+            sexpreferences: 'bisexual',
+            region: 'Moscow',
+            city: 'Moscow',
+            photos: '../img/avatar.svg'
+        },
         {
             nickname: 'test12',
             firstname: 'test12',

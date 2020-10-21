@@ -312,7 +312,7 @@ class Sign extends Component {
             this.setState({ isActiveBtn: false });
         else
             this.setState({ isActiveBtn: true });
-    }
+    } 
 
     render() {
         const { isActiveBtn, isShow, icon, message } = this.state;

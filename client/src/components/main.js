@@ -12,8 +12,8 @@ export function Main() {
 
     return (
         <div>
-            <Header />
             <Router>
+            <Header />
                 <Switch>
                     <Route path='/login' component={Login} />
                     <Route path='/register' component={Sign} />

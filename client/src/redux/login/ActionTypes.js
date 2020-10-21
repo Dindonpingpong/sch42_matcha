@@ -1,5 +1,6 @@
 export const LOGIN_ADD = 'LOGIN_ADD';
+export const LOG_OUT = 'LOG_OUT';
 export const LOGIN_LOADING = 'LOGIN_LOADING';
 export const LOGIN_FAILED = 'LOGIN_FAILED';
-export const LOGIN_EMAIL_ADD = 'LOGIN_EMAIL_ADD';
+export const LOGIN_NICKNAME_ADD = 'LOGIN_NICKNAME_ADD';
 export const LOGIN_PASSWORD_ADD = 'LOGIN_PASSWORD_ADD';

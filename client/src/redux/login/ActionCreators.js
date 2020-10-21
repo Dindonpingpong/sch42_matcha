@@ -15,21 +15,25 @@ export const loginFailed = (msg) => ({
     payload: msg
 });
 
-export const loginEmailAdd = (email) => ({
-    type: ActionTypes.LOGIN_EMAIL_ADD,
-    email: email
-})
+export const loginNicknameAdd = (login) => ({
+    type: ActionTypes.LOGIN_NICKNAME_ADD,
+    nickname: login
+});
 
 export const loginPasswordAdd = (password) => ({
     type: ActionTypes.LOGIN_PASSWORD_ADD,
     password: password
+});
+
+export const loginOut = () => ({
+    type: ActionTypes.LOG_OUT
 })
 
-export const fetchLogin = (email, password) => (dispatch) => {
+export const fetchLogin = (login, password) => (dispatch) => {
     dispatch(loginLoading());
 
     const data = {
-        email: email,
+        login: login,
         password: password
     }
 
@@ -38,6 +42,7 @@ export const fetchLogin = (email, password) => (dispatch) => {
         .then( result => {
             if (result.success === true) {
                 dispatch(loginAdd(result.profile))
+                localStorage.setItem('isLogged', true);
             }
             else {
                 dispatch(loginFailed(result.message))
@@ -46,10 +51,14 @@ export const fetchLogin = (email, password) => (dispatch) => {
         .catch(error => dispatch(loginFailed(error.message)));
 }
 
-export const setEmail = (email) => (dispatch) => {
-    return dispatch(loginEmailAdd(email));
+export const setLogin = (login) => (dispatch) => {
+    return dispatch(loginNicknameAdd(login));
 }
 
 export const setPassword = (password) => (dispatch) => {
     return dispatch(loginPasswordAdd(password));
+}
+
+export const logOut = () => (dispatch) => {
+    return dispatch(loginOut());
 }

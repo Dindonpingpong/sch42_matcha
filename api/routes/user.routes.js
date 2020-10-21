@@ -6,9 +6,10 @@ const bcrypt = require('bcrypt');
 
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { login, password } = req.body;
 
-        getPassword(email)
+        console.log(login, password);
+        getPassword(login)
             .then(data => {
                 console.log(data)
                 const len = data.length;
@@ -19,7 +20,7 @@ router.post('/login', async (req, res) => {
 
                 if (len == 0 || check == false) {
                     res.status(500).json({
-                        message: "Email or pass is incorrect",
+                        message: "Login or pass is incorrect",
                         success: false
                     })
                 }
@@ -143,7 +144,6 @@ router.get('/views/:nickname', async (req, res) => {
         getViews(nickname)
             .then(data => {
                 if (data.length > 0) {
-                    // console.log(data);
                     res.status(200).json({
                         result: data,
                         message: "Ok",
@@ -178,7 +178,6 @@ router.get('/likes/:nickname', async (req, res) => {
         getLikes(nickname)
             .then(data => {
                 if (data.length > 0) {
-                    // console.log(data);
                     res.status(200).json({
                         result: data,
                         message: "Ok",
@@ -245,7 +244,6 @@ router.get('/message/:from/:to', async (req, res) => {
         getMessage([from, to])
             .then(data => {
                 if (data.length > 0) {
-                    // console.log(data);
                     res.status(200).json({
                         result: data,
                         message: "Ok",
@@ -276,13 +274,11 @@ router.get('/message/:from/:to', async (req, res) => {
 router.get('/cards/:user/:page', async (req, res) => {
     try {
         const user = req.params.user;
-        const page = (req.params.page - 1) * 3;
+        const page = (req.params.page - 1) * 6;
 
         getCards([user, page])
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
-                    // console.log(data);
                     res.status(200).json({
                         result: data,
                         message: "Ok",

@@ -4,7 +4,7 @@ const initialState = {
     isLoading: true,
     errMsg: null,
     isLogged: false,
-    email: null,
+    nickname: null,
     password: null,
     me: {}
 }
@@ -13,7 +13,10 @@ export const LoginReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case ActionTypes.LOGIN_ADD:
-            return { ...state, isLoading: false, errMsg: 'Cool', isLogged: true, me: action.payload };
+            return { ...state, isLoading: false, errMsg: null, isLogged: true, me: action.payload };
+        
+        case ActionTypes.LOG_OUT:
+            return { ...state, initialState };
 
         case ActionTypes.LOGIN_LOADING:
             return { ...state, isLoading: true, errMsg: null };
@@ -21,8 +24,8 @@ export const LoginReducer = (state = initialState, action) => {
         case ActionTypes.LOGIN_FAILED:
             return { ...state, isLoading: false, errMsg: 'Failed', isLogged: false, me: {} };
 
-        case ActionTypes.LOGIN_EMAIL_ADD:
-            return { ...state, isLoading: true, errMsg: null, isLogged: false, email: action.email };
+        case ActionTypes.LOGIN_NICKNAME_ADD:
+            return { ...state, isLoading: true, errMsg: null, isLogged: false, nickname: action.nickname };
 
         case ActionTypes.LOGIN_PASSWORD_ADD:
             return { ...state, isLoading: true, errMsg: null, isLogged: false, password: action.password };

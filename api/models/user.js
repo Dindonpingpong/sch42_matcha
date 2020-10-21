@@ -12,13 +12,13 @@ const sign = (params) => {
   return db.one(sql, params);
 };
 
-const getPassword = (email) => {
+const getPassword = (login) => {
   const sql =
-    `SELECT nickName, firstName, lastName, email, dateBirth, sexPreferences, 
+    `SELECT nickName, firstName, lastName, dateBirth, sexPreferences, 
   sex, rate, about, photos, location, password 
-  FROM Users WHERE email=$1`;
+  FROM Users WHERE nickName=$1`;
 
-  return db.any(sql, email);
+  return db.any(sql, login);
 };
 
 const getEmail = (email) => {
@@ -85,7 +85,7 @@ const getCards = (params) => {
   AND id !=( coalesce((SELECT  idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
   AND status = 'ignore'), 0)) AND location[3] =
   (SELECT location[3] FROM Users WHERE nickName=$1)
-  LIMIT 3 OFFSET $2`;
+  LIMIT 6 OFFSET $2`;
 
   return db.any(sql, params);
 }
