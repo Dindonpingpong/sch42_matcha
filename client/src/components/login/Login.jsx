@@ -103,7 +103,7 @@ function Login(props) {
         props.fetchLogin(nickname, password);
     }
 
-    if (localStorage.getItem('isLogged') === true) {
+    if (localStorage.getItem('isLogged') === 'true') {
         history.push("/users");
     }
 
