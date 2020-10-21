@@ -104,7 +104,7 @@ function Login(props) {
     }
 
     if (props.login.isLogged) {
-        history.push("/");
+        history.push("/users/page/1");
     }
 
     return (

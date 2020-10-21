@@ -1,5 +1,4 @@
-  
-import React, { Component } from 'react';
+import React from 'react';
 import {
     Navbar,
     NavbarBrand,
@@ -8,56 +7,71 @@ import {
     NavLink,
     Container
 } from 'reactstrap';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
+import { logOut } from '../redux/login/ActionCreators';
+import { useHistory } from "react-router-dom";
+import { useEffect } from 'react';
 
-class Header extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-
-        }
+const mapStateToProps = (state) => {
+    return {
+        login: state.login
     }
+}
 
-    inOut = () => {
-        const isLogged = localStorage.getItem('isLogged');
-        const location = window.location.pathname;
-        // const name = isLogged === 'true' ? 'Out' : 'In';
-        const name = isLogged === 'true' ? <i className="fa fa-sign-out"></i> : <i className="fa fa-sign-in"></i>;
+const mapDispatchToProps = (dispatch) => ({
+    logOut: () => dispatch(logOut())
+});
 
-        if (location === '/login')
-            return;
+const Header = (props) => {
+    const history = useHistory();
+    const name = props.login.isLogged === 'true' ? <i className="fa fa-sign-out"></i> : <i className="fa fa-sign-in"></i>;
+    const urls = ['/login', '/register', '/remind'];
+    const path = props.location.pathname;
 
-        return (
-            <NavItem>
-                <NavLink href='/login' onClick={() => localStorage.setItem('isLogged', false)}>
-                    {name}
-                </NavLink>
-            </NavItem>
-        );
-    }
+    useEffect(() => {
+        if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind'))
+            history.push('/login');
+    }, [path]);
 
-    render() {
-        return (
-            <Navbar color="light" light expand="xs">
-                <Container>
-                    <NavbarBrand href="/">Matcha</NavbarBrand>
-                    <Nav className="ml-auto" navbar>
+    return (
+        <Navbar color="light" light expand="xs">
+            <Container>
+                <NavbarBrand>Matcha</NavbarBrand>
+                <Nav className="ml-auto" navbar>
+                    {!urls.includes(path) &&
                         <NavItem>
                             <NavLink href="/#">
                                 <i className="fa fa-bell"></i>
                             </NavLink>
                         </NavItem>
+                    }
+                    {(!urls.includes(path) || path !== '/edit') && path.includes('/users/page') &&
                         <NavItem>
-                            <NavLink href="/">
-                                <i className="fa fa-home"></i>
+                            <NavLink href={`/users/${props.login.nickname}`}>
+                                <i className="fa fa-user"></i>
                             </NavLink>
                         </NavItem>
-                        {this.inOut()}
-                    </Nav>
-                </Container>
-            </Navbar>
-        );
-    }
+                    }
+                    {(!urls.includes(path) || path === '/edit') && !path.includes('/users/page') &&
+                        <NavItem>
+                            <NavLink href="/users/page/1">
+                                <i className="fa fa-users"></i>
+                            </NavLink>
+                        </NavItem>
+                    }
+                    {!urls.includes(path) &&
+                        <NavItem>
+                            <NavLink href='/login' onClick={props.logOut}>
+                                {name}
+                            </NavLink>
+                        </NavItem>
+                    }
+                </Nav>
+            </Container>
+        </Navbar>
+    );
+
 }
 
-export default Header;
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));

@@ -41,11 +41,10 @@ export const fetchLogin = (login, password) => (dispatch) => {
         .then(res => res.json())
         .then( result => {
             if (result.success === true) {
-                dispatch(loginAdd(result.profile))
-                localStorage.setItem('isLogged', true);
+                dispatch(loginAdd(result.profile));
             }
             else {
-                dispatch(loginFailed(result.message))
+                dispatch(loginFailed(result.message));
             }
         })
         .catch(error => dispatch(loginFailed(error.message)));
