@@ -90,14 +90,24 @@ const getCards = (params) => {
   return db.any(sql, params);
 }
 
-const putImage = (params) => {
+const putImage = (position, type, src, login) => {
+  const params = [position, type, src, login];
+
   const sql =
-    `UPDATE Users SET photos[$1] = $2
-  WHERE nickName=$3
-  RETURNING id`;
+  `UPDATE Users SET photos[$1][1] = $2, photos[$1][2] = $3 
+  WHERE nickName = $4 RETURNING id;`;
 
   return db.one(sql, params);
 };
+
+const getImage = (login, position) => {
+  const params = [position, login];
+
+  const sql = 
+  `SELECT photos[$1][1] FROM Users WHERE nickName = $2`
+
+  return db.any(sql, params);
+}
 
 exports.sign = sign;
 exports.getPassword = getPassword;
@@ -109,3 +119,4 @@ exports.sendMessage = sendMessage;
 exports.getMessage = getMessage;
 exports.getCards = getCards;
 exports.putImage = putImage;
+exports.getImage = getImage;

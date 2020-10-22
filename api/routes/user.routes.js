@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards, putImage } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards, putImage, getImage } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -310,44 +310,21 @@ router.get('/cards/:user/:page', async (req, res) => {
 router.post('/image/:nickname/:position', upload.single('photo'), async (req, res) => {
     try {
         const { nickname, position } = req.params;
-        console.log(nickname, position)
+        const { mimetype, path } = req.file;
 
-        console.log(req.file);
-        var img = fs.readFileSync(req.file.path);
-        var encode_image = img.toString('base64');
-        // Define a JSONobject for the image attributes for saving to database
-        // console.log(encode_image);
-        var finalImg = {
-            contentType: req.file.mimetype,
-            image: new Buffer.from(encode_image, 'base64')
-        };
-
-        putImage([position, finalImg, nickname]);
-
-        res.status(200).json({
-            message: 'Wohhoo',
-            success: true
-        })
-        // console.log(req.body);
-
-        // const params = [
-        //     file
-        // ];
-        // console.log(params);
-        // sendMessage(params)
-        //     .then(data => {
-        //         res.status(200).json({
-        //             message: data.id,
-        //             success: true
-        //         })
-        //     })
-        //     .catch((e) => {
-        //         res.status(500).json({
-        //             message: e.message,
-        //             success: false
-        //         })
-        //     })
-
+        putImage(position, mimetype, path, nickname)
+            .then(data => {
+                res.status(200).json({
+                    message: data.id,
+                    success: true
+                })
+            })
+            .catch(e => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
     } catch (e) {
         res.status(500).json({
             message: e.message,
@@ -356,20 +333,25 @@ router.post('/image/:nickname/:position', upload.single('photo'), async (req, re
     }
 })
 
-router.get('/image/:id', async (req, res) => {
+router.get('/image/:nickname/:position', async (req, res) => {
     try {
-        const id = req.params.id;
+        const { nickname, position } = req.params;
         var img = fs.readFileSync('uploads/' + id);
         var encode_image = img.toString('base64');
-        // Define a JSONobject for the image attributes for saving to database
-        // console.log(encode_image);
-        var finalImg = new Buffer.from(encode_image, 'base64')
+        var finalImg = new Buffer.from(encode_image, 'base64');
 
-
-        res.contentType('image/jpeg')
-        res.send(finalImg);
-
-
+        getImage(nickname, position)
+            .then(data => {
+                console.log(data);
+                res.contentType(data[0])
+                res.send(finalImg);
+            })
+            .catch(e => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
     } catch (e) {
         res.status(500).json({
             message: e.message,

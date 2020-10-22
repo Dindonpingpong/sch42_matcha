@@ -22,7 +22,7 @@ CREATE TABLE  Users (
     sex sexType NOT NULL DEFAULT 'prefer not to say',
     rate int DEFAULT 0,
     about text,
-    photos text[5] DEFAULT ARRAY['../img/avatar.svg','../img/photo.svg','../img/photo.svg', '../img/photo.svg', '../img/photo.svg'],
+    photos text[4][4] DEFAULT ARRAY[['image/jpeg','../img/avatar.svg'],['image/jpeg','../img/photo.svg'],['image/jpeg','../img/photo.svg'], ['image/jpeg','../img/photo.svg'], ['image/jpeg','../img/photo.svg']],
     location text[3],
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
@@ -85,8 +85,8 @@ UPDATE Users SET sex = 'female' WHERE id IN (2, 6, 7);
 
 UPDATE Users SET about = 'About me... test...' WHERE id IN (1, 2, 5);
 
-UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/photo.svg','../img/1.jpg','../img/1.jpg','../img/2.jpg'] WHERE id IN (1, 5);
-UPDATE Users SET photos[1] = '../img/1.jpg', photos[2] = '../img/1.jpg', photos[3] = '../img/1.jpg', photos[4] = '../img/1.jpg' WHERE id IN (2);
+-- UPDATE Users SET photos = ARRAY['../img/1.jpg','../img/photo.svg','../img/1.jpg','../img/1.jpg','../img/2.jpg'] WHERE id IN (1, 5);
+-- UPDATE Users SET photos[1] = '../img/1.jpg', photos[2] = '../img/1.jpg', photos[3] = '../img/1.jpg', photos[4] = '../img/1.jpg' WHERE id IN (2);
 
 INSERT INTO Connections (idFrom, idTo, status) VALUES
     ('4', '1', 'like'),
