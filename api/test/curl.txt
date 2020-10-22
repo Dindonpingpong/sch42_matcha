@@ -28,3 +28,5 @@ curl "http://localhost:5000/api/user/message/rkina/mgrass"
 
 get cards
 curl "http://localhost:5000/api/user/cards/rkina/1"
+
+curl "http://localhost:5000/api/user/image"

@@ -2,16 +2,17 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards } = require('../models/user');
 const bcrypt = require('bcrypt');
+const multer = require('multer');
+const upload = multer({ dest: "uploads" });
+const fs = require('fs'); 
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
     try {
         const { login, password } = req.body;
 
-        console.log(login, password);
         getPassword(login)
             .then(data => {
-                console.log(data)
                 const len = data.length;
                 let check;
 
@@ -298,6 +299,51 @@ router.get('/cards/:user/:page', async (req, res) => {
                     success: false
                 })
             })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/image/:nickname/:position', upload.single('photo'), async (req, res) => {
+    try {
+        // console.log(req.params.id)
+        console.log(req.file);
+        var img = fs.readFileSync(req.file.path);
+        var encode_image = img.toString('base64');
+        // Define a JSONobject for the image attributes for saving to database
+        // console.log(encode_image);
+        var finalImg = {
+            contentType: req.file.mimetype,
+            image: new Buffer.from(encode_image, 'base64')
+        };
+
+        // console.log(finalImg);
+
+        res.contentType(finalImg.contentType);
+        res.send(finalImg.image);
+        // console.log(req.body);
+
+        // const params = [
+        //     file
+        // ];
+        // console.log(params);
+        // sendMessage(params)
+        //     .then(data => {
+        //         res.status(200).json({
+        //             message: data.id,
+        //             success: true
+        //         })
+        //     })
+        //     .catch((e) => {
+        //         res.status(500).json({
+        //             message: e.message,
+        //             success: false
+        //         })
+        //     })
+
     } catch (e) {
         res.status(500).json({
             message: e.message,

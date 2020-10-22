@@ -38,7 +38,7 @@ function TagsList(props) {
 function PhotoList(props) {
     let listItems;
     if (props.photos) {
-        listItems = props.photos.map((photo, item) =>
+        listItems = props.photos.map((photo, item) => 
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
                     <CardImg src={photo} alt={"Photo profile"} />
@@ -47,7 +47,7 @@ function PhotoList(props) {
                             {/* <input className="profile-input" type="file" id={`customFile${item}`} />
                         <label className="btn btn-sm btn-success" htmlFor={`customFile${item}`}>Add</label> */}
                             <Label className="btn btn-sm btn-success">Add
-                            <Input className="profile-input" type="file" />
+                            <Input id={item} className="profile-input" type="file" />
                             </Label>
                             <Button size="sm" color="danger">Delete</Button>
                         </div>

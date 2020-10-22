@@ -1,13 +1,13 @@
-const request = (url, data = [], method = 'GET') => {
+const request = (url, data = [], method = 'GET', header = 'application/json') => {
     const requestOptions = {
         method: method,
         headers: { 
-            'Content-Type': 'application/json'
-         },
+            'Content-Type': header,
+        }
     };
 
     if (method === 'POST')
-        requestOptions.body = JSON.stringify(data);
+        requestOptions.body = data;
 
     return fetch(url, requestOptions)
 }
