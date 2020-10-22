@@ -1,0 +1,1 @@
+UPDATE Users SET photos[1] = '{"test": "test"}' WHERE nickName = 'rkina' RETURNING id;

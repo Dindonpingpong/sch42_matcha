@@ -1,10 +1,10 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards, putImage } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
-const fs = require('fs'); 
+const fs = require('fs');
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
@@ -309,7 +309,9 @@ router.get('/cards/:user/:page', async (req, res) => {
 
 router.post('/image/:nickname/:position', upload.single('photo'), async (req, res) => {
     try {
-        // console.log(req.params.id)
+        const { nickname, position } = req.params;
+        console.log(nickname, position)
+
         console.log(req.file);
         var img = fs.readFileSync(req.file.path);
         var encode_image = img.toString('base64');
@@ -320,10 +322,12 @@ router.post('/image/:nickname/:position', upload.single('photo'), async (req, re
             image: new Buffer.from(encode_image, 'base64')
         };
 
-        // console.log(finalImg);
+        putImage([position, finalImg, nickname]);
 
-        res.contentType(finalImg.contentType);
-        res.send(finalImg.image);
+        res.status(200).json({
+            message: 'Wohhoo',
+            success: true
+        })
         // console.log(req.body);
 
         // const params = [
@@ -343,6 +347,28 @@ router.post('/image/:nickname/:position', upload.single('photo'), async (req, re
         //             success: false
         //         })
         //     })
+
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.get('/image/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        var img = fs.readFileSync('uploads/' + id);
+        var encode_image = img.toString('base64');
+        // Define a JSONobject for the image attributes for saving to database
+        // console.log(encode_image);
+        var finalImg = new Buffer.from(encode_image, 'base64')
+
+
+        res.contentType('image/jpeg')
+        res.send(finalImg);
+
 
     } catch (e) {
         res.status(500).json({
