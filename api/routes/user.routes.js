@@ -1,10 +1,8 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards, putImage, getImage } = require('../models/user');
+const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards, getStatus,
+    updateStatus, insertStatus } = require('../models/user');
 const bcrypt = require('bcrypt');
-const multer = require('multer');
-const upload = multer({ dest: "uploads" });
-const fs = require('fs');
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
@@ -307,25 +305,27 @@ router.get('/cards/:user/:page', async (req, res) => {
     }
 })
 
-router.post('/image/:nickname/:position', upload.single('photo'), async (req, res) => {
+router.post('/status', async (req, res) => {
     try {
-        const { nickname, position } = req.params;
-        const { mimetype, path } = req.file;
+        const { me, you } = req.body;
 
-        putImage(position, mimetype, path, nickname)
+        getStatus([me, you])
             .then(data => {
                 res.status(200).json({
-                    message: data.id,
+                    result: data.status,
+                    message: "Ok",
+                    success: true
+                });
+            })
+            .catch(() => {
+                res.status(200).json({
+                    result: 'none',
+                    message: "Ok",
                     success: true
                 })
             })
-            .catch(e => {
-                res.status(500).json({
-                    message: e.message,
-                    success: false
-                })
-            })
-    } catch (e) {
+    }
+    catch (e) {
         res.status(500).json({
             message: e.message,
             success: false
@@ -333,26 +333,48 @@ router.post('/image/:nickname/:position', upload.single('photo'), async (req, re
     }
 })
 
-router.get('/image/:nickname/:position', async (req, res) => {
+router.post('/update', async (req, res) => {
     try {
-        const { nickname, position } = req.params;
-        var img = fs.readFileSync('uploads/' + id);
-        var encode_image = img.toString('base64');
-        var finalImg = new Buffer.from(encode_image, 'base64');
+        const { me, you, status, newStatus } = req.body;
 
-        getImage(nickname, position)
-            .then(data => {
-                console.log(data);
-                res.contentType(data[0])
-                res.send(finalImg);
-            })
-            .catch(e => {
-                res.status(500).json({
-                    message: e.message,
-                    success: false
+        if (status === 'like' || status === 'ignore') {
+            updateStatus([me, you, newStatus])
+                .then(data => {
+                    if (data)
+                        res.status(200).json({
+                            result: newStatus,
+                            message: "Ok",
+                            success: true
+                        });
                 })
-            })
-    } catch (e) {
+                .catch((e) => {
+                    res.status(500).json({
+                        message: e.message,
+                        success: false
+                    })
+                })
+
+        }
+        else {
+            insertStatus([me, you, newStatus])
+                .then(data => {
+                    if (data) {
+                        res.status(200).json({
+                            result: newStatus,
+                            message: "Ok",
+                            success: true
+                        });
+                    }
+                })
+                .catch((e) => {
+                    res.status(500).json({
+                        message: e.message,
+                        success: false
+                    })
+                })
+        }
+    }
+    catch (e) {
         res.status(500).json({
             message: e.message,
             success: false

@@ -30,3 +30,7 @@ get cards
 curl "http://localhost:5000/api/user/cards/rkina/1"
 
 curl "http://localhost:5000/api/user/image"
+
+
+curl -X POST -H 'Content-Type: application/json' -d '{"me":"rkina","you":"test4"}' http://localhost:5000/api/user/status
+curl -X POST -H 'Content-Type: application/json' -d '{"me":"rkina", "you":"test4", "status":"none", "newStatus":"like"}' http://localhost:5000/api/user/update
