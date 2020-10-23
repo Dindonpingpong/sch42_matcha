@@ -43,9 +43,6 @@ function TagsList(props) {
 
 function PhotoList(props) {
     function putPhoto(e, item, photo) {
-        console.log('item', item);
-        console.log('photo', photo);
-        console.log('e', e.target.files);
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             const type = e.target.files[0].type;
@@ -55,7 +52,15 @@ function PhotoList(props) {
             }
             let formData = new FormData();
             formData.append('photo', file);
-            request(`/api/user/image/${props.me}/${item}`, formData, 'POST', 'image');
+            request(`/api/user/image/${props.me}/${item}`, formData, 'POST', 'image')
+                .then(data => {
+                    if (data)
+                        props.fetchProfile(props.me);
+                })
+                .catch(e => {
+                    alert(e.message);
+                })
+
         }
     }
 
@@ -70,8 +75,6 @@ function PhotoList(props) {
                         <CardBody>
                             <div className="d-flex justify-content-between align-items-center">
                                 <Label className="btn btn-sm btn-success">Add
-                                    {/* <Input className="profile-input" type="file" onChange={putPhoto} /> */}
-                                    {/* <Input className="profile-input" type="file" onChange={putPhoto.bind(this.target, item + 1, photo[1])} /> */}
                                     <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1, photo[1])} />
                                 </Label>
                                 <Button size="sm" color="danger">Delete</Button>
@@ -93,7 +96,7 @@ function ViewsList(props) {
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
-                       <Media object src={`/api/user/image/${view.nickname}/1/${view.photos}`} alt={`Profile photo ${view.nickname}`} />
+                        <Media object src={`/api/user/image/${view.nickname}/1/${view.photos}`} alt={`Profile photo ${view.nickname}`} />
                     </Media>
                     <Media body className="ml-4">
                         <Media heading>{view.nickname}, {view.age}</Media>
@@ -231,8 +234,9 @@ const Profile = (props) => {
 
                     <Row>
                         <Col className="col-lg-3">
-                            {/* <img src="../img/1.jpg" alt="avatar" className="mx-auto d-block profile-avatar rounded-circle" /> */}
-                            <img src={`/api/user/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
+                            {props.profile.info &&
+                                <img src={`/api/user/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
+                            }
                         </Col>
                         <Col ls="9" className="font-profile-head">
                             <h2>{props.profile.info.nickname}</h2>
@@ -258,7 +262,7 @@ const Profile = (props) => {
                     </Row>
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname}/>
+                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} />
 
                     <Row className="profile-tabs">
                         <Col>
