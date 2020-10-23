@@ -234,7 +234,7 @@ const Profile = (props) => {
 
                     <Row>
                         <Col className="col-lg-3">
-                            {props.profile.info &&
+                            {props.profile.info.photos &&
                                 <img src={`/api/user/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
                             }
                         </Col>
