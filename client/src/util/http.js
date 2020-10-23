@@ -1,9 +1,9 @@
-const request = (url, data = [], method = 'GET', header = 'application/json') => {
+const request = (url, data = [], method = 'GET') => {
     const requestOptions = {
         method: method,
         headers: { 
-            'Content-Type': header,
-        }
+            'Content-Type': 'application/json'
+         },
     };
 
     if (method === 'POST')

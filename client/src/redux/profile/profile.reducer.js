@@ -6,7 +6,8 @@ export const ProfileReducer = (state = {
     info: {
     },
     views: [],
-    likes: []
+    likes: [],
+    status: null
 }, action) => {
 
     switch (action.type) {
@@ -30,6 +31,12 @@ export const ProfileReducer = (state = {
 
         case ActionTypes.LIKE_FAILED:
             return { ...state, isLoading: false, errProfile: action.payload, likes: [] };
+
+        case ActionTypes.STATUS_ADD:
+            return { ...state, isLoading: false, errProfile: null, status: action.payload };
+
+        case ActionTypes.STATUS_FAILED:
+            return { ...state, isLoading: false, errProfile: action.payload, status: null };
 
         default:
             return state;

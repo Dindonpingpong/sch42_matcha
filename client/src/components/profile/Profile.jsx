@@ -2,11 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
-    Container, Row, Col, Nav, NavItem, NavLink, Card, CardImg, CardBody, TabContent, TabPane, Button, Media, Input, Label
+    Container, Row, Col, Nav, NavItem, NavLink, Card, CardImg, CardBody, TabContent, TabPane, Button, Media, Input, Label,
+    UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { fetchProfile, fetchView, fetchLike } from '../../redux/profile/ActionCreators';
+import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus } from '../../redux/profile/ActionCreators';
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
 import './Profile.css';
@@ -14,14 +15,17 @@ import './Profile.css';
 const mapStateToProps = (state) => {
     return {
         login: state.login,
-        profile: state.profile
+        profile: state.profile,
+        status: state.status
     }
 }
 
 const mapDispatchToProps = (dispatch) => ({
     fetchProfile: (nickname) => dispatch(fetchProfile(nickname)),
     fetchView: (nickname) => dispatch(fetchView(nickname)),
-    fetchLike: (nickname) => dispatch(fetchLike(nickname))
+    fetchLike: (nickname) => dispatch(fetchLike(nickname)),
+    fetchStatus: (me, you) => dispatch(fetchStatus(me, you)),
+    fetchUpdateStatus: (me, you, status, newStatus) => dispatch(fetchUpdateStatus(me, you, status, newStatus))
 });
 
 function TagsList(props) {
@@ -38,20 +42,21 @@ function TagsList(props) {
 function PhotoList(props) {
     let listItems;
     if (props.photos) {
-        listItems = props.photos.map((photo, item) => 
+        listItems = props.photos.map((photo, item) =>
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
                     <CardImg src={photo} alt={"Photo profile"} />
-                    <CardBody>
-                        <div className="d-flex justify-content-between align-items-center">
-                            {/* <input className="profile-input" type="file" id={`customFile${item}`} />
-                        <label className="btn btn-sm btn-success" htmlFor={`customFile${item}`}>Add</label> */}
-                            <Label className="btn btn-sm btn-success">Add
-                            <Input id={item} className="profile-input" type="file" />
-                            </Label>
-                            <Button size="sm" color="danger">Delete</Button>
-                        </div>
-                    </CardBody>
+                    {
+                        props.check &&
+                        <CardBody>
+                            <div className="d-flex justify-content-between align-items-center">
+                                <Label className="btn btn-sm btn-success">Add
+                                    <Input className="profile-input" type="file" />
+                                </Label>
+                                <Button size="sm" color="danger">Delete</Button>
+                            </div>
+                        </CardBody>
+                    }
                 </Card>
             </Col>
         );
@@ -62,8 +67,8 @@ function PhotoList(props) {
 }
 
 function ViewsList(props) {
-    if (props.views.length > 0) {
-        const listItems = props.views.map((view, item) =>
+    if (props.myviews.length > 0) {
+        const listItems = props.myviews.map((view, item) =>
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
@@ -90,8 +95,8 @@ function ViewsList(props) {
 }
 
 function LikesList(props) {
-    if (props.likes.length > 0) {
-        const listItems = props.likes.map((like, item) =>
+    if (props.mylikes.length > 0) {
+        const listItems = props.mylikes.map((like, item) =>
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
@@ -116,16 +121,48 @@ function LikesList(props) {
 }
 
 function AsideButton(props) {
-    if (props.nickname === props.check) {
+    const changeStatus = (e) => {
+        if (e.target.value === 'like' || e.target.value === 'ignore') {
+            props.fetchUpdateStatus(props.me, props.you, props.status, e.target.value);
+        }
+    }
+
+    if (props.check) {
         return (
-            <Link to="/edit" className="btn btn-secondary ml-auto d-block aside-button">
-                Edit profile
-            </Link>
+            <Row className="aside-button">
+                <Link to="/edit" className="btn btn-secondary ml-auto d-block">
+                    Edit profile
+                </Link>
+            </Row>
         );
     }
-    return (
-        <div>Like</div>
-    );
+    else {
+        return (
+            // onClick={getStatus}
+            <Row className="aside-button" >
+                <Button color="danger"
+                    className={props.status === 'like' ? 'disabled-button' : ''}
+                    value='like'
+                    onClick={changeStatus}>
+                    Like
+                </Button>
+                <Button color="secondary"
+                    className={props.status === 'ignore' ? 'disabled-button' : ''}
+                    value='ignore'
+                    onClick={changeStatus}>
+                    Ignore
+                </Button>
+                <UncontrolledButtonDropdown>
+                    <DropdownToggle caret></DropdownToggle>
+                    <DropdownMenu>
+                        <DropdownItem>Like</DropdownItem>
+                        <DropdownItem>Ignore</DropdownItem>
+                        <DropdownItem>Report page</DropdownItem>
+                    </DropdownMenu>
+                </UncontrolledButtonDropdown>
+            </Row>
+        );
+    }
 }
 
 const Profile = (props) => {
@@ -133,7 +170,8 @@ const Profile = (props) => {
         props.fetchProfile(props.match.params.nickname);
         props.fetchView(props.match.params.nickname);
         props.fetchLike(props.match.params.nickname);
-    }, [props.match.params.nickname]);
+        props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
+    }, [props.match.params.nickname, props.profile.status]);
 
     const tags = ["test1", "test2", "test3"];
 
@@ -157,11 +195,16 @@ const Profile = (props) => {
             </Container>
         );
     }
-    else if (props.profile.info != null)
+    else if (props.profile.info != null) {
+        const isMe = (props.login.me.nickname === props.match.params.nickname);
         return (
             <section className="profile text-break">
                 <Container>
-                    <AsideButton nickname={props.login.me.nickname} check={props.match.params.nickname} />
+                    <AsideButton check={isMe}
+                        status={props.profile.status}
+                        me={props.login.me.nickname}
+                        you={props.match.params.nickname}
+                        fetchUpdateStatus={props.fetchUpdateStatus} />
 
                     <Row>
                         <Col className="col-lg-3">
@@ -191,7 +234,7 @@ const Profile = (props) => {
                     </Row>
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} />
+                    <PhotoList photos={props.profile.info.photos} check={isMe} />
 
                     <Row className="profile-tabs">
                         <Col>
@@ -209,10 +252,10 @@ const Profile = (props) => {
                             </Nav>
                             <TabContent activeTab={activeTab}>
                                 <TabPane tabId="1">
-                                    <ViewsList views={props.profile.views} />
+                                    <ViewsList myviews={props.profile.views} />
                                 </TabPane>
                                 <TabPane tabId="2">
-                                    <LikesList likes={props.profile.likes} />
+                                    <LikesList mylikes={props.profile.likes} />
                                 </TabPane>
                             </TabContent>
                         </Col>
@@ -220,6 +263,7 @@ const Profile = (props) => {
                 </Container>
             </section>
         );
+    }
     else
         return (
             <NotFound />
