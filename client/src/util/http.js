@@ -7,7 +7,7 @@ const request = (url, data = [], method = 'GET', header = 'application/json') =>
     };
 
     if (method === 'POST')
-        requestOptions.body = data;
+        requestOptions.body = JSON.stringify(data);
 
     return fetch(url, requestOptions)
 }

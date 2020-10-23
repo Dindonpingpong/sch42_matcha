@@ -333,17 +333,17 @@ router.post('/image/:nickname/:position', upload.single('photo'), async (req, re
     }
 })
 
-router.get('/image/:nickname/:position', async (req, res) => {
+router.get('/image/:nickname/:position/:id', async (req, res) => {
     try {
-        const { nickname, position } = req.params;
+        const { nickname, position, id } = req.params;
         var img = fs.readFileSync('uploads/' + id);
         var encode_image = img.toString('base64');
         var finalImg = new Buffer.from(encode_image, 'base64');
 
         getImage(nickname, position)
             .then(data => {
-                console.log(data);
-                res.contentType(data[0])
+                console.log(data[0].photos);
+                res.contentType(data[0].photos)
                 res.send(finalImg);
             })
             .catch(e => {
