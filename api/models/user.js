@@ -46,8 +46,8 @@ const getViews = (nickname) => {
 }
 
 const getLikes = (nickname) => {
-  const sql =
-    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about
+  const sql = 
+  `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about
   FROM Users u JOIN Connections c ON u.id = c.idFrom
   WHERE c.idTo = 
   (SELECT id FROM Users WHERE nickName=$1)
@@ -90,6 +90,30 @@ const getCards = (params) => {
   return db.any(sql, params);
 }
 
+const getStatus = (params) => {
+  const sql = `SELECT status FROM Connections
+  WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1)
+  AND idTo = (SELECT id FROM Users WHERE nickName = $2);`;
+
+  return db.one(sql, params);
+}
+
+const updateStatus = (params) => {
+  const sql = `UPDATE Connections SET status = $3
+  WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1)
+  AND idTo = (SELECT id FROM Users WHERE nickName = $2) RETURNING id;`;
+
+  return db.one(sql, params);
+}
+
+const insertStatus = (params) => {
+  const sql = `INSERT INTO Connections (idFrom, idTo, status)
+  VALUES ((SELECT id FROM Users WHERE nickName = $1),
+  (SELECT id FROM Users WHERE nickName = $2), $3) RETURNING id;`;
+
+  return db.one(sql, params);
+}
+
 const putImage = (position, type, src, login) => {
   const params = [position, type, src, login];
 
@@ -118,5 +142,8 @@ exports.getLikes = getLikes;
 exports.sendMessage = sendMessage;
 exports.getMessage = getMessage;
 exports.getCards = getCards;
+exports.getStatus = getStatus;
+exports.updateStatus = updateStatus;
+exports.insertStatus = insertStatus;
 exports.putImage = putImage;
 exports.getImage = getImage;

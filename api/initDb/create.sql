@@ -22,7 +22,7 @@ CREATE TABLE  Users (
     sex sexType NOT NULL DEFAULT 'prefer not to say',
     rate int DEFAULT 0,
     about text,
-    photos text[4][4] DEFAULT ARRAY[['image/jpeg','../img/avatar.svg'],['image/jpeg','../img/photo.svg'],['image/jpeg','../img/photo.svg'], ['image/jpeg','../img/photo.svg'], ['image/jpeg','../img/photo.svg']],
+    photos text[3][3] DEFAULT ARRAY[['image/svg','avatar.svg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     location text[3],
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
