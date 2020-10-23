@@ -37,21 +37,23 @@ const getProfile = (nickname) => {
 
 const getViews = (nickname) => {
   const sql =
-    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about 
+    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1][2], u.about 
     FROM Users u JOIN History h ON u.id = h.idvisitor 
     WHERE h.idvisited = 
-    (SELECT id FROM Users WHERE nickName=$1)`;
+    (SELECT id FROM Users WHERE nickName=$1)
+    ORDER BY h.visiTime DESC`;
 
   return db.any(sql, nickname);
 }
 
 const getLikes = (nickname) => {
-  const sql = 
-  `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about
+  const sql =
+    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1][2], u.about, c.createdAt AS time
   FROM Users u JOIN Connections c ON u.id = c.idFrom
   WHERE c.idTo = 
   (SELECT id FROM Users WHERE nickName=$1)
-  AND status='like'`;
+  AND status='like'
+  ORDER BY c.createdAt DESC`;
 
   return db.any(sql, nickname);
 }
@@ -93,15 +95,15 @@ const getCards = (params) => {
 const getStatus = (params) => {
   const sql = `SELECT status FROM Connections
   WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1)
-  AND idTo = (SELECT id FROM Users WHERE nickName = $2);`;
+  AND idTo = (SELECT id FROM Users WHERE nickName = $2)`;
 
-  return db.one(sql, params);
+  return db.any(sql, params);
 }
 
 const updateStatus = (params) => {
   const sql = `UPDATE Connections SET status = $3
   WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1)
-  AND idTo = (SELECT id FROM Users WHERE nickName = $2) RETURNING id;`;
+  AND idTo = (SELECT id FROM Users WHERE nickName = $2) RETURNING id`;
 
   return db.one(sql, params);
 }
@@ -109,7 +111,7 @@ const updateStatus = (params) => {
 const insertStatus = (params) => {
   const sql = `INSERT INTO Connections (idFrom, idTo, status)
   VALUES ((SELECT id FROM Users WHERE nickName = $1),
-  (SELECT id FROM Users WHERE nickName = $2), $3) RETURNING id;`;
+  (SELECT id FROM Users WHERE nickName = $2), $3) RETURNING id`;
 
   return db.one(sql, params);
 }
@@ -118,8 +120,8 @@ const putImage = (position, type, src, login) => {
   const params = [position, type, src, login];
 
   const sql =
-  `UPDATE Users SET photos[$1][1] = $2, photos[$1][2] = $3 
-  WHERE nickName = $4 RETURNING id;`;
+    `UPDATE Users SET photos[$1][1] = $2, photos[$1][2] = $3 
+  WHERE nickName = $4 RETURNING id`;
 
   return db.one(sql, params);
 };
@@ -127,10 +129,39 @@ const putImage = (position, type, src, login) => {
 const getImage = (login, position) => {
   const params = [position, login];
 
-  const sql = 
-  `SELECT photos[$1][1] FROM Users WHERE nickName = $2`
+  const sql =
+    `SELECT photos[$1][1] FROM Users WHERE nickName = $2`
 
   return db.any(sql, params);
+}
+
+const getTimeView = (params) => {
+  const sql =
+    `SELECT visiTime FROM History
+  WHERE idvisitor = (SELECT id FROM Users WHERE nickName = $1)
+  AND idvisited = (SELECT id FROM Users WHERE nickName = $2)`;
+
+  return db.any(sql, params);
+}
+
+const updateViewFailed = (params) => {
+  const sql =
+  `UPDATE History SET visiTime = CURRENT_TIMESTAMP
+  WHERE idVisitor = (SELECT id FROM Users WHERE nickName = $1)
+  AND idVisited = (SELECT id FROM Users WHERE nickName = $2) RETURNING id`;
+
+  return db.one(sql, params);
+}
+
+const insertViewFailed = (params) => {
+  const sql =
+    `INSERT INTO History (idVisitor, idVisited, visiTime)
+  VALUES(
+    (SELECT id FROM Users WHERE nickName = $1),
+  (SELECT id FROM Users WHERE nickName = $2),
+  CURRENT_TIMESTAMP) RETURNING id`;
+
+  return db.one(sql, params);
 }
 
 exports.sign = sign;
@@ -147,3 +178,6 @@ exports.updateStatus = updateStatus;
 exports.insertStatus = insertStatus;
 exports.putImage = putImage;
 exports.getImage = getImage;
+exports.getTimeView = getTimeView;
+exports.updateViewFailed = updateViewFailed;
+exports.insertViewFailed = insertViewFailed;

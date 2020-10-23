@@ -1,12 +1,16 @@
-const request = (url, data = [], method = 'GET') => {
+const request = (url, data = [], method = 'GET', type = '') => {
     const requestOptions = {
-        method: method,
-        headers: { 
-            'Content-Type': 'application/json'
-         },
+        method: method
     };
 
-    if (method === 'POST')
+    if (type !== 'image')
+        requestOptions.headers = {
+            'Content-Type': 'application/json'
+        };
+    else
+        requestOptions.body = data;
+
+    if (method === 'POST' && type !== 'image')
         requestOptions.body = JSON.stringify(data);
 
     return fetch(url, requestOptions)

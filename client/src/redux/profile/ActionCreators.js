@@ -109,3 +109,21 @@ export const fetchUpdateStatus = (me, you, status, newStatus) => (dispatch) => {
         })
         .catch(error => dispatch(statusFailed(error.message)));
 };
+
+export const updateViewFailed = (msg) => ({
+    type: ActionTypes.UPDATE_VIEW_FAILED,
+    payload: msg
+});
+
+export const fetchUpdateView = (me, you) => (dispatch) => {
+    dispatch(profileLoading());
+
+    const data = {
+        me: me,
+        you: you
+    }
+
+    return request('/api/user/view', data, 'POST')
+        .then(response => response.json())
+        .catch(error => dispatch(updateViewFailed(error.message)));
+};

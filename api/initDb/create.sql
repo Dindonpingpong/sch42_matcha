@@ -3,11 +3,11 @@ DROP TABLE IF EXISTS Connections CASCADE;
 DROP TABLE IF EXISTS History CASCADE;
 DROP TABLE IF EXISTS Chat CASCADE;
 DROP TYPE IF EXISTS sexType;
-CREATE TYPE sexType AS ENUM ('male','female', 'prefer not to say');
+CREATE TYPE sexType AS ENUM ('male', 'female', 'prefer not to say');
 DROP TYPE IF EXISTS preferences;
-CREATE TYPE preferences AS ENUM ('heterosexual','homosexual', 'bisexual');
+CREATE TYPE preferences AS ENUM ('heterosexual', 'homosexual', 'bisexual');
 DROP TYPE IF EXISTS connectionType;
-CREATE TYPE connectionType AS ENUM ('like','ignore');
+CREATE TYPE connectionType AS ENUM ('like', 'ignore', 'unlike');
 
 CREATE TABLE  Users (
     id SERIAL,
@@ -22,7 +22,8 @@ CREATE TABLE  Users (
     sex sexType NOT NULL DEFAULT 'prefer not to say',
     rate int DEFAULT 0,
     about text,
-    photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
+    -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
+    photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
     location text[3],
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
