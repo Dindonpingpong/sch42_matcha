@@ -42,10 +42,11 @@ function TagsList(props) {
 function PhotoList(props) {
     let listItems;
     if (props.photos) {
+        console.log(props.photos)
         listItems = props.photos.map((photo, item) =>
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
-                    <CardImg src={photo} alt={"Photo profile"} />
+                    <CardImg src={`/api/user/image/${props.me}/${item + 1}/${photo[1]}`} alt={"Photo profile"} />
                     {
                         props.check &&
                         <CardBody>
@@ -234,7 +235,7 @@ const Profile = (props) => {
                     </Row>
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} check={isMe} />
+                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname}/>
 
                     <Row className="profile-tabs">
                         <Col>

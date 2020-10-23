@@ -5,14 +5,15 @@ import { request } from './../util/http';
 // const concat = require('concat-stream');
 
 function putPhoto(e) {
+
     let formData = new FormData();
     // const file = document.getElementById('1').files[0];
     formData.append('photo', e.target.files[0])
-    fetch('/api/user/image/rkina/2', {
-        method: 'POST',
-        body: formData
-      });
-    // request('/api/user/image/rkina/2', formData, 'POST', 'multipart/form-data');
+    // fetch('/api/user/image/rkina/2', {
+    //     method: 'POST',
+    //     body: formData
+    //   });
+    request('/api/user/image/rkina/2', formData, 'POST');
 }
 
 
