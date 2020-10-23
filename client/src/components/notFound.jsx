@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Alert, Input } from 'reactstrap';
 import { request } from './../util/http';
-import fs from 'fs';
+
 // const concat = require('concat-stream');
 
 function putPhoto(e) {
@@ -31,7 +31,7 @@ const NotFound = () => {
                 {/* <button onClick={putPhoto} /> */}
                 {/* <Input type='submit' value='Add'></Input> */}
                 {/* </form> */}
-                <img src='/api/user/image/rkina/1/c523aadd72a87b6e56d77736c1c53ef8' />
+                <img src='/api/user/image/rkina/1/11d4127a548f827002746046d5ec6c00' />
             </Container>
         </section>
     )
