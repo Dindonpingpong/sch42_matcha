@@ -74,10 +74,30 @@ h2 {
   object-fit: cover;
 }
 
+/* 22/10/20 */
 .aside-button {
-  width: 113px;
   margin-bottom: 20px;
+  justify-content: flex-end;
 }
+
+.aside-button button {
+  margin-left: 10px;
+}
+
+.dropdown-menu {
+  transform: translate3d(-115px, 40px, 0px) !important; 
+}
+
+.dropdown-menu button,
+.aside-button .dropdown-toggle::after {
+  margin-left: 0;
+}
+
+.disabled-button {
+  pointer-events: none;
+  opacity: 50%;
+}
+/**/
 
 .profile-edit .align-items-center {
   padding-top: 20px;

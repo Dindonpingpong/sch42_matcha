@@ -61,3 +61,51 @@ export const fetchLike = (nickname) => (dispatch) => {
         .then(result => dispatch(likeAdd(result)))
         .catch(error => dispatch(likeFailed(error.message)));
 };
+
+export const statusAdd = (status) => ({
+    type: ActionTypes.STATUS_ADD,
+    payload: status.result
+});
+
+export const statusFailed = (msg) => ({
+    type: ActionTypes.STATUS_FAILED,
+    payload: msg
+});
+
+export const fetchStatus = (me, you) => (dispatch) => {
+    dispatch(profileLoading());
+
+    const data = {
+        me: me,
+        you: you
+    }
+
+    return request('/api/user/status', data, 'POST')
+        .then(response => response.json())
+        .then(result => dispatch(statusAdd(result)))
+        .catch(error => dispatch(statusFailed(error.message)));
+};
+
+export const fetchUpdateStatus = (me, you, status, newStatus) => (dispatch) => {
+    dispatch(profileLoading());
+
+    const data = {
+        me: me,
+        you: you,
+        status: status,
+        newStatus: newStatus
+    }
+
+    return request('/api/user/update', data, 'POST')
+        .then(response => response.json())
+        // .then(result => dispatch(statusAdd(result)))
+        .then(result => {
+            if (result.message === 'Ok') {
+                dispatch(statusAdd(result));
+            }
+            else {
+                dispatch(statusFailed(result.message));
+            }
+        })
+        .catch(error => dispatch(statusFailed(error.message)));
+};
