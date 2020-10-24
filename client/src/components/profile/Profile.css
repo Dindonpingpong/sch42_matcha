@@ -121,3 +121,7 @@ h2 {
 .profile-edit .font-profile-head {
   text-align: center;
 }
+
+.profile-edit select {
+  width: 100%;
+}

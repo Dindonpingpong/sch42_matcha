@@ -31,12 +31,13 @@ function InputForm(props) {
     const nameChange = (e) => {
         const { name, value } = e.target;
 
-        if (isValidInput(name, value))
+        if (isValidInput(name, value)) {
             toggleValid('is-valid');
+            props.set(value);
+        }
         else
             toggleValid('is-invalid');
 
-        props.set(value);
     };
 
     return (
@@ -197,7 +198,7 @@ const Sign = (props) => {
             password: password,
             date: dateBirth
         }
-       
+
         request("api/user/register", data, 'POST')
             .then(res => res.json())
             .then(
@@ -237,7 +238,7 @@ const Sign = (props) => {
                             />
                         </Row>
                         <Row xs='1'>
-                            <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='login' placeholder='rkina7'/>
+                            <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='login' placeholder='rkina7' />
                             <InputFormWithFetch set={props.setEmail} onBlur={checkBtn} labelName='email' placeholder='rkina@mail.ru' />
                         </Row>
                         <InputForm
