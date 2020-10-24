@@ -28,10 +28,10 @@ router.post('/login', async (req, res) => {
                     })
                 }
                 else {
-                    delete data[0].password;
+                    const new_data = delete data[0].password;
                     res.status(200).json({
                         message: "Your logged",
-                        profile: data[0],
+                        profile: new_data,
                         success: true
                     })
                 }

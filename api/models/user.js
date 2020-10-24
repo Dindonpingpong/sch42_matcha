@@ -14,7 +14,9 @@ const sign = (params) => {
 
 const getPassword = (login) => {
   const sql =
-    `SELECT nickName, firstName, lastName, dateBirth, sexPreferences, 
+    `SELECT nickName, firstName, lastName, email, 
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
+    dateBirth, sexPreferences, 
   sex, rate, about, photos, location, password 
   FROM Users WHERE nickName=$1`;
 
@@ -52,8 +54,8 @@ const getViews = (nickname) => {
 }
 
 const getLikes = (nickname) => {
-  const sql = 
-  `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about
+  const sql =
+    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1], u.about
   FROM Users u JOIN Connections c ON u.id = c.idFrom
   WHERE c.idTo = 
   (SELECT id FROM Users WHERE nickName=$1)
@@ -124,7 +126,7 @@ const putImage = (position, type, src, login) => {
   const params = [position, type, src, login];
 
   const sql =
-  `UPDATE Users SET photos[$1][1] = $2, photos[$1][2] = $3 
+    `UPDATE Users SET photos[$1][1] = $2, photos[$1][2] = $3 
   WHERE nickName = $4 RETURNING id;`;
 
   return db.one(sql, params);
@@ -133,8 +135,8 @@ const putImage = (position, type, src, login) => {
 const getImage = (login, position) => {
   const params = [position, login];
 
-  const sql = 
-  `SELECT photos[$1][1] FROM Users WHERE nickName = $2`
+  const sql =
+    `SELECT photos[$1][1] FROM Users WHERE nickName = $2`
 
   return db.any(sql, params);
 }
