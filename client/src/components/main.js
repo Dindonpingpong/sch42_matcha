@@ -8,6 +8,7 @@ import Users from './users/users';
 import Profile from './profile/Profile';
 import EditProfile from './profile/EditProfile';
 import Footer from './Footer';
+import Remind from './remind/remind';
 
 export function Main() {
 
@@ -21,6 +22,7 @@ export function Main() {
                     <Route exact={true} path='/users/page/:page' component={Users} />
                     <Route path='/users/:nickname' component={Profile} />
                     <Route path='/edit' component={EditProfile} />
+                    <Route path='/remind' component={Remind} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>

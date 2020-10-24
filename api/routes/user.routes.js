@@ -7,7 +7,6 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
 const fs = require('fs');
-const { Console } = require('console');
 const c = require('config');
 // const { sendMail } = require('../util/mail');
 
@@ -30,10 +29,10 @@ router.post('/login', async (req, res) => {
                     })
                 }
                 else {
-                    const new_data = delete data[0].password;
+                    delete data[0].password;
                     res.status(200).json({
                         message: "Your logged",
-                        profile: new_data,
+                        profile: data[0],
                         success: true
                     })
                 }

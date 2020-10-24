@@ -244,7 +244,6 @@ const Sign = (props) => {
                             set={props.setDate} onBlur={checkBtn} labelName='Date birth'
                             name='birthDate' type='date' feedback='You too young for this'
                         />
-
                         <Password setPass={props.setPassword} onBlur={checkBtn} />
                         <SignUpBtn isActiveBtn={isActiveBtn} onBlur={checkBtn} />
                     </form>
