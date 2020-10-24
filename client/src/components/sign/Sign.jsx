@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Row, Col, FormGroup, Label, Input, FormFeedback, Button, Container } from 'reactstrap';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { request } from '../../util/http';
-
+import { useHistory } from "react-router-dom";
 
 const mapStateToProps = (state) => {
     return {
@@ -77,7 +77,7 @@ function InputFormWithFetch(props) {
 
     const inputChange = (e) => {
         const { name, value } = e.target;
-        if (isValidInput(name, value) === true) {
+        if (isValidInput(name, value) === true && value.length > 2) {
             toggleValid('is-valid');
             checkExist(name, value);
             props.set(value);
@@ -182,6 +182,7 @@ function SignUpBtn(props) {
 }
 
 const Sign = (props) => {
+    const history = useHistory();
     const [isActiveBtn, toggleBtn] = useState(false);
 
     const handleSubmit = (event) => {
@@ -196,13 +197,16 @@ const Sign = (props) => {
             password: password,
             date: dateBirth
         }
-        console.log(data);
+       
         request("api/user/register", data, 'POST')
             .then(res => res.json())
             .then(
-                (result) => {
+                (res) => {
+                    if (res.success)
+                        history.push('/login');
                 },
                 (error) => {
+                    console.log(error.message);
                 }
             )
     }
