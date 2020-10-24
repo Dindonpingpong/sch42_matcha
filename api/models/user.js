@@ -27,6 +27,12 @@ const getEmail = (email) => {
   return db.any(sql, email);
 }
 
+const getLogin = (login) => {
+  const sql = 'SELECT id FROM Users WHERE nickName=$1';
+
+  return db.any(sql, login);
+}
+
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
   dateBirth::date, sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city 
@@ -136,6 +142,7 @@ const getImage = (login, position) => {
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
+exports.getLogin = getLogin;
 exports.getProfile = getProfile;
 exports.getViews = getViews;
 exports.getLikes = getLikes;
