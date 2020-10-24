@@ -11,7 +11,7 @@ export const formFailed = (message) => ({
 });
 
 export const formSubmit = (res) => ({
-    type: ActionTypes.USER_FORM_SUBMIT_EDIT,
+    type: ActionTypes.USER_FORM_SUBMIT,
     payload: res
 });
 
@@ -50,26 +50,6 @@ export const formDate = (date) => ({
     dateBirth: date
 });
 
-export const formLocation = (location) => ({
-    type: ActionTypes.USER_FORM_LOCATION_ADD,
-    location: location
-});
-
-export const formTags = (tags) => ({
-    type: ActionTypes.USER_FORM_TAGS_ADD,
-    tags: tags
-});
-
-export const formSex = (sex) => ({
-    type: ActionTypes.USER_FORM_SEX_ADD,
-    sex: sex
-});
-
-export const formSexPreference = (pref) => ({
-    type: ActionTypes.USER_FORM_SEX_ADD,
-    sexPreference: pref
-});
-
 export const setFirstName = (firstName) => (dispatch) => {
     dispatch(formFirstName(firstName));
 };
@@ -98,24 +78,8 @@ export const setDate = (date) => (dispatch) => {
     dispatch(formDate(date));
 };
 
-export const setLocation = (location) => (dispatch) => {
-    dispatch(formLocation(location));
-};
-
-export const setTags = (tags) => (dispatch) => {
-    dispatch(formTags(tags));
-};
-
-export const setSex = (sex) => (dispatch) => {
-    dispatch(formSex(sex));
-};
-
-export const setSexPreference = (pref) => (dispatch) => {
-    dispatch(formSexPreference(pref));
-};
-
 export const fetchRegister = (data) => (dispatch) => {
-    dispatch(loginLoading());
+    dispatch(formLoading());
 
     return request('/api/user/register', data, 'POST')
         .then(res => res.json())
@@ -129,5 +93,3 @@ export const fetchRegister = (data) => (dispatch) => {
         })
         .catch(error => dispatch(formFailed(error.message)));
 }
-
-

@@ -7,12 +7,15 @@ const isValidPassword = (value) => {
 const isValidInput = (type, value) => {
     let regex;
 
-    if (type === 'dateBirth') {
+    if (type === 'birthDate') {
         let tmp = value.split('-');
-        let birthday = new Date(tmp[0], tmp[1] - 1, tmp[2]);
-        let ageDiffMs = Date.now() - birthday.getTime();
-        let age = Math.floor(ageDiffMs/ 3.15576e+10);
+        let birthDate = new Date(tmp[0], tmp[1] - 1, tmp[2]);
+        let today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        let m = today.getMonth() - birthDate.getMonth();
 
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate()))
+            age--;
 
         if (age < 18)
             return false;
@@ -20,10 +23,10 @@ const isValidInput = (type, value) => {
     }
 
     switch (type) {
-        case 'Email':
+        case 'email':
             regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
             break;
-        case 'Login':
+        case 'login':
             regex = /^[A-zА-я0-9]+$/;
             break;
         default:

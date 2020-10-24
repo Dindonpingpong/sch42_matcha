@@ -14,7 +14,9 @@ const sign = (params) => {
 
 const getPassword = (login) => {
   const sql =
-    `SELECT nickName, firstName, lastName, dateBirth, sexPreferences, 
+    `SELECT nickName, firstName, lastName, email, 
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
+    dateBirth, sexPreferences, 
   sex, rate, about, photos, location, password 
   FROM Users WHERE nickName=$1`;
 
@@ -25,6 +27,12 @@ const getEmail = (email) => {
   const sql = 'SELECT id FROM Users WHERE email=$1';
 
   return db.any(sql, email);
+}
+
+const getLogin = (login) => {
+  const sql = 'SELECT id FROM Users WHERE nickName=$1';
+
+  return db.any(sql, login);
 }
 
 const getProfile = (nickname) => {
@@ -168,6 +176,7 @@ const insertViewFailed = (params) => {
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getEmail = getEmail;
+exports.getLogin = getLogin;
 exports.getProfile = getProfile;
 exports.getViews = getViews;
 exports.getLikes = getLikes;

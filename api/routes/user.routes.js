@@ -1,7 +1,8 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getProfile, getViews, getLikes, sendMessage, getMessage, getCards, getStatus, putImage, getImage,
-    updateStatus, insertStatus, getTimeView, updateViewFailed, insertViewFailed } = require('../models/user');
+const { sign, getPassword, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage, 
+    getMessage, getCards, getStatus, putImage, getImage,
+    updateStatus, insertStatus } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -29,10 +30,10 @@ router.post('/login', async (req, res) => {
                     })
                 }
                 else {
-                    delete data[0].password;
+                    const new_data = delete data[0].password;
                     res.status(200).json({
                         message: "Your logged",
-                        profile: data[0],
+                        profile: new_data,
                         success: true
                     })
                 }
@@ -52,34 +53,52 @@ router.get('/register/check/email/:email', async (req, res) => {
         .then(data => {
             if (data.length > 0)
                 res.status(200).json({
-                    message: "Email is exist",
-                    error: true
+                    success: true
                 })
             else
                 res.status(200).json({
-                    message: "Ok",
-                    error: false
+                    success: false
                 })
         })
         .catch(() => {
             res.status(200).json({
-                message: "Ooopsy",
-                error: true
+                success: false
+            })
+        })
+})
+
+router.get('/register/check/login/:login', async (req, res) => {
+    const login = [req.params.login];
+
+    getLogin(login)
+        .then(data => {
+            if (data.length > 0)
+                res.status(200).json({
+                    success: true
+                })
+            else
+                res.status(200).json({
+                    success: false
+                })
+        })
+        .catch(() => {
+            res.status(200).json({
+                success: false
             })
         })
 })
 
 router.post('/register', async (req, res) => {
     try {
-        const { nickName, firstName, lastName, email, password, date } = req.body;
+        const { nickName, lastName, firstName, email, password, date } = req.body;
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
 
         const params = [
             nickName,
-            firstName,
             lastName,
+            firstName,
             email,
             hash,
             date

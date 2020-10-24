@@ -10,20 +10,16 @@ const initialState = {
     email: null,
     password: null,
     repassword: null,
-    dateBirth: null,
-    location: [],
-    tags: [],
-    sex: null,
-    sexPreference: null
+    dateBirth: null
 }
 
-export const UserFormReducer = (state = initialState, action) => {
+export const SignReducer = (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.USER_FORM_LOADING:
             return { ...state, isLoading: false, errMsg: action.message };
 
         case ActionTypes.USER_FORM_FAILED:
-            return { ...state, isLoading: false, errMsg: payload.payload };
+            return { ...state, isLoading: false, errMsg: action.payload };
 
         case ActionTypes.USER_FORM_FIRSTNAME_ADD:
             return { ...state, isLoading: false, errMsg: null, firstName: action.firstName };
@@ -32,7 +28,7 @@ export const UserFormReducer = (state = initialState, action) => {
             return { ...state, isLoading: false, errMsg: null, lastName: action.lastName };
 
         case ActionTypes.USER_FORM_NICKNAME_ADD:
-            return { ...state, isLoading: false, errMsg: null, nickName: action.login };
+            return { ...state, isLoading: false, errMsg: null, nickName: action.nickName };
 
         case ActionTypes.USER_FORM_EMAIL_ADD:
             return { ...state, isLoading: false, errMsg: null, email: action.email };
@@ -46,22 +42,7 @@ export const UserFormReducer = (state = initialState, action) => {
         case ActionTypes.USER_FORM_DATE_ADD:
             return { ...state, isLoading: false, errMsg: null, dateBirth: action.dateBirth };
 
-        case ActionTypes.USER_FORM_LOCATION_ADD:
-            return { ...state, isLoading: false, errMsg: null, location: action.location };
-
-        case ActionTypes.USER_FORM_TAGS_ADD:
-            return { ...state, isLoading: false, errMsg: null, tags: action.location };
-
-        case ActionTypes.USER_FORM_SEX_ADD:
-            return { ...state, isLoading: false, errMsg: null, sex: action.sex };
-
-        case ActionTypes.USER_FORM_SEX_PREFERENCE_ADD:
-            return { ...state, isLoading: false, errMsg: null, sexPreference: action.sexPreference };
-
-        case ActionTypes.USER_FORM_SUBMIT_EDIT:
-            return { ...initialState, success: action.payload };
-
-        case ActionTypes.USER_FORM_SUBMIT_REGISTER:
+        case ActionTypes.USER_FORM_SUBMIT:
             return { ...initialState, success: action.payload };
 
         default:
