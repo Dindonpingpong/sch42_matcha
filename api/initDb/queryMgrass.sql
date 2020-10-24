@@ -34,3 +34,7 @@ FROM Users WHERE nickName=$1
 SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city,
 (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = 'rkina')) AS tags
 FROM Users WHERE nickName='rkina';
+
+-- 24/10 
+UPDATE Users SET nickName = 'test44', firstName = 'test44', lastName = 'test44', dateBirth = '1990-02-23', email = 'test44@test4.ru', about = 'test',
+sex = 'male', sexPreferences = 'heterosexual' WHERE id = (SELECT id FROM Users WHERE nickName = 'test4');
