@@ -26,40 +26,40 @@ const EditProfile = (props) => {
             <Container>
                 {/* <ModalBody className="text-center"> */}
                 <p className="font-profile-head">Username</p>
-                <Input type="text" className="form-control" value={props.login.me.nickname} />
+                <Input type="text" className="form-control" defaultValue={props.login.me.nickname} />
 
                 <p className="font-profile-head">First name</p>
-                <Input type="text" className="form-control" value={props.login.me.firstname} />
+                <Input type="text" className="form-control" defaultValue={props.login.me.firstname} />
 
                 <p className="font-profile-head">Last name</p>
-                <Input type="text" className="form-control" value={props.login.me.lastname} />
+                <Input type="text" className="form-control" defaultValue={props.login.me.lastname} />
 
                 <p className="font-profile-head">Date of Birth</p>
-                <Input type="date" className="form-control" value={props.login.me.datebirth.split("T")[0]} />
+                <Input type="date" className="form-control" defaultValue={props.login.me.datebirth.split("T")[0]} />
 
                 <p className="font-profile-head">Email</p>
-                <Input type="email" className="form-control" value={props.login.me.email} />
+                <Input type="email" className="form-control" defaultValue={props.login.me.email} />
 
                 <p className="font-profile-head">Biography</p>
-                <Input type="textarea" className="form-control" value={props.login.me.about} />
+                <Input type="textarea" className="form-control" defaultValue={props.login.me.about} />
 
                 <p className="font-profile-head">Sex</p>
-                <select value={props.login.me.sex} onClick={test}>
+                <select defaultValue={props.login.me.sex} onClick={test}>
                     <option value="famale">Female</option>
                     <option value="male">Male</option>
                     <option value="not">Prefer not to say</option>
                 </select>
 
                 <p className="font-profile-head">Sexual preferences</p>
-                <select value={props.login.me.sexpreferences} onClick={test}>
+                <select defaultValue={props.login.me.sexpreferences} onClick={test}>
                     <option value="bisexual">bisexual</option>
                     <option value="heterosexual">heterosexual</option>
                     <option value="homosexual">homosexual</option>
                 </select>
 
                 <p className="font-profile-head">Tags</p>
-                {/* <select multiple value={props.login.me.tags} onClick={test}> */}
-                <select multiple onClick={test}>
+                <select multiple defaultValue={props.login.me.tags} onClick={test}>
+                {/* <select multiple onClick={test}> */}
                     <option value="sport">sport</option>
                     <option value="movie">movie</option>
                     <option value="food">food</option>
