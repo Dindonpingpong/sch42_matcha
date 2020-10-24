@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Connections CASCADE;
 DROP TABLE IF EXISTS History CASCADE;
 DROP TABLE IF EXISTS Chat CASCADE;
+DROP TABLE IF EXISTS Tags CASCADE;
+DROP TABLE IF EXISTS Tags_Users CASCADE;
 DROP TYPE IF EXISTS sexType;
 CREATE TYPE sexType AS ENUM ('male', 'female', 'prefer not to say');
 DROP TYPE IF EXISTS preferences;
@@ -21,7 +23,7 @@ CREATE TABLE  Users (
     sexPreferences preferences DEFAULT 'bisexual', 
     sex sexType NOT NULL DEFAULT 'prefer not to say',
     rate int DEFAULT 0,
-    about text,
+    about text DEFAULT 'About me...',
     -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
     location text[3],
@@ -59,6 +61,19 @@ CREATE TABLE Chat (
     PRIMARY KEY (id),
     FOREIGN KEY (idFrom) REFERENCES Users (id),
     FOREIGN KEY (idTo) REFERENCES Users (id)
+);
+
+CREATE TABLE Tags (
+    id SERIAL,
+    tag text,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE User_Tags (
+    idUser int,
+    idTag int,
+    FOREIGN KEY (idUser) REFERENCES Users (id),
+    FOREIGN KEY (idTag) REFERENCES Tags (id)
 );
 
 INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, password, location) VALUES
@@ -108,4 +123,17 @@ INSERT INTO History (idVisitor, idVisited) VALUES
     ('6', '7'),
     ('7', '8');
 
+INSERT INTO Tags (Tag) VALUES
+    ('sport'),
+    ('movie'),
+    ('food'),
+    ('art'),
+    ('travel'),
+    ('dance'),
+    ('animal');
 
+INSERT INTO User_Tags (idUser, idTag) VALUES 
+    ('1', '1'),
+    ('1', '3'),
+    ('1', '4'),
+    ('1', '7');

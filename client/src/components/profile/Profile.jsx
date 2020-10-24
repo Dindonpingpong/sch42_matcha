@@ -31,11 +31,14 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 function TagsList(props) {
-    const listItems = props.tags.map((tag, item) =>
-        <NavItem className="tags" key={item}>
-            <Link to="#">#{tag}</Link>
-        </NavItem>
-    );
+    let listItems;
+    if (props.tags) {
+        listItems = props.tags.map((tag, item) =>
+            <NavItem className="tags" key={item}>
+                <Link to="#">#{tag}</Link>
+            </NavItem>
+        );
+    }
     return (
         <Nav>{listItems}</Nav>
     );
@@ -196,9 +199,9 @@ const Profile = (props) => {
         props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
     }, [props.match.params.nickname, props.profile.status]);
 
-    // console.log(props.profile);
+    console.log(props.profile);
 
-    const tags = ["test1", "test2", "test3"];
+    // const tags = ["test1", "test2", "test3"];
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
@@ -234,7 +237,8 @@ const Profile = (props) => {
 
                     <Row>
                         <Col className="col-lg-3">
-                            {props.profile.info.photos &&
+                            {
+                                props.profile.info.photos &&
                                 <img src={`/api/user/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
                             }
                         </Col>
@@ -254,12 +258,14 @@ const Profile = (props) => {
                         </Col>
                     </Row>
 
-                    <p className="font-profile-head">Tags</p>
-                    <Row>
-                        <Col>
-                            <TagsList tags={tags} />
-                        </Col>
-                    </Row>
+                    {props.profile.info.tags &&
+                        <Row>
+                            <Col>
+                                <p className="font-profile-head">Tags</p>
+                                <TagsList tags={props.profile.info.tags} />
+                            </Col>
+                        </Row>
+                    }
 
                     <p className="font-profile-head">Photo</p>
                     <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} />

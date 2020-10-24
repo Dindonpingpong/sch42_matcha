@@ -29,7 +29,8 @@ const getEmail = (email) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
-  dateBirth::date, sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city 
+  sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city,
+  (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
 
   return db.any(sql, nickname);
@@ -146,7 +147,7 @@ const getTimeView = (params) => {
 
 const updateViewFailed = (params) => {
   const sql =
-  `UPDATE History SET visiTime = CURRENT_TIMESTAMP
+    `UPDATE History SET visiTime = CURRENT_TIMESTAMP
   WHERE idVisitor = (SELECT id FROM Users WHERE nickName = $1)
   AND idVisited = (SELECT id FROM Users WHERE nickName = $2) RETURNING id`;
 

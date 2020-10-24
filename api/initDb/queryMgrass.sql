@@ -20,3 +20,17 @@ SELECT visiTime FROM History WHERE idvisitor = (SELECT id FROM Users WHERE nickN
 
 INSERT INTO History (idVisitor, idVisited, visiTime) VALUES ((SELECT id FROM Users WHERE nickName = 'rkina'), (SELECT id FROM Users WHERE nickName = 'test4'), CURRENT_TIMESTAMP) RETURNING id;
 UPDATE History SET visiTime = CURRENT_TIMESTAMP WHERE idVisitor = (SELECT id FROM Users WHERE nickName = 'rkina') AND idVisited = (SELECT id FROM Users WHERE nickName = 'test4') RETURNING id;
+
+SELECT firstName, (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = 'rkina')) AS tags FROM Users WHERE nickName='rkina';
+
+SELECT u.nickName, u.firstName, u.lastName FROM Users u JOIN WHERE u.nickName='rkina';
+
+SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = 'rkina');
+
+SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city,
+(SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
+FROM Users WHERE nickName=$1
+
+SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age, sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city,
+(SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = 'rkina')) AS tags
+FROM Users WHERE nickName='rkina';
