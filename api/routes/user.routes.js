@@ -7,6 +7,8 @@ const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
 const fs = require('fs');
+const { Console } = require('console');
+const c = require('config');
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
@@ -333,17 +335,23 @@ router.post('/status', async (req, res) => {
 
         getStatus([me, you])
             .then(data => {
-                res.status(200).json({
-                    result: data.status,
-                    message: "Ok",
-                    success: true
-                });
+                if (data.length > 0)
+                    res.status(200).json({
+                        result: data[0].status,
+                        message: "Ok",
+                        success: true
+                    });
+                else
+                    res.status(200).json({
+                        result: 'none',
+                        message: "Ok",
+                        success: true
+                    })
             })
-            .catch(() => {
-                res.status(200).json({
-                    result: 'none',
-                    message: "Ok",
-                    success: true
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
                 })
             })
     }
@@ -359,7 +367,8 @@ router.post('/update', async (req, res) => {
     try {
         const { me, you, status, newStatus } = req.body;
 
-        if (status === 'like' || status === 'ignore') {
+        // console.log("2", me, you, status, newStatus);
+        if (status === 'like' || status === 'ignore' || status === 'unlike') {
             updateStatus([me, you, newStatus])
                 .then(data => {
                     if (data)
@@ -407,9 +416,10 @@ router.post('/update', async (req, res) => {
 router.post('/image/:nickname/:position', upload.single('photo'), async (req, res) => {
     try {
         const { nickname, position } = req.params;
-        const { mimetype, path } = req.file;
+        let { mimetype, path } = req.file;
+        const newPath = path.split('/')[1];
 
-        putImage(position, mimetype, path, nickname)
+        putImage(position, mimetype, newPath, nickname)
             .then(data => {
                 res.status(200).json({
                     message: data.id,
@@ -439,7 +449,6 @@ router.get('/image/:nickname/:position/:path', async (req, res) => {
 
         getImage(nickname, position)
             .then(data => {
-                console.log(data[0].photos);
                 res.contentType(data[0].photos)
                 res.send(finalImg);
             })
@@ -450,6 +459,56 @@ router.get('/image/:nickname/:position/:path', async (req, res) => {
                 })
             })
     } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/view', async (req, res) => {
+    try {
+        const { me, you } = req.body;
+
+        if (me != you) {
+            getTimeView([me, you])
+                .then(data => {
+                    if (data.length > 0) {
+                        updateViewFailed([me, you])
+                            .then(data => {
+                                if (data)
+                                    res.status(200).json({
+                                        message: "Ok",
+                                        success: true
+                                    });
+                            })
+                            .catch((e) => {
+                                res.status(500).json({
+                                    message: e.message,
+                                    success: false
+                                })
+                            })
+                    }
+                    else {
+                        insertViewFailed([me, you])
+                            .then(data => {
+                                if (data)
+                                    res.status(200).json({
+                                        message: "Ok",
+                                        success: true
+                                    });
+                            })
+                            .catch((e) => {
+                                res.status(500).json({
+                                    message: e.message,
+                                    success: false
+                                })
+                            })
+                    }
+                })
+        }
+    }
+    catch (e) {
         res.status(500).json({
             message: e.message,
             success: false

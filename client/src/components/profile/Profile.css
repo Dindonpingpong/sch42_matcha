@@ -74,7 +74,6 @@ h2 {
   object-fit: cover;
 }
 
-/* 22/10/20 */
 .aside-button {
   margin-bottom: 20px;
   justify-content: flex-end;
@@ -97,8 +96,15 @@ h2 {
   pointer-events: none;
   opacity: 50%;
 }
-/**/
 
+.profile .tab-content
+{
+    height: 400px;
+    /* max-height: 400px; */
+    overflow-x: hidden;
+}
+
+/* edit */
 .profile-edit .align-items-center {
   padding-top: 20px;
 }

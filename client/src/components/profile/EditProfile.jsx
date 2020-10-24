@@ -29,21 +29,27 @@ const EditProfile = (props) => {
                 <p className="font-profile-head">Date of Birth</p>
                 <Input type="date" className="form-control" value={props.login.me.datebirth.split("T")[0]} />
 
+                <p className="font-profile-head">Email</p>
+                <Input type="email" className="form-control" value={props.login.me.email} />
+
                 <p className="font-profile-head">Biography</p>
                 <Input type="textarea" className="form-control" value={props.login.me.about} />
 
                 <p className="font-profile-head">Sex</p>
                 <div className="form-check-inline">
                     <Label className="profile-edit-label">
-                        <Input type="radio" name="OptionsSex" value="sexMale" />
+                        {/* <Input type="radio" name="OptionsSex" value="sexMale" /> */}
+                        <Input type="radio" name="OptionsSex" value="male" />
                         male
                     </Label>
                     <Label className="profile-edit-label">
-                        <Input type="radio" name="OptionsSex" value="sexFamale" />
+                        {/* <Input type="radio" name="OptionsSex" value="sexFamale" /> */}
+                        <Input type="radio" name="OptionsSex" value="famale" />
                         female
                     </Label>
                     <Label className="profile-edit-label">
-                        <Input type="radio" name="OptionsSex" value="sexNot" />
+                        {/* <Input type="radio" name="OptionsSex" value="sexNot" /> */}
+                        <Input type="radio" name="OptionsSex" value="not" />
                         prefer not to say
                     </Label>
                 </div>

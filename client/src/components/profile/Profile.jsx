@@ -7,9 +7,10 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus } from '../../redux/profile/ActionCreators';
+import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus, fetchUpdateView } from '../../redux/profile/ActionCreators';
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
+import { request } from '../../util/http';
 import './Profile.css';
 
 const mapStateToProps = (state) => {
@@ -25,24 +26,49 @@ const mapDispatchToProps = (dispatch) => ({
     fetchView: (nickname) => dispatch(fetchView(nickname)),
     fetchLike: (nickname) => dispatch(fetchLike(nickname)),
     fetchStatus: (me, you) => dispatch(fetchStatus(me, you)),
+    fetchUpdateView: (me, you) => dispatch(fetchUpdateView(me, you)),
     fetchUpdateStatus: (me, you, status, newStatus) => dispatch(fetchUpdateStatus(me, you, status, newStatus))
 });
 
 function TagsList(props) {
-    const listItems = props.tags.map((tag, item) =>
-        <NavItem className="tags" key={item}>
-            <Link to="#">#{tag}</Link>
-        </NavItem>
-    );
+    let listItems;
+    if (props.tags) {
+        listItems = props.tags.map((tag, item) =>
+            <NavItem className="tags" key={item}>
+                <Link to="#">#{tag}</Link>
+            </NavItem>
+        );
+    }
     return (
         <Nav>{listItems}</Nav>
     );
 }
 
 function PhotoList(props) {
+    function putPhoto(e, item, photo) {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const type = e.target.files[0].type;
+            if (!type.match("image/png") && !type.match("image/jpeg")) {
+                alert('feedback about photo format');
+                return;
+            }
+            let formData = new FormData();
+            formData.append('photo', file);
+            request(`/api/user/image/${props.me}/${item}`, formData, 'POST', 'image')
+                .then(data => {
+                    if (data)
+                        props.fetchProfile(props.me);
+                })
+                .catch(e => {
+                    alert(e.message);
+                })
+
+        }
+    }
+
     let listItems;
     if (props.photos) {
-        console.log(props.photos)
         listItems = props.photos.map((photo, item) =>
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
@@ -52,7 +78,7 @@ function PhotoList(props) {
                         <CardBody>
                             <div className="d-flex justify-content-between align-items-center">
                                 <Label className="btn btn-sm btn-success">Add
-                                    <Input className="profile-input" type="file" />
+                                    <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1, photo[1])} />
                                 </Label>
                                 <Button size="sm" color="danger">Delete</Button>
                             </div>
@@ -73,7 +99,7 @@ function ViewsList(props) {
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
-                        <Media object src={view.photos} alt="Profile photo _ name" />
+                        <Media object src={`/api/user/image/${view.nickname}/1/${view.photos}`} alt={`Profile photo ${view.nickname}`} />
                     </Media>
                     <Media body className="ml-4">
                         <Media heading>{view.nickname}, {view.age}</Media>
@@ -101,7 +127,7 @@ function LikesList(props) {
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
-                        <Media object src={like.photos} alt="Profile photo _ name" />
+                        <Media object src={`/api/user/image/${like.nickname}/1/${like.photos}`} alt={`Profile photo ${like.nickname}`} />
                     </Media>
                     <Media body className="ml-4">
                         <Media heading>{like.nickname}, {like.age}</Media>
@@ -123,7 +149,7 @@ function LikesList(props) {
 
 function AsideButton(props) {
     const changeStatus = (e) => {
-        if (e.target.value === 'like' || e.target.value === 'ignore') {
+        if (e.target.value === 'like' || e.target.value === 'ignore' || e.target.value === 'unlike') {
             props.fetchUpdateStatus(props.me, props.you, props.status, e.target.value);
         }
     }
@@ -139,13 +165,11 @@ function AsideButton(props) {
     }
     else {
         return (
-            // onClick={getStatus}
             <Row className="aside-button" >
                 <Button color="danger"
-                    className={props.status === 'like' ? 'disabled-button' : ''}
-                    value='like'
+                    value={props.status === 'like' ? 'unlike' : 'like'}
                     onClick={changeStatus}>
-                    Like
+                    {props.status === 'like' ? 'Unlike' : 'Like'}
                 </Button>
                 <Button color="secondary"
                     className={props.status === 'ignore' ? 'disabled-button' : ''}
@@ -172,9 +196,12 @@ const Profile = (props) => {
         props.fetchView(props.match.params.nickname);
         props.fetchLike(props.match.params.nickname);
         props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
+        props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
     }, [props.match.params.nickname, props.profile.status]);
 
-    const tags = ["test1", "test2", "test3"];
+    console.log(props.profile);
+
+    // const tags = ["test1", "test2", "test3"];
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
@@ -198,6 +225,7 @@ const Profile = (props) => {
     }
     else if (props.profile.info != null) {
         const isMe = (props.login.me.nickname === props.match.params.nickname);
+
         return (
             <section className="profile text-break">
                 <Container>
@@ -209,7 +237,10 @@ const Profile = (props) => {
 
                     <Row>
                         <Col className="col-lg-3">
-                            <img src="../img/1.jpg" alt="avatar" className="mx-auto d-block profile-avatar rounded-circle" />
+                            {
+                                props.profile.info.photos &&
+                                <img src={`/api/user/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
+                            }
                         </Col>
                         <Col ls="9" className="font-profile-head">
                             <h2>{props.profile.info.nickname}</h2>
@@ -227,15 +258,17 @@ const Profile = (props) => {
                         </Col>
                     </Row>
 
-                    <p className="font-profile-head">Tags</p>
-                    <Row>
-                        <Col>
-                            <TagsList tags={tags} />
-                        </Col>
-                    </Row>
+                    {props.profile.info.tags &&
+                        <Row>
+                            <Col>
+                                <p className="font-profile-head">Tags</p>
+                                <TagsList tags={props.profile.info.tags} />
+                            </Col>
+                        </Row>
+                    }
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname}/>
+                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} />
 
                     <Row className="profile-tabs">
                         <Col>
@@ -271,4 +304,5 @@ const Profile = (props) => {
         );
 }
 
+// connect(mapDispatchToProps)(PhotoList);
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));
