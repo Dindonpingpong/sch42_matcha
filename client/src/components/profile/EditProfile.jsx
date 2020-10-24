@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Input, Button, Label } from 'reactstrap';
+import { Container, Input, Button } from 'reactstrap';
 
 const mapStateToProps = (state) => {
     return {
@@ -13,6 +13,14 @@ const mapStateToProps = (state) => {
 
 const EditProfile = (props) => {
     console.log("edit", props);
+
+    const test = (e) => {
+        // if (e.target.value === 'like' || e.target.value === 'ignore' || e.target.value === 'unlike') {
+        //     props.fetchUpdateStatus(props.me, props.you, props.status, e.target.value);
+        // }
+        if (e.target.value)
+            console.log(e.target.value);
+    }
     return (
         <section className="profile-edit">
             <Container>
@@ -36,39 +44,30 @@ const EditProfile = (props) => {
                 <Input type="textarea" className="form-control" value={props.login.me.about} />
 
                 <p className="font-profile-head">Sex</p>
-                <div className="form-check-inline">
-                    <Label className="profile-edit-label">
-                        {/* <Input type="radio" name="OptionsSex" value="sexMale" /> */}
-                        <Input type="radio" name="OptionsSex" value="male" />
-                        male
-                    </Label>
-                    <Label className="profile-edit-label">
-                        {/* <Input type="radio" name="OptionsSex" value="sexFamale" /> */}
-                        <Input type="radio" name="OptionsSex" value="famale" />
-                        female
-                    </Label>
-                    <Label className="profile-edit-label">
-                        {/* <Input type="radio" name="OptionsSex" value="sexNot" /> */}
-                        <Input type="radio" name="OptionsSex" value="not" />
-                        prefer not to say
-                    </Label>
-                </div>
+                <select value={props.login.me.sex} onClick={test}>
+                    <option value="famale">Female</option>
+                    <option value="male">Male</option>
+                    <option value="not">Prefer not to say</option>
+                </select>
 
                 <p className="font-profile-head">Sexual preferences</p>
-                <div className="form-check-inline">
-                    <Label className="profile-edit-label">
-                        <Input type="radio" name="OptionsSexPreferences" value="sexPreferencesBi" />
-                        bi
-                    </Label>
-                    <Label className="profile-edit-label">
-                        <Input type="radio" name="OptionsSexPreferences" value="sexPreferencesHetero" />
-                        hetero
-                    </Label>
-                    <Label className="profile-edit-label">
-                        <Input type="radio" name="OptionsSexPreferences" value="sexPreferencesHomo" />
-                        homo
-                    </Label>
-                </div>
+                <select value={props.login.me.sexpreferences} onClick={test}>
+                    <option value="bisexual">bisexual</option>
+                    <option value="heterosexual">heterosexual</option>
+                    <option value="homosexual">homosexual</option>
+                </select>
+
+                <p className="font-profile-head">Tags</p>
+                {/* <select multiple value={props.login.me.tags} onClick={test}> */}
+                <select multiple onClick={test}>
+                    <option value="sport">sport</option>
+                    <option value="movie">movie</option>
+                    <option value="food">food</option>
+                    <option value="art">art</option>
+                    <option value="travel">travel</option>
+                    <option value="dance">dance</option>
+                    <option value="animal">animal</option>
+                </select>
 
                 <p className="font-profile-head">Current password</p>
                 <Input type="password" className="form-control" placeholder="Current password" />
