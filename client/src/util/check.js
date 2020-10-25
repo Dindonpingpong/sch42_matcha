@@ -1,7 +1,8 @@
 const isValidPassword = (value) => {
-    if (value.length > 0)
-        return true;
-    return false;
+    return (value.length > 0);
+    // if (value.length > 0)
+    //     return true;
+    // return false;
 }
 
 const isValidInput = (type, value) => {
@@ -29,6 +30,8 @@ const isValidInput = (type, value) => {
         case 'login':
             regex = /^[A-zА-я0-9]+$/;
             break;
+        case ('currentPass' || 'newPass'):
+            return value.length > 0;
         default:
             regex = /^[A-zА-я]+$/;
     }
