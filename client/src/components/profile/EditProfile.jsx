@@ -14,6 +14,15 @@ const mapStateToProps = (state) => {
     }
 }
 
+const mapDispatchToProps = (dispatch) => ({
+    fetchProfile: (nickname) => dispatch(fetchProfile(nickname)),
+    fetchView: (nickname) => dispatch(fetchView(nickname)),
+    fetchLike: (nickname) => dispatch(fetchLike(nickname)),
+    fetchStatus: (me, you) => dispatch(fetchStatus(me, you)),
+    fetchUpdateView: (me, you) => dispatch(fetchUpdateView(me, you)),
+    fetchUpdateStatus: (me, you, status, newStatus) => dispatch(fetchUpdateStatus(me, you, status, newStatus))
+});
+
 function InputForm(props) {
     const [isValid, toggleValid] = useState('');
     const [feedback, setFeedback] = useState(props.feedback);
@@ -40,7 +49,7 @@ function InputForm(props) {
                     .then(res => res.json())
                     .then(result => {
                         if (result.success === true) {
-                            
+
                         }
                         else {
                             (result.message)
@@ -133,5 +142,5 @@ const EditProfile = (props) => {
     );
 }
 
-export default withRouter(connect(mapStateToProps)(EditProfile));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditProfile));
 // export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditProfile));
