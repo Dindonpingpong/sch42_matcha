@@ -118,10 +118,10 @@ export const initFormEdit = () => (dispatch) => {
     dispatch(editProfileClear());
 };
 
-export const fetchEditProfile = (data) => (dispatch) => {
+export const fetchEditProfile = (data, login) => (dispatch) => {
     dispatch(editProfileLoading());
 
-    return request('/api/user/edit', data, 'POST')
+    return request(`/api/user/edit/${login}`, data, 'POST')
         .then(response => response.json())
         .then(result => dispatch(editProfileStatus(result)))
         .catch(error => dispatch(editProfileFailed(error.message)));

@@ -179,9 +179,11 @@ const insertViewFailed = (params) => {
   return db.one(sql, params);
 }
 
-const editProfile = (nickname, firstname, lastname, email, datebirth,
-  about, sex, sexpreferences, tags, newpass) => {
+const editProfile = (que, params, i) => {
     
+    const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
+
+    return db.one(sql, params);
   }
 
 exports.sign = sign;
@@ -203,3 +205,4 @@ exports.getImage = getImage;
 exports.getTimeView = getTimeView;
 exports.updateViewFailed = updateViewFailed;
 exports.insertViewFailed = insertViewFailed;
+exports.editProfile = editProfile;

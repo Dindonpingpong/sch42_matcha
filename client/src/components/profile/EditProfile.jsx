@@ -10,13 +10,14 @@ import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, se
 const mapStateToProps = (state) => {
     return {
         login: state.login,
-        profile: state.profile
+        profile: state.profile,
+        edit: state.edit
     }
 }
 
 const mapDispatchToProps = (dispatch) => ({
     clearForm: () => dispatch(initFormEdit()),
-    fetchEditProfile: (data) => dispatch(fetchEditProfile(data)),
+    fetchEditProfile: (data, login) => dispatch(fetchEditProfile(data, login)),
     setLogin: (login) => dispatch(setLogin(login)),
     setFirstName: (firstName) => dispatch(setFirstName(firstName)),
     setLastName: (lastName) => dispatch(setLastName(lastName)),
@@ -99,25 +100,24 @@ const EditProfile = (props) => {
     const [isActiveBtn, toggleBtn] = useState(true);
 
     const handleSubmit = () => {
-        const [nickname, firstname, lastname, email, datebirth,
-            about, sex, sexpreferences, tags, newpass] = props.edit;
+        // const [nickname, firstname, lastname, email, datebirth, about, sex, sexpreferences, tags, newpass] = props.edit;
 
         const data = {
-            nickname: nickname,
-            firstname: firstname,
-            lastname: lastname,
-            datebirth: datebirth,
-            email: email,
-            about: about,
-            sex: sex,
-            sexpreferences: sexpreferences,
-            tags: tags,
-            newpass: newpass
+            nickname: props.edit.nickname,
+            firstname: props.edit.firstname,
+            lastname: props.edit.lastname,
+            datebirth: props.edit.datebirth,
+            email: props.edit.email,
+            about: props.edit.about,
+            sex: props.edit.sex,
+            sexpreferences: props.edit.sexpreferences,
+            tags: props.edit.tags,
+            newpass: props.edit.newpass
         }
 
-        props.fetchEditProfile(data)
+        props.fetchEditProfile(data, props.login.me.nickname)
             .then(() => {
-                history.pushState('/');
+                history.push('/');
             })
     }
 

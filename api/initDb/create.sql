@@ -3,7 +3,7 @@ DROP TABLE IF EXISTS Connections CASCADE;
 DROP TABLE IF EXISTS History CASCADE;
 DROP TABLE IF EXISTS Chat CASCADE;
 DROP TABLE IF EXISTS Tags CASCADE;
-DROP TABLE IF EXISTS Tags_Users CASCADE;
+DROP TABLE IF EXISTS User_Tags CASCADE;
 DROP TYPE IF EXISTS sexType;
 CREATE TYPE sexType AS ENUM ('male', 'female', 'prefer not to say');
 DROP TYPE IF EXISTS preferences;
@@ -72,6 +72,7 @@ CREATE TABLE Tags (
 CREATE TABLE User_Tags (
     idUser int,
     idTag int,
+    PRIMARY KEY (idUser, idTag),
     FOREIGN KEY (idUser) REFERENCES Users (id),
     FOREIGN KEY (idTag) REFERENCES Tags (id)
 );

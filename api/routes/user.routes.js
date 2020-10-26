@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage,
-    updateStatus, insertStatus } = require('../models/user');
+    updateStatus, insertStatus, editProfile } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -554,13 +554,29 @@ router.post('/view', async (req, res) => {
     }
 })
 
-router.post('/edit', async (req, res) => {
-    const { nickname, firstname, lastname, email, datebirth,
-        about, sex, sexpreferences, tags, newpass } = req.body;
+router.post('/edit/:old', async (req, res) => {
+    console.log('in');
+    console.log(req.body);
+    let keys = [];
+    let params = [];
+    let i = 1;
+    for (const [key, value] of Object.entries(req.body)) {
+        if (value !== null && key !== 'tags') {
+            keys.push(`${key} = $${i++}`);
+            params.push(value)
+        }
+    }
 
-    
+    if (params.length === 0) {
+        res.status(200).json({
+            success: true
+        })
+        return;
+    }
 
-    putImage(position, mimetype, newPath, nickname)
+    const querys = keys.join(', ');
+    params.push(req.params.old)
+    editProfile(querys, params, i)
         .then(data => {
             res.status(200).json({
                 message: data.id,
