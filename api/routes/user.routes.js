@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage, 
+const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage,
     updateStatus, insertStatus } = require('../models/user');
 const bcrypt = require('bcrypt');
@@ -85,6 +85,45 @@ router.get('/register/check/login/:login', async (req, res) => {
                 success: false
             })
         })
+})
+
+router.post('/register/check/pass', async (req, res) => {
+    try {
+        const { login, password } = req.body;
+
+        getOnlyPass([login])
+            .then(data => {
+                const len = data.length;
+                let check;
+
+                if (len > 0)
+                    check = bcrypt.compareSync(password, data[0].password);
+
+                if (len == 0 || check == false) {
+                    res.status(200).json({
+                        message: "Pass is incorrect",
+                        success: false
+                    })
+                }
+                else {
+                    res.status(200).json({
+                        message: "Okay",
+                        success: true
+                    })
+                }
+            })
+            .catch(e => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
 })
 
 router.post('/register', async (req, res) => {

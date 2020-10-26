@@ -1,0 +1,1 @@
+curl -X POST -H 'Content-Type: application/json' -d '{"login":"rkina","password":"1"}' http://localhost:5000/api/user/register/check/pass

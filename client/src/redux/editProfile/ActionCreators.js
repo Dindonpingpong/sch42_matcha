@@ -10,6 +10,10 @@ export const editProfileLoading = () => ({
     type: ActionTypes.PROFILE_EDIT_LOADING
 });
 
+export const editProfileClear = () => ({
+    type: ActionTypes.PROFILE_EDIT_CLEAR
+});
+
 export const editProfileFailed = (msg) => ({
     type: ActionTypes.PROFILE_EDIT_FAILED,
     payload: msg
@@ -108,6 +112,10 @@ export const setTags = (date) => (dispatch) => {
 
 export const setNewPassword = (pass) => (dispatch) => {
     dispatch(editNewpassAdd (pass));
+};
+
+export const initFormEdit = () => (dispatch) => {
+    dispatch(editProfileClear());
 };
 
 export const fetchEditProfile = (nickname) => (dispatch) => {

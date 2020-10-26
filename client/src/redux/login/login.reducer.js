@@ -16,7 +16,7 @@ export const LoginReducer = (state = initialState, action) => {
             return { ...state, isLoading: false, errMsg: null, isLogged: true, password: null, me: action.payload };
         
         case ActionTypes.LOG_OUT:
-            return { ...state, isLoading: false, errMsg: null, isLogged: false, nickname: null, password: null, me: {} };
+            return { ...initialState };
 
         case ActionTypes.LOGIN_LOADING:
             return { ...state, isLoading: true, errMsg: null };

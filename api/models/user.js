@@ -23,6 +23,12 @@ const getPassword = (login) => {
   return db.any(sql, login);
 };
 
+const getOnlyPass = (login) => {
+  const sql = `SELECT password FROM Users WHERE nickName=$1`;
+
+  return db.any(sql, login);
+}
+
 const getEmail = (email) => {
   const sql = 'SELECT id FROM Users WHERE email=$1';
 
@@ -175,6 +181,7 @@ const insertViewFailed = (params) => {
 
 exports.sign = sign;
 exports.getPassword = getPassword;
+exports.getOnlyPass = getOnlyPass;
 exports.getEmail = getEmail;
 exports.getLogin = getLogin;
 exports.getProfile = getProfile;
