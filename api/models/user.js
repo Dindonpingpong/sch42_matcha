@@ -179,6 +179,11 @@ const insertViewFailed = (params) => {
   return db.one(sql, params);
 }
 
+const editProfile = (nickname, firstname, lastname, email, datebirth,
+  about, sex, sexpreferences, tags, newpass) => {
+    
+  }
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;

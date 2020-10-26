@@ -554,4 +554,26 @@ router.post('/view', async (req, res) => {
     }
 })
 
+router.post('/edit', async (req, res) => {
+    const { nickname, firstname, lastname, email, datebirth,
+        about, sex, sexpreferences, tags, newpass } = req.body;
+
+    
+
+    putImage(position, mimetype, newPath, nickname)
+        .then(data => {
+            res.status(200).json({
+                message: data.id,
+                success: true
+            })
+        })
+        .catch(e => {
+            res.status(500).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+
 module.exports = router
