@@ -1,7 +1,7 @@
 import * as ActionTypes from './ActionTypes';
 
-export const EditProfileReducer = (state = {
-    isLoading: true,
+const initialState = {
+    isLoading: false,
     errProfile: null,
     nickname: null,
     firstname: null,
@@ -12,10 +12,12 @@ export const EditProfileReducer = (state = {
     sex: null,
     sexpreferences: null,
     tags: [],
-    passwordStatus: null,
+    newpass: null,
+    passwordStatus: false,
     editProfileStatus: null
-}, action) => {
+};
 
+export const EditProfileReducer = (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.EDIT_PROFILE_STATUS_ADD:
             return { ...state, isLoading: false, errProfile: null, editProfileStatus: action.payload };
@@ -25,6 +27,9 @@ export const EditProfileReducer = (state = {
 
         case ActionTypes.PROFILE_EDIT_FAILED:
             return { ...state, isLoading: false, errProfile: action.payload, editProfileStatus: null };
+
+        case ActionTypes.PROFILE_EDIT_CLEAR:
+            return { ...initialState };
 
         case ActionTypes.NICKNAME_ADD:
             return { ...state, isLoading: false, errProfile: null, nickname: action.nickname };
@@ -52,6 +57,9 @@ export const EditProfileReducer = (state = {
 
         case ActionTypes.TAGS_ADD:
             return { ...state, isLoading: false, errProfile: null, tags: action.tags };
+
+        case ActionTypes.NEWPASSWORD_ADD:
+            return { ...state, isLoading: false, errProfile: null, newpass: action.newpass };
 
         case ActionTypes.PASSWORD_STATUS_ADD:
             return { ...state, isLoading: false, errProfile: null, passwordStatus: action.passwordStatus };

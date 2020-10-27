@@ -195,13 +195,13 @@ const Profile = (props) => {
         props.fetchProfile(props.match.params.nickname);
         props.fetchView(props.match.params.nickname);
         props.fetchLike(props.match.params.nickname);
-        props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
-        props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
+        if (props.login.me.nickname !== props.match.params.nickname) {
+            props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
+            props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
+        }
     }, [props.match.params.nickname, props.profile.status]);
 
-    console.log(props.profile);
-
-    // const tags = ["test1", "test2", "test3"];
+    // console.log(props.profile);
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
@@ -258,7 +258,8 @@ const Profile = (props) => {
                         </Col>
                     </Row>
 
-                    {props.profile.info.tags &&
+                    {
+                        props.profile.info.tags &&
                         <Row>
                             <Col>
                                 <p className="font-profile-head">Tags</p>
@@ -304,5 +305,4 @@ const Profile = (props) => {
         );
 }
 
-// connect(mapDispatchToProps)(PhotoList);
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));

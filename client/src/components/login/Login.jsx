@@ -45,7 +45,7 @@ function LoginInput(props) {
                 <Label>Login</Label>
                 <Input
                     type="text"
-                    name="Login"
+                    name="login"
                     onChange={loginChange}
                     placeholder="rkina7"
                     required

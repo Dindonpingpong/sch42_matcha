@@ -10,6 +10,10 @@ export const editProfileLoading = () => ({
     type: ActionTypes.PROFILE_EDIT_LOADING
 });
 
+export const editProfileClear = () => ({
+    type: ActionTypes.PROFILE_EDIT_CLEAR
+});
+
 export const editProfileFailed = (msg) => ({
     type: ActionTypes.PROFILE_EDIT_FAILED,
     payload: msg
@@ -60,15 +64,64 @@ export const editTagsAdd = (tags) => ({
     tags: tags
 });
 
+export const editNewpassAdd = (newpass) => ({
+    type: ActionTypes.NEWPASSWORD_ADD,
+    newpass: newpass
+});
+
 export const editPasswordStatusAdd = (status) => ({
     type: ActionTypes.PASSWORD_STATUS_ADD,
     status: status
 });
 
-export const fetchEditProfile = (nickname) => (dispatch) => {
+export const setLogin = (login) => (dispatch) => {
+    dispatch(editNicknameAdd(login));
+};
+
+export const setFirstName = (firstName) => (dispatch) => {
+    dispatch(editFirstnameAdd(firstName));
+};
+
+export const setLastName = (lastName) => (dispatch) => {
+    dispatch(editLastnameAdd(lastName));
+};
+
+export const setDate = (date) => (dispatch) => {
+    dispatch(editDatebirthAdd(date));
+};
+
+export const setEmail = (email) => (dispatch) => {
+    dispatch(editEmailAdd(email));
+};
+
+export const setAbout = (date) => (dispatch) => {
+    dispatch(editAboutAdd(date));
+};
+
+export const setSex = (date) => (dispatch) => {
+    dispatch(editSexAdd(date));
+};
+
+export const setSexPref = (date) => (dispatch) => {
+    dispatch(editSexpreferenceAdd(date));
+};
+
+export const setTags = (date) => (dispatch) => {
+    dispatch(editTagsAdd(date));
+};
+
+export const setNewPassword = (pass) => (dispatch) => {
+    dispatch(editNewpassAdd (pass));
+};
+
+export const initFormEdit = () => (dispatch) => {
+    dispatch(editProfileClear());
+};
+
+export const fetchEditProfile = (data, login) => (dispatch) => {
     dispatch(editProfileLoading());
 
-    return request('/api/user/' + nickname)
+    return request(`/api/user/edit/${login}`, data, 'POST')
         .then(response => response.json())
         .then(result => dispatch(editProfileStatus(result)))
         .catch(error => dispatch(editProfileFailed(error.message)));
