@@ -116,7 +116,7 @@ const getStatus = (params) => {
 }
 
 const updateStatus = (params) => {
-  const sql = `UPDATE Connections SET status = $3, 
+  const sql = `UPDATE Connections SET status = $3 
   WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1)
   AND idTo = (SELECT id FROM Users WHERE nickName = $2) RETURNING id`;
 

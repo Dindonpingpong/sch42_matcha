@@ -100,6 +100,7 @@ export const fetchUpdateStatus = (me, you, status, newStatus) => (dispatch) => {
         .then(response => response.json())
         // .then(result => dispatch(statusAdd(result)))
         .then(result => {
+            console.log('gere',result);
             if (result.message === 'Ok') {
                 dispatch(statusAdd(result));
             }

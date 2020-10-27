@@ -406,7 +406,7 @@ router.post('/update', async (req, res) => {
     try {
         const { me, you, status, newStatus } = req.body;
 
-        // console.log("2", me, you, status, newStatus);
+        console.log("2", me, you, status, newStatus);
         if (status === 'like' || status === 'ignore' || status === 'unlike') {
             updateStatus([me, you, newStatus])
                 .then(data => {
