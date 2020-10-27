@@ -38,6 +38,8 @@ function InputForm(props) {
 }
 
 const NotFound = () => {
+
+    
     return (
         <section className="page-state">
             <Container>

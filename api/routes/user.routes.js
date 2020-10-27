@@ -166,7 +166,7 @@ router.post('/register', async (req, res) => {
     }
 })
 
-router.get('/:nickname', async (req, res) => {
+router.get('/profile/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
 
@@ -199,7 +199,7 @@ router.get('/:nickname', async (req, res) => {
     }
 })
 
-router.get('/views/:nickname', async (req, res) => {
+router.get('/profile/views/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
 
@@ -233,7 +233,7 @@ router.get('/views/:nickname', async (req, res) => {
     }
 })
 
-router.get('/likes/:nickname', async (req, res) => {
+router.get('/profile/likes/:nickname', async (req, res) => {
     try {
         const nickname = [req.params.nickname];
 
@@ -368,7 +368,7 @@ router.get('/cards/:user/:page', async (req, res) => {
     }
 })
 
-router.post('/status', async (req, res) => {
+router.post('/profile/status', async (req, res) => {
     try {
         const { me, you } = req.body;
 
@@ -402,7 +402,7 @@ router.post('/status', async (req, res) => {
     }
 })
 
-router.post('/update', async (req, res) => {
+router.post('/profile/status/update', async (req, res) => {
     try {
         const { me, you, status, newStatus } = req.body;
 
@@ -505,7 +505,7 @@ router.get('/image/:nickname/:position/:path', async (req, res) => {
     }
 })
 
-router.post('/view', async (req, res) => {
+router.post('/profile/view', async (req, res) => {
     try {
         const { me, you } = req.body;
 

@@ -200,9 +200,7 @@ const Profile = (props) => {
         }
     }, [props.match.params.nickname, props.profile.status]);
 
-    console.log(props.profile);
-
-    // const tags = ["test1", "test2", "test3"];
+    // console.log(props.profile);
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
@@ -260,7 +258,7 @@ const Profile = (props) => {
                     </Row>
 
                     {
-                    props.profile.info.tags &&
+                        props.profile.info.tags &&
                         <Row>
                             <Col>
                                 <p className="font-profile-head">Tags</p>
