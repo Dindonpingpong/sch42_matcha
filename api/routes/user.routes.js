@@ -2,12 +2,13 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage,
-    updateStatus, insertStatus, editProfile } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
 const fs = require('fs');
 const c = require('config');
+const { has } = require('config');
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
@@ -23,7 +24,7 @@ router.post('/login', async (req, res) => {
                     check = bcrypt.compareSync(password, data[0].password);
 
                 if (len == 0 || check == false) {
-                    res.status(500).json({
+                    res.status(200).json({
                         message: "Login or pass is incorrect",
                         success: false
                     })
@@ -554,29 +555,39 @@ router.post('/view', async (req, res) => {
     }
 })
 
-router.post('/edit/:old', async (req, res) => {
-    console.log('in');
-    console.log(req.body);
+router.post('/edit/:nickname', async (req, res) => {
+    const login = req.params.nickname;
     let keys = [];
     let params = [];
     let i = 1;
+
     for (const [key, value] of Object.entries(req.body)) {
-        if (value !== null && key !== 'tags') {
+        if (value !== null && key !== 'tags' && key !== 'newpass') {
             keys.push(`${key} = $${i++}`);
-            params.push(value)
+            params.push(value);
+        }
+        else if (value !== null && key === 'newpass') {
+            const saltRounds = 10;
+            const salt = bcrypt.genSaltSync(saltRounds);
+            const hash = bcrypt.hashSync(value, salt);
+
+            keys.push(`password = $${i++}`);
+            params.push(hash);
         }
     }
 
     if (params.length === 0) {
         res.status(200).json({
+            msg: 'wow',
             success: true
         })
         return;
     }
 
-    const querys = keys.join(', ');
-    params.push(req.params.old)
-    editProfile(querys, params, i)
+    const que = keys.join(', ');
+    params.push(login);
+
+    editProfile(que, params, i)
         .then(data => {
             res.status(200).json({
                 message: data.id,
@@ -591,5 +602,55 @@ router.post('/edit/:old', async (req, res) => {
         })
 })
 
+router.post('/edit/tags/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    const tags = req.body.tags;
+
+    deleteTags([login])
+        .then(() => {
+            if (tags.length > 0) {
+                insertTags([login, tags])
+                    .then((data) => {
+                        res.status(200).json({
+                            msg: 'Ok',
+                            success: true
+                        })
+                    });
+            }
+            else {
+                res.status(200).json({
+                    msg: 'Ok',
+                    success: true
+                })
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                msg: e.message,
+                success: false
+            })
+        })
+
+})
+
+router.get('/login/:nickname', async (req, res) => {
+    try {
+        const nickname = req.params.nickname;
+
+        getInfoLogin([nickname])
+            .then(data => {
+                res.status(200).json({
+                    message: "Your logged",
+                    profile: data[0],
+                    success: true
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
 
 module.exports = router

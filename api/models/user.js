@@ -180,11 +180,37 @@ const insertViewFailed = (params) => {
 }
 
 const editProfile = (que, params, i) => {
-    
-    const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
+  const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
 
-    return db.one(sql, params);
-  }
+  return db.one(sql, params);
+}
+
+const deleteTags = (login) => {
+  const sql = `DELETE FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName=$1) RETURNING idUser`;
+
+  return db.any(sql, login);
+}
+
+const insertTags = (params) => {
+  const sql = `
+  INSERT INTO User_Tags
+  (idTag, idUser) 
+  SELECT id, (SELECT id FROM Users WHERE nickName=$1) FROM Tags WHERE tag IN (SELECT unnest($2))
+  RETURNING idUser`;
+
+  return db.any(sql, params);
+}
+
+const getInfoLogin = (params) => {
+  const sql =
+    `SELECT nickName, firstName, lastName, email, 
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
+    dateBirth, sexPreferences, 
+  sex, rate, about, photos, location 
+  FROM Users WHERE nickName=$1`;
+
+  return db.any(sql, params);
+}
 
 exports.sign = sign;
 exports.getPassword = getPassword;
@@ -206,3 +232,6 @@ exports.getTimeView = getTimeView;
 exports.updateViewFailed = updateViewFailed;
 exports.insertViewFailed = insertViewFailed;
 exports.editProfile = editProfile;
+exports.deleteTags = deleteTags;
+exports.insertTags = insertTags;
+exports.getInfoLogin = getInfoLogin;

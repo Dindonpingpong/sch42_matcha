@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { fetchLogin, setLogin, setPassword } from '../../redux/login/ActionCreators';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { useHistory } from "react-router-dom";
+import { Loading } from '../Loading';
 
 const mapStateToProps = (state) => {
     return {
@@ -95,9 +96,19 @@ function Login(props) {
         history.push("/users/page/1");
     }
 
+    if (props.login.isLoading) {
+        return (
+            <Loading />
+        )
+    }
+
     return (
         <Row>
             <Col md={6} className="m-auto">
+                {
+                    props.login.errMsg && 
+                    <Alert color='danger' >{props.login.errMsg}</Alert>
+                }
                 <form >
                     <LoginInput setLogin={props.setLogin} />
                     <Password setPass={props.setPassword} />

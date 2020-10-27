@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter, useHistory  } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Input, Button, FormFeedback } from 'reactstrap';
-import { isValidInput, isValidPassword } from '../../util/check';
+import { Container, Input, Button, FormFeedback, Alert } from 'reactstrap';
+import { isValidInput } from '../../util/check';
 import { request } from '../../util/http';
+import { Loading } from '../Loading';
+import { fetchUpdateLogin } from '../../redux/login/ActionCreators';
 import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword } from '../../redux/editProfile/ActionCreators';
 
 const mapStateToProps = (state) => {
@@ -16,6 +18,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+    fetchUpdateLogin: (login) => dispatch(fetchUpdateLogin(login)),
     clearForm: () => dispatch(initFormEdit()),
     fetchEditProfile: (data, login) => dispatch(fetchEditProfile(data, login)),
     setLogin: (login) => dispatch(setLogin(login)),
@@ -56,9 +59,11 @@ function InputForm(props) {
                     password: value
                 };
 
+                console.log('her', data);
                 request('/api/user/register/check/pass', data, 'POST')
                     .then(res => res.json())
                     .then(result => {
+                        console.log('h2', result);
                         if (result.success !== true) {
                             toggleValid('is-invalid');
                             setFeedback(`Wrong password`)
@@ -117,7 +122,19 @@ const EditProfile = (props) => {
 
         props.fetchEditProfile(data, props.login.me.nickname)
             .then(() => {
-                history.push('/');
+                let login;
+
+                if (props.edit.nickname === null) {
+                    login = props.login.me.nickname;
+                }
+                else {
+                    login = props.edit.nickname;
+                }
+                console.log('here', login);
+                props.fetchUpdateLogin(login)
+                    .then(() => {
+                        history.push(`/users/${login}`);
+                    })
             })
     }
 
@@ -140,8 +157,18 @@ const EditProfile = (props) => {
             toggleBtn(true);
     }
 
+    if (props.login.isLoading)
+        return (
+            <Loading />
+        )
+
     return (
         <section className="profile-edit">
+            {
+                props.edit.errMsg &&
+                <Alert color='danger' >{props.edit.errMsg}</Alert>
+            }
+
             <Container>
                 {/* <ModalBody className="text-center"> */}
                 <InputForm name='login' me={props.login.me.nickname} label='Username' feedback='Invalid login' set={props.setLogin} checkBtn={checkBtn} />
@@ -152,21 +179,27 @@ const EditProfile = (props) => {
                 <InputForm name='birthDate' me={props.login.me.datebirth.split('T')[0]} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
 
                 <p className="font-profile-head">Sex</p>
-                <select defaultValue={props.login.me.sex} onChange={e => props.setSex(e.target.value)}>
+                <select defaultValue={props.login.me.sex} onChange={e => {
+                    props.setSex(e.target.value);
+                    checkBtn();
+                }}>
                     <option value="famale">Female</option>
                     <option value="male">Male</option>
                     <option value="not">Prefer not to say</option>
                 </select>
 
                 <p className="font-profile-head">Sexual preferences</p>
-                <select defaultValue={props.login.me.sexpreferences} onChange={e => props.setSexPref(e.target.value)}>
+                <select defaultValue={props.login.me.sexpreferences} onChange={e => {
+                    props.setSexPref(e.target.value);
+                    checkBtn();
+                }}>
                     <option value="bisexual">bisexual</option>
                     <option value="heterosexual">heterosexual</option>
                     <option value="homosexual">homosexual</option>
                 </select>
 
                 <p className="font-profile-head">Tags</p>
-                <select multiple defaultValue={props.login.me.tags} onChange={tagsHandle} >
+                <select multiple defaultValue={props.login.me.tags} onChange={tagsHandle, checkBtn} >
                     <option value="sport">sport</option>
                     <option value="movie">movie</option>
                     <option value="food">food</option>

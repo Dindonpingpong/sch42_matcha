@@ -39,7 +39,23 @@ export const fetchLogin = (login, password) => (dispatch) => {
 
     return request('/api/user/login', data, 'POST')
         .then(res => res.json())
-        .then( result => {
+        .then(result => {
+            if (result.success === true) {
+                dispatch(loginAdd(result.profile));
+            }
+            else {
+                dispatch(loginFailed(result.message));
+            }
+        })
+        .catch(error => dispatch(loginFailed(error.message)));
+}
+
+export const fetchUpdateLogin = (login) => (dispatch) => {
+    dispatch(loginLoading());
+
+    return request(`/api/user/login/${login}`)
+        .then(res => res.json())
+        .then(result => {
             if (result.success === true) {
                 dispatch(loginAdd(result.profile));
             }

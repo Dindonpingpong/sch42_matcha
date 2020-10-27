@@ -31,7 +31,7 @@ export const editFirstnameAdd = (firstname) => ({
 
 export const editLastnameAdd = (lastname) => ({
     type: ActionTypes.LASTNAME_ADD,
-    lastName: lastname
+    lastname: lastname
 });
 
 export const editDatebirthAdd = (datebirth) => ({
@@ -111,7 +111,7 @@ export const setTags = (date) => (dispatch) => {
 };
 
 export const setNewPassword = (pass) => (dispatch) => {
-    dispatch(editNewpassAdd (pass));
+    dispatch(editNewpassAdd(pass));
 };
 
 export const initFormEdit = () => (dispatch) => {
@@ -121,9 +121,17 @@ export const initFormEdit = () => (dispatch) => {
 export const fetchEditProfile = (data, login) => (dispatch) => {
     dispatch(editProfileLoading());
 
-    return request(`/api/user/edit/${login}`, data, 'POST')
+    return request(`/api/user/edit/tags/${login}`, data, 'POST')
         .then(response => response.json())
-        .then(result => dispatch(editProfileStatus(result)))
+        .then((res) => {
+            if (res.success) {
+                request(`/api/user/edit/${login}`, data, 'POST')
+                    .then(response => response.json())
+                    .then(result => dispatch(editProfileStatus(result)))
+                    .catch(error => dispatch(editProfileFailed(error.message)));
+            }
+
+        })
         .catch(error => dispatch(editProfileFailed(error.message)));
 };
 
