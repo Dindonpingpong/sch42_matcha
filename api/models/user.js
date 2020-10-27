@@ -7,7 +7,7 @@ const sign = (params) => {
   const sql =
     `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) 
   VALUES ($1, $2, $3, $4, $5, $6) 
-  RETURNING id`;
+  RETURNING nickName`;
 
   return db.one(sql, params);
 };
@@ -212,6 +212,14 @@ const getInfoLogin = (params) => {
   return db.any(sql, params);
 }
 
+const insertLocation = (params) => {
+  const sql = `UPDATE Users 
+  SET location[1] = $1, location[2] = $2, location[3] = $3 
+  WHERE nickName = $4 RETURNING id`;
+
+  return db.one(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -235,3 +243,4 @@ exports.editProfile = editProfile;
 exports.deleteTags = deleteTags;
 exports.insertTags = insertTags;
 exports.getInfoLogin = getInfoLogin;
+exports.insertLocation = insertLocation;

@@ -83,9 +83,28 @@ export const fetchRegister = (data) => (dispatch) => {
 
     return request('/api/user/register', data, 'POST')
         .then(res => res.json())
-        .then( result => {
+        .then(result => {
             if (result.success === true) {
-                dispatch(formSubmit());
+                const login = result.login;
+                request('https://extreme-ip-lookup.com/json/')
+                    .then(res => res.json())
+                    .then(result => {
+                        const data = {
+                            country: result.country,
+                            region: result.region,
+                            city: result.city
+                        }
+                        request(`/api/user/register/location/${login}`, data, 'POST')
+                            .then(res => res.json())
+                            .then(result => {
+                                console.log(result);
+                                if (result.success)
+                                    dispatch(formSubmit());
+                                else
+                                    dispatch(formFailed(result.message))
+                            })
+                            .catch(error => dispatch(formFailed(error.message)));
+                    })
             }
             else {
                 dispatch(formFailed(result.message))

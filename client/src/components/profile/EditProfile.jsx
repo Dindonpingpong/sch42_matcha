@@ -43,7 +43,7 @@ function InputForm(props) {
         if (isValidInput(name, value)) {
             toggleValid('is-valid');
 
-            if (name === 'email' || name == 'login') {
+            if (name === 'email' || name === 'login') {
                 request(`/api/user/register/check/${name}/${value}`)
                     .then(res => res.json())
                     .then(result => {
@@ -85,7 +85,6 @@ function InputForm(props) {
             <Input
                 type={props.type || 'text'}
                 placeholder={props.placeholder || ''}
-                className="form-control"
                 name={props.name}
                 defaultValue={props.me || ''}
                 onChange={inputChange}

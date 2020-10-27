@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -146,7 +146,7 @@ router.post('/register', async (req, res) => {
         sign(params)
             .then(data => {
                 res.status(200).json({
-                    message: data.id,
+                    login: data.nickname,
                     success: true
                 })
                 // sendMail(email, )
@@ -651,6 +651,35 @@ router.get('/login/:nickname', async (req, res) => {
             success: false
         })
     }
+})
+
+router.post('/register/location/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    const { country, region, city } = req.body;
+
+    const params = [country, region, city, login];
+
+    insertLocation(params)
+        .then( (data) => {
+            if (data.id) {
+                res.status(200).json({
+                    message: "Updated",
+                    success: true
+                })
+            }
+            else {
+                res.status(200).json({
+                    message: "Ooopsy",
+                    success: false
+                })
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
 })
 
 module.exports = router

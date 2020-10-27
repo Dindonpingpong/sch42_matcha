@@ -1,7 +1,7 @@
 import * as ActionTypes from './ActionTypes';
 
 const initialState = {
-    isLoading: true,
+    isLoading: false,
     errMsg: null,
     success: false,
     firstName: null,
@@ -16,7 +16,7 @@ const initialState = {
 export const SignReducer = (state = initialState, action) => {
     switch (action.type) {
         case ActionTypes.USER_FORM_LOADING:
-            return { ...state, isLoading: false, errMsg: action.message };
+            return { ...state, isLoading: true, errMsg: action.message };
 
         case ActionTypes.USER_FORM_FAILED:
             return { ...state, isLoading: false, errMsg: action.payload };

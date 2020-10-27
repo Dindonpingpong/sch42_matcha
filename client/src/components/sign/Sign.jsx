@@ -7,6 +7,8 @@ import { Row, Col, FormGroup, Label, Input, FormFeedback, Button, Container } fr
 import { isValidInput, isValidPassword } from '../../util/check';
 import { request } from '../../util/http';
 import { useHistory } from "react-router-dom";
+import { Loading } from '../Loading';
+
 
 const mapStateToProps = (state) => {
     return {
@@ -88,6 +90,12 @@ function InputFormWithFetch(props) {
             setFeedback(`${name} is invalid`)
         }
     };
+
+    if (props.isLoading) {
+        return (
+            <Loading />
+        )
+    }
 
     return (
         <Row>
@@ -174,21 +182,12 @@ function Password(props) {
     )
 }
 
-function SignUpBtn(props) {
-    return (
-        <Col>
-            <Button className="btn btn" color="primary" type="submit" disabled={props.isActiveBtn} >Sign Up</Button>
-        </Col>
-    )
-}
-
 const Sign = (props) => {
     const history = useHistory();
     const [isActiveBtn, toggleBtn] = useState(false);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const { nickName, lastName, firstName, email, password, repassword, dateBirth } = props.sign;
+    const handleSubmit = () => {
+        const { nickName, lastName, firstName, email, password, dateBirth } = props.sign;
 
         let data = {
             nickName: nickName,
@@ -199,17 +198,10 @@ const Sign = (props) => {
             date: dateBirth
         }
 
-        request("api/user/register", data, 'POST')
-            .then(res => res.json())
-            .then(
-                (res) => {
-                    if (res.success)
-                        history.push('/login');
-                },
-                (error) => {
-                    console.log(error.message);
-                }
-            )
+        props.fetchRegister(data) 
+            .then(() => {
+                history.push('/login');
+            })
     }
 
     const checkBtn = () => {
@@ -222,32 +214,36 @@ const Sign = (props) => {
             toggleBtn(true);
     }
 
+
+
     return (
         <Row>
             <Col md={8} className="m-auto">
                 <Container>
-                    <form onSubmit={handleSubmit}>
-                        <Row xs='1'>
-                            <InputForm
-                                set={props.setLastName} onBlur={checkBtn} labelName='Last name'
-                                name='lastName' placeholder='Ng' type='text' feedback='Only symbols are required'
-                            />
-                            <InputForm
-                                set={props.setFirstName} onBlur={checkBtn} labelName='First name'
-                                name='firstName' placeholder='Duong' type='text' feedback='Only symbols are required'
-                            />
-                        </Row>
-                        <Row xs='1'>
-                            <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='login' placeholder='rkina7' />
-                            <InputFormWithFetch set={props.setEmail} onBlur={checkBtn} labelName='email' placeholder='rkina@mail.ru' />
-                        </Row>
+
+                    <Row xs='1'>
                         <InputForm
-                            set={props.setDate} onBlur={checkBtn} labelName='Date birth'
-                            name='birthDate' type='date' feedback='You too young for this'
+                            set={props.setLastName} onBlur={checkBtn} labelName='Last name'
+                            name='lastName' placeholder='Ng' type='text' feedback='Only symbols are required'
                         />
-                        <Password setPass={props.setPassword} onBlur={checkBtn} />
-                        <SignUpBtn isActiveBtn={isActiveBtn} onBlur={checkBtn} />
-                    </form>
+                        <InputForm
+                            set={props.setFirstName} onBlur={checkBtn} labelName='First name'
+                            name='firstName' placeholder='Duong' type='text' feedback='Only symbols are required'
+                        />
+                    </Row>
+                    <Row xs='1'>
+                        <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='login' placeholder='rkina7' />
+                        <InputFormWithFetch set={props.setEmail} onBlur={checkBtn} labelName='email' placeholder='rkina@mail.ru' />
+                    </Row>
+                    <InputForm
+                        set={props.setDate} onBlur={checkBtn} labelName='Date birth'
+                        name='birthDate' type='date' feedback='You too young for this'
+                    />
+                    <Password setPass={props.setPassword} onBlur={checkBtn} />
+                    <Col>
+                        <Button className="btn btn" color="primary" type="submit" disabled={props.isActiveBtn} onClick={handleSubmit} onBlur={checkBtn}>Sign Up</Button>
+                    </Col>
+
                 </Container>
             </Col>
         </Row>
