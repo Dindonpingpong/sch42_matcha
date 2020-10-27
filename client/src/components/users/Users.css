@@ -1,0 +1,46 @@
+.users {
+    padding: 20px 0;
+}
+
+.card-title,
+.card-subtitle {
+    padding: 0 20px;
+}
+
+.card-title {
+    font-size: 1.3rem;
+}
+
+.users-sort-filter,
+.card-btn {
+    width: 100%;
+}
+
+.users .users-filter {
+    padding: 0;
+}
+
+.users-pagination {
+    margin: 0 auto;
+    width: 173px;
+}
+
+.users-pagination .page-link {
+    color: #6c757d;
+}
+
+.users-pagination .page-link:hover {
+    color: #343a40;
+}
+
+.modal-content .modal-body {
+    padding-top: 0;
+}
+
+.modal-content .modal-header {
+    justify-content: center;
+}
+
+.modal-content .modal-footer {
+    margin-top: 15px;
+}

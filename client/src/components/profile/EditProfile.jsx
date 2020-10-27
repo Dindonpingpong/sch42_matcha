@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter, useHistory  } from 'react-router-dom';
+import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, Input, Button, FormFeedback } from 'reactstrap';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { request } from '../../util/http';
 import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword } from '../../redux/editProfile/ActionCreators';
+import moment from 'moment';
 
 const mapStateToProps = (state) => {
     return {
@@ -149,13 +150,12 @@ const EditProfile = (props) => {
                 <InputForm name='lastName' me={props.login.me.lastname} label='Last name' feedback='Only symbols are required' set={props.setLastName} checkBtn={checkBtn} />
                 <InputForm name='email' me={props.login.me.email} label='Email' set={props.setEmail} checkBtn={checkBtn} />
                 <InputForm name='bio' me={props.login.me.about} label='Biography' set={props.setAbout} checkBtn={checkBtn} />
-                <InputForm name='birthDate' me={props.login.me.datebirth.split('T')[0]} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
+                <InputForm name='birthDate' me={moment(props.login.me.datebirth).format('YYYY-MM-DD')} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
 
                 <p className="font-profile-head">Sex</p>
                 <Input type='select' defaultValue={props.login.me.sex} onChange={e => props.setSex(e.target.value)}>
                     <option value="famale">Female</option>
                     <option value="male">Male</option>
-                    <option value="not">Prefer not to say</option>
                 </Input>
 
                 <p className="font-profile-head">Sexual preferences</p>
@@ -166,7 +166,7 @@ const EditProfile = (props) => {
                 </Input>
 
                 <p className="font-profile-head">Tags</p>
-                <Input type='select' multiple defaultValue={props.login.me.tags} onChange={tagsHandle} >
+                <Input type='select' multiple defaultValue={props.login.me.tags} onChange={tagsHandle}>
                     <option value="sport">sport</option>
                     <option value="movie">movie</option>
                     <option value="food">food</option>

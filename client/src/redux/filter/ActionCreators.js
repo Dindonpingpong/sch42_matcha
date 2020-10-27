@@ -49,15 +49,3 @@ export const fetchLogin = (login, password) => (dispatch) => {
         })
         .catch(error => dispatch(loginFailed(error.message)));
 }
-
-export const setLogin = (login) => (dispatch) => {
-    return dispatch(loginNicknameAdd(login));
-}
-
-export const setPassword = (password) => (dispatch) => {
-    return dispatch(loginPasswordAdd(password));
-}
-
-export const logOut = () => (dispatch) => {
-    return dispatch(loginOut());
-}
