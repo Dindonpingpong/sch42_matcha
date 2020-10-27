@@ -48,7 +48,7 @@ const Header = (props) => {
                     }
                     {(!urls.includes(path) || path !== '/edit') && path.includes('/users/page') &&
                         <NavItem>
-                            <NavLink href={`/users/${props.login.nickname}`}>
+                            <NavLink href={`/users/${props.login.me.nickname}`}>
                                 <i className="fa fa-user"></i>
                             </NavLink>
                         </NavItem>
