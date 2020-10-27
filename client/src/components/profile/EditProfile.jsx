@@ -7,6 +7,7 @@ import { isValidInput } from '../../util/check';
 import { request } from '../../util/http';
 import { Loading } from '../Loading';
 import { fetchUpdateLogin } from '../../redux/login/ActionCreators';
+import moment from 'moment';
 import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword } from '../../redux/editProfile/ActionCreators';
 
 const mapStateToProps = (state) => {
@@ -129,7 +130,6 @@ const EditProfile = (props) => {
                 else {
                     login = props.edit.nickname;
                 }
-                console.log('here', login);
                 props.fetchUpdateLogin(login)
                     .then(() => {
                         history.push(`/users/${login}`);
@@ -175,30 +175,32 @@ const EditProfile = (props) => {
                 <InputForm name='lastName' me={props.login.me.lastname} label='Last name' feedback='Only symbols are required' set={props.setLastName} checkBtn={checkBtn} />
                 <InputForm name='email' me={props.login.me.email} label='Email' set={props.setEmail} checkBtn={checkBtn} />
                 <InputForm name='bio' me={props.login.me.about} label='Biography' set={props.setAbout} checkBtn={checkBtn} />
-                <InputForm name='birthDate' me={props.login.me.datebirth.split('T')[0]} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
+                <InputForm name='birthDate' me={moment(props.login.me.datebirth).format('YYYY-MM-DD')} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
 
                 <p className="font-profile-head">Sex</p>
-                <select defaultValue={props.login.me.sex} onChange={e => {
+                <Input type='select' defaultValue={props.login.me.sex} onChange={e => {
                     props.setSex(e.target.value);
                     checkBtn();
                 }}>
                     <option value="famale">Female</option>
                     <option value="male">Male</option>
-                    <option value="not">Prefer not to say</option>
-                </select>
+                </Input>
 
                 <p className="font-profile-head">Sexual preferences</p>
-                <select defaultValue={props.login.me.sexpreferences} onChange={e => {
+                <Input type='select' defaultValue={props.login.me.sexpreferences} onChange={e => {
                     props.setSexPref(e.target.value);
                     checkBtn();
                 }}>
                     <option value="bisexual">bisexual</option>
                     <option value="heterosexual">heterosexual</option>
                     <option value="homosexual">homosexual</option>
-                </select>
+                </Input>
 
                 <p className="font-profile-head">Tags</p>
-                <select multiple defaultValue={props.login.me.tags} onChange={tagsHandle, checkBtn} >
+                <Input type='select' multiple defaultValue={props.login.me.tags} onChange={e => {
+                    tagsHandle(e);
+                    checkBtn();
+                }} >
                     <option value="sport">sport</option>
                     <option value="movie">movie</option>
                     <option value="food">food</option>
@@ -206,7 +208,7 @@ const EditProfile = (props) => {
                     <option value="travel">travel</option>
                     <option value="dance">dance</option>
                     <option value="animal">animal</option>
-                </select>
+                </Input>
 
                 <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
                 <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />
@@ -223,4 +225,3 @@ const EditProfile = (props) => {
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditProfile));
-// export default withRouter(connect(mapStateToProps, mapDispatchToProps)(EditProfile));

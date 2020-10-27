@@ -124,6 +124,7 @@ export const fetchEditProfile = (data, login) => (dispatch) => {
     return request(`/api/user/edit/tags/${login}`, data, 'POST')
         .then(response => response.json())
         .then((res) => {
+            console.log(res);
             if (res.success) {
                 request(`/api/user/edit/${login}`, data, 'POST')
                     .then(response => response.json())

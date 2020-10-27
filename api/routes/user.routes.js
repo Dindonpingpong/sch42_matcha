@@ -1,14 +1,14 @@
 const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
-    getMessage, getCards, getStatus, putImage, getImage,
+    getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
 const fs = require('fs');
-const c = require('config');
-const { has } = require('config');
+// const c = require('config');
+// const { has } = require('config');
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
@@ -608,18 +608,20 @@ router.post('/edit/tags/:nickname', async (req, res) => {
 
     deleteTags([login])
         .then(() => {
+            console.log(tags);
             if (tags.length > 0) {
                 insertTags([login, tags])
                     .then((data) => {
                         res.status(200).json({
-                            msg: 'Ok',
+                            msg: 'Ok1',
+                            d: data,
                             success: true
                         })
                     });
             }
             else {
                 res.status(200).json({
-                    msg: 'Ok',
+                    msg: 'Ok2',
                     success: true
                 })
             }

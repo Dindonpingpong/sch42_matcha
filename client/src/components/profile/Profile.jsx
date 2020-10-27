@@ -45,7 +45,7 @@ function TagsList(props) {
 }
 
 function PhotoList(props) {
-    function putPhoto(e, item, photo) {
+    function putPhoto(e, item) {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             const type = e.target.files[0].type;
@@ -63,7 +63,6 @@ function PhotoList(props) {
                 .catch(e => {
                     alert(e.message);
                 })
-
         }
     }
 
@@ -78,7 +77,7 @@ function PhotoList(props) {
                         <CardBody>
                             <div className="d-flex justify-content-between align-items-center">
                                 <Label className="btn btn-sm btn-success">Add
-                                    <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1, photo[1])} />
+                                    <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1)} />
                                 </Label>
                                 <Button size="sm" color="danger">Delete</Button>
                             </div>
@@ -195,8 +194,10 @@ const Profile = (props) => {
         props.fetchProfile(props.match.params.nickname);
         props.fetchView(props.match.params.nickname);
         props.fetchLike(props.match.params.nickname);
-        props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
-        props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
+        if (props.login.me.nickname !== props.match.params.nickname) {
+            props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
+            props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
+        }
     }, [props.match.params.nickname, props.profile.status]);
 
     console.log(props.profile);
@@ -258,7 +259,8 @@ const Profile = (props) => {
                         </Col>
                     </Row>
 
-                    {props.profile.info.tags &&
+                    {
+                    props.profile.info.tags &&
                         <Row>
                             <Col>
                                 <p className="font-profile-head">Tags</p>
@@ -304,5 +306,4 @@ const Profile = (props) => {
         );
 }
 
-// connect(mapDispatchToProps)(PhotoList);
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Profile));
