@@ -1,0 +1,7 @@
+curl -X POST -H 'Content-Type: application/json' -d '{"nickname":null,"lastname":null, "email": null}' http://localhost:5000/api/user/edit
+
+curl -X POST -H 'Content-Type: application/json' -d '{"tags": ["sport","movie"] }' http://localhost:5000/api/user/edit/tags/rkina
+
+curl "http://localhost:5000/api/user/login/rkina"
+
+curl -X POST -H 'Content-Type: application/json' -d '{"country": "USA", "region": "new", "city": "New" }' http://localhost:5000/api/user/register/location/rkina

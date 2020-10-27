@@ -1,13 +1,14 @@
 const { Router } = require('express');
 const router = Router();
-const { sign, getPassword, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage, 
-    getMessage, getCards, getStatus, putImage, getImage,
-    updateStatus, insertStatus, getTimeView, updateViewFailed, insertViewFailed } = require('../models/user');
+const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
+    getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
 const fs = require('fs');
-const c = require('config');
+// const c = require('config');
+// const { has } = require('config');
 // const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
@@ -23,7 +24,7 @@ router.post('/login', async (req, res) => {
                     check = bcrypt.compareSync(password, data[0].password);
 
                 if (len == 0 || check == false) {
-                    res.status(500).json({
+                    res.status(200).json({
                         message: "Login or pass is incorrect",
                         success: false
                     })
@@ -87,6 +88,45 @@ router.get('/register/check/login/:login', async (req, res) => {
         })
 })
 
+router.post('/register/check/pass', async (req, res) => {
+    try {
+        const { login, password } = req.body;
+
+        getOnlyPass([login])
+            .then(data => {
+                const len = data.length;
+                let check;
+
+                if (len > 0)
+                    check = bcrypt.compareSync(password, data[0].password);
+
+                if (len == 0 || check == false) {
+                    res.status(200).json({
+                        message: "Pass is incorrect",
+                        success: false
+                    })
+                }
+                else {
+                    res.status(200).json({
+                        message: "Okay",
+                        success: true
+                    })
+                }
+            })
+            .catch(e => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
 router.post('/register', async (req, res) => {
     try {
         const { nickName, lastName, firstName, email, password, date } = req.body;
@@ -106,7 +146,7 @@ router.post('/register', async (req, res) => {
         sign(params)
             .then(data => {
                 res.status(200).json({
-                    message: data.id,
+                    login: data.nickname,
                     success: true
                 })
                 // sendMail(email, )
@@ -513,6 +553,135 @@ router.post('/profile/view', async (req, res) => {
             success: false
         })
     }
+})
+
+router.post('/edit/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    let keys = [];
+    let params = [];
+    let i = 1;
+
+    for (const [key, value] of Object.entries(req.body)) {
+        if (value !== null && key !== 'tags' && key !== 'newpass') {
+            keys.push(`${key} = $${i++}`);
+            params.push(value);
+        }
+        else if (value !== null && key === 'newpass') {
+            const saltRounds = 10;
+            const salt = bcrypt.genSaltSync(saltRounds);
+            const hash = bcrypt.hashSync(value, salt);
+
+            keys.push(`password = $${i++}`);
+            params.push(hash);
+        }
+    }
+
+    if (params.length === 0) {
+        res.status(200).json({
+            msg: 'wow',
+            success: true
+        })
+        return;
+    }
+
+    const que = keys.join(', ');
+    params.push(login);
+
+    editProfile(que, params, i)
+        .then(data => {
+            res.status(200).json({
+                message: data.id,
+                success: true
+            })
+        })
+        .catch(e => {
+            res.status(500).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+router.post('/edit/tags/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    const tags = req.body.tags;
+
+    deleteTags([login])
+        .then(() => {
+            console.log(tags);
+            if (tags.length > 0) {
+                insertTags([login, tags])
+                    .then((data) => {
+                        res.status(200).json({
+                            msg: 'Ok1',
+                            d: data,
+                            success: true
+                        })
+                    });
+            }
+            else {
+                res.status(200).json({
+                    msg: 'Ok2',
+                    success: true
+                })
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                msg: e.message,
+                success: false
+            })
+        })
+
+})
+
+router.get('/login/:nickname', async (req, res) => {
+    try {
+        const nickname = req.params.nickname;
+
+        getInfoLogin([nickname])
+            .then(data => {
+                res.status(200).json({
+                    message: "Your logged",
+                    profile: data[0],
+                    success: true
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/register/location/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    const { country, region, city } = req.body;
+
+    const params = [country, region, city, login];
+
+    insertLocation(params)
+        .then( (data) => {
+            if (data.id) {
+                res.status(200).json({
+                    message: "Updated",
+                    success: true
+                })
+            }
+            else {
+                res.status(200).json({
+                    message: "Ooopsy",
+                    success: false
+                })
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
 })
 
 module.exports = router

@@ -7,7 +7,7 @@ const sign = (params) => {
   const sql =
     `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) 
   VALUES ($1, $2, $3, $4, $5, $6) 
-  RETURNING id`;
+  RETURNING nickName`;
 
   return db.one(sql, params);
 };
@@ -22,6 +22,12 @@ const getPassword = (login) => {
 
   return db.any(sql, login);
 };
+
+const getOnlyPass = (login) => {
+  const sql = `SELECT password FROM Users WHERE nickName=$1`;
+
+  return db.any(sql, login);
+}
 
 const getEmail = (email) => {
   const sql = 'SELECT id FROM Users WHERE email=$1';
@@ -173,8 +179,50 @@ const insertViewFailed = (params) => {
   return db.one(sql, params);
 }
 
+const editProfile = (que, params, i) => {
+  const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
+
+  return db.one(sql, params);
+}
+
+const deleteTags = (login) => {
+  const sql = `DELETE FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName=$1) RETURNING idUser`;
+
+  return db.any(sql, login);
+}
+
+const insertTags = (params) => {
+  const sql = `
+  INSERT INTO User_Tags
+  (idTag, idUser) 
+  SELECT id, (SELECT id FROM Users WHERE nickName=$1) FROM Tags WHERE tag IN (SELECT unnest($2))
+  RETURNING idUser`;
+
+  return db.any(sql, params);
+}
+
+const getInfoLogin = (params) => {
+  const sql =
+    `SELECT nickName, firstName, lastName, email, 
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
+    dateBirth, sexPreferences, 
+  sex, rate, about, photos, location 
+  FROM Users WHERE nickName=$1`;
+
+  return db.any(sql, params);
+}
+
+const insertLocation = (params) => {
+  const sql = `UPDATE Users 
+  SET location[1] = $1, location[2] = $2, location[3] = $3 
+  WHERE nickName = $4 RETURNING id`;
+
+  return db.one(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
+exports.getOnlyPass = getOnlyPass;
 exports.getEmail = getEmail;
 exports.getLogin = getLogin;
 exports.getProfile = getProfile;
@@ -191,3 +239,8 @@ exports.getImage = getImage;
 exports.getTimeView = getTimeView;
 exports.updateViewFailed = updateViewFailed;
 exports.insertViewFailed = insertViewFailed;
+exports.editProfile = editProfile;
+exports.deleteTags = deleteTags;
+exports.insertTags = insertTags;
+exports.getInfoLogin = getInfoLogin;
+exports.insertLocation = insertLocation;

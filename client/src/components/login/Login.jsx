@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { fetchLogin, setLogin, setPassword } from '../../redux/login/ActionCreators';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { useHistory } from "react-router-dom";
+import { Loading } from '../Loading';
 
 const mapStateToProps = (state) => {
     return {
@@ -21,22 +22,17 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 function LoginInput(props) {
-    const [valid, setValid] = useState(false);
-    const [inValid, setInvalid] = useState(false);
+    const [isValid, toggleValid] = useState('');
 
     const loginChange = (e) => {
         const { name, value } = e.target;
 
         if (isValidInput(name, value)) {
+            toggleValid('is-valid');
             props.setLogin(value);
-
-            setInvalid(false);
-            setValid(true);
         }
-        else {
-            setInvalid(true);
-            setValid(false);
-        }
+        else
+            toggleValid('is-invalid');
     }
 
     return (
@@ -49,8 +45,7 @@ function LoginInput(props) {
                     onChange={loginChange}
                     placeholder="rkina7"
                     required
-                    valid={valid}
-                    invalid={inValid}
+                    className={isValid}
                 />
             </FormGroup>
         </Col>
@@ -58,22 +53,17 @@ function LoginInput(props) {
 }
 
 function Password(props) {
-    const [valid, setValid] = useState(false);
-    const [inValid, setInvalid] = useState(false);
+    const [isValid, toggleValid] = useState('');
 
     const passChange = (e) => {
         const { value } = e.target;
 
         if (isValidPassword(value)) {
+            toggleValid('is-valid');
             props.setPass(value);
-
-            setInvalid(false);
-            setValid(true);
         }
-        else {
-            setInvalid(true);
-            setValid(false);
-        }
+        else
+            toggleValid('is-invalid');
     }
 
     return (
@@ -86,8 +76,7 @@ function Password(props) {
                     onChange={passChange}
                     placeholder="Str0ngPa55%"
                     required
-                    valid={valid}
-                    invalid={inValid}
+                    className={isValid}
                 />
             </FormGroup>
         </Col>
@@ -107,12 +96,19 @@ function Login(props) {
         history.push("/users/page/1");
     }
 
+    if (props.login.isLoading) {
+        return (
+            <Loading />
+        )
+    }
+
     return (
         <Row>
             <Col md={6} className="m-auto">
-                <Alert color="primary" isOpen={false}>
-                    {props.login.me.nickname}
-                </Alert>
+                {
+                    props.login.errMsg && 
+                    <Alert color='danger' >{props.login.errMsg}</Alert>
+                }
                 <form >
                     <LoginInput setLogin={props.setLogin} />
                     <Password setPass={props.setPassword} />

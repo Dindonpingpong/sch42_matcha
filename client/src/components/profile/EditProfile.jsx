@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Input, Button, FormFeedback } from 'reactstrap';
-import { isValidInput, isValidPassword } from '../../util/check';
+import { Container, Input, Button, FormFeedback, Alert } from 'reactstrap';
+import { isValidInput } from '../../util/check';
 import { request } from '../../util/http';
-import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword } from '../../redux/editProfile/ActionCreators';
+import { Loading } from '../Loading';
+import { fetchUpdateLogin } from '../../redux/login/ActionCreators';
 import moment from 'moment';
+import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword } from '../../redux/editProfile/ActionCreators';
 
 const mapStateToProps = (state) => {
     return {
@@ -17,6 +19,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+    fetchUpdateLogin: (login) => dispatch(fetchUpdateLogin(login)),
     clearForm: () => dispatch(initFormEdit()),
     fetchEditProfile: (data, login) => dispatch(fetchEditProfile(data, login)),
     setLogin: (login) => dispatch(setLogin(login)),
@@ -41,31 +44,33 @@ function InputForm(props) {
         if (isValidInput(name, value)) {
             toggleValid('is-valid');
 
-            // if (name === 'email' || name == 'login') {
-            //     request(`/api/user/register/check/${name}/${value}`)
-            //         .then(res => res.json())
-            //         .then(result => {
-            //             if (result.success === true) {
-            //                 toggleValid('is-invalid');
-            //                 setFeedback(`${name} is taken`)
-            //             }
-            //         })
-            // }
-            // else if (name === 'currentPass') {
-            //     const data = {
-            //         login: props.login,
-            //         password: value
-            //     };
+            if (name === 'email' || name === 'login') {
+                request(`/api/user/register/check/${name}/${value}`)
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success === true) {
+                            toggleValid('is-invalid');
+                            setFeedback(`${name} is taken`)
+                        }
+                    })
+            }
+            else if (name === 'currentPass') {
+                const data = {
+                    login: props.login,
+                    password: value
+                };
 
-            //     request('/api/user/register/check/pass', data, 'POST')
-            //         .then(res => res.json())
-            //         .then(result => {
-            //             if (result.success !== true) {
-            //                 toggleValid('is-invalid');
-            //                 setFeedback(`Wrong password`)
-            //             }
-            //         })
-            // }
+                console.log('her', data);
+                request('/api/user/register/check/pass', data, 'POST')
+                    .then(res => res.json())
+                    .then(result => {
+                        console.log('h2', result);
+                        if (result.success !== true) {
+                            toggleValid('is-invalid');
+                            setFeedback(`Wrong password`)
+                        }
+                    })
+            }
 
             if (name !== 'currentPass')
                 props.set(value)
@@ -81,7 +86,6 @@ function InputForm(props) {
             <Input
                 type={props.type || 'text'}
                 placeholder={props.placeholder || ''}
-                className="form-control"
                 name={props.name}
                 defaultValue={props.me || ''}
                 onChange={inputChange}
@@ -118,7 +122,18 @@ const EditProfile = (props) => {
 
         props.fetchEditProfile(data, props.login.me.nickname)
             .then(() => {
-                history.push('/');
+                let login;
+
+                if (props.edit.nickname === null) {
+                    login = props.login.me.nickname;
+                }
+                else {
+                    login = props.edit.nickname;
+                }
+                props.fetchUpdateLogin(login)
+                    .then(() => {
+                        history.push(`/users/${login}`);
+                    })
             })
     }
 
@@ -141,8 +156,18 @@ const EditProfile = (props) => {
             toggleBtn(true);
     }
 
+    if (props.login.isLoading)
+        return (
+            <Loading />
+        )
+
     return (
         <section className="profile-edit">
+            {
+                props.edit.errMsg &&
+                <Alert color='danger' >{props.edit.errMsg}</Alert>
+            }
+
             <Container>
                 {/* <ModalBody className="text-center"> */}
                 <InputForm name='login' me={props.login.me.nickname} label='Username' feedback='Invalid login' set={props.setLogin} checkBtn={checkBtn} />
@@ -153,20 +178,29 @@ const EditProfile = (props) => {
                 <InputForm name='birthDate' me={moment(props.login.me.datebirth).format('YYYY-MM-DD')} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
 
                 <p className="font-profile-head">Sex</p>
-                <Input type='select' defaultValue={props.login.me.sex} onChange={e => props.setSex(e.target.value)}>
+                <Input type='select' defaultValue={props.login.me.sex} onChange={e => {
+                    props.setSex(e.target.value);
+                    checkBtn();
+                }}>
                     <option value="famale">Female</option>
                     <option value="male">Male</option>
                 </Input>
 
                 <p className="font-profile-head">Sexual preferences</p>
-                <Input type='select' defaultValue={props.login.me.sexpreferences} onChange={e => props.setSexPref(e.target.value)}>
+                <Input type='select' defaultValue={props.login.me.sexpreferences} onChange={e => {
+                    props.setSexPref(e.target.value);
+                    checkBtn();
+                }}>
                     <option value="bisexual">bisexual</option>
                     <option value="heterosexual">heterosexual</option>
                     <option value="homosexual">homosexual</option>
                 </Input>
 
                 <p className="font-profile-head">Tags</p>
-                <Input type='select' multiple defaultValue={props.login.me.tags} onChange={tagsHandle}>
+                <Input type='select' multiple defaultValue={props.login.me.tags} onChange={e => {
+                    tagsHandle(e);
+                    checkBtn();
+                }} >
                     <option value="sport">sport</option>
                     <option value="movie">movie</option>
                     <option value="food">food</option>

@@ -2,7 +2,7 @@ import * as ActionTypes from './ActionTypes';
 
 const initialState = {
     isLoading: false,
-    errProfile: null,
+    errMsg: null,
     nickname: null,
     firstname: null,
     lastname: null,
