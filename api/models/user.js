@@ -220,6 +220,45 @@ const insertLocation = (params) => {
   return db.one(sql, params);
 }
 
+const insertRemind = (params) => {
+  const sql = `UPDATE Users 
+  SET remindHash = $1, 
+  remindtime = $2
+  WHERE email = $3
+  RETURNING id`;
+
+  return db.one(sql, params);
+}
+
+const getRemind = (params) => {
+  const sql = `SELECT remindHash, 
+  EXTRACT(HOUR FROM remindtime) AS hours,
+  EXTRACT(MINUTE FROM remindtime) AS minutes 
+  FROM Users
+  WHERE email=$1`;
+
+  return db.any(sql, params);
+}
+
+const delRemind = (params) => {
+  const sql = `UPDATE Users 
+  SET remindHash = null, 
+  remindtime = null
+  WHERE email = $1
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
+
+const changePass = (params) => {
+  const sql = `UPDATE Users
+  SET password = $1
+  WHERE email = $2
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -244,3 +283,7 @@ exports.deleteTags = deleteTags;
 exports.insertTags = insertTags;
 exports.getInfoLogin = getInfoLogin;
 exports.insertLocation = insertLocation;
+exports.insertRemind = insertRemind;
+exports.getRemind = getRemind;
+exports.delRemind = delRemind;
+exports.changePass = changePass;

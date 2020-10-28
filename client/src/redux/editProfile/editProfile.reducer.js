@@ -11,7 +11,7 @@ const initialState = {
     about: null,
     sex: null,
     sexpreferences: null,
-    tags: [],
+    tags: null,
     newpass: null,
     passwordStatus: false,
     editProfileStatus: null

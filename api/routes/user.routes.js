@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -149,7 +149,7 @@ router.post('/register', async (req, res) => {
                     login: data.nickname,
                     success: true
                 })
-                // sendMail(email, )
+                sendMail(email, 'Confirmation', 'You have 1 day to confirm your account', `<a href='http://localhost:3000/login/${nickName}/${newHash}'>1 day to confirm</a>`);
             })
             .catch((e) => {
                 res.status(500).json({
@@ -561,7 +561,7 @@ router.post('/edit/:nickname', async (req, res) => {
     let i = 1;
 
     for (const [key, value] of Object.entries(req.body)) {
-        if (value !== null && key !== 'tags' && key !== 'newpass') {
+        if (value !== null && key !== 'newtags' && key !== 'newpass' && key !== 'oldtags') {
             keys.push(`${key} = $${i++}`);
             params.push(value);
         }
@@ -594,7 +594,8 @@ router.post('/edit/:nickname', async (req, res) => {
             })
         })
         .catch(e => {
-            res.status(500).json({
+            console.log(e.message);
+            res.status(200).json({
                 message: e.message,
                 success: false
             })
@@ -603,15 +604,24 @@ router.post('/edit/:nickname', async (req, res) => {
 
 router.post('/edit/tags/:nickname', async (req, res) => {
     const login = req.params.nickname;
-    const tags = req.body.tags;
+    const { newtags, oldtags } = req.body;
+
+    // console.log(newtags, oldtags);
+    if (newtags === null || JSON.stringify(newtags) == JSON.stringify(oldtags)) {
+        res.status(200).json({
+            msg: 'Ok1',
+            success: true
+        })
+        return;
+    }
 
     deleteTags([login])
         .then(() => {
-            if (tags.length > 0) {
-                insertTags([login, tags])
+            if (newtags.length > 0) {
+                insertTags([login, newtags])
                     .then((data) => {
                         res.status(200).json({
-                            msg: 'Ok1',
+                            msg: 'Ok2',
                             d: data,
                             success: true
                         })
@@ -619,7 +629,7 @@ router.post('/edit/tags/:nickname', async (req, res) => {
             }
             else {
                 res.status(200).json({
-                    msg: 'Ok2',
+                    msg: 'Ok3',
                     success: true
                 })
             }
@@ -660,7 +670,7 @@ router.post('/register/location/:nickname', async (req, res) => {
     const params = [country, region, city, login];
 
     insertLocation(params)
-        .then( (data) => {
+        .then((data) => {
             if (data.id) {
                 res.status(200).json({
                     message: "Updated",
@@ -683,17 +693,90 @@ router.post('/register/location/:nickname', async (req, res) => {
 })
 
 router.post('/remind', async (req, res) => {
-    const { email, time } = req.body;
+    const { email } = req.body;
+    const time = new Date();
 
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(email + time, salt);
-    
-    res.status(200).json({
-        message: hash,
-        time: time,
-        success: true
-    })
+
+    insertRemind([hash, time, email])
+        .then(() => {
+            const newHash = hash.replace(/\//g, "slash");
+            sendMail(email, "Remind", 'You have 10 minutes to restore your account' , `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
+            res.status(200).json({
+                message: "Ok",
+                success: true
+            })
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+router.post('/remind/check', async (req, res) => {
+    const { email, hash } = req.body;
+    const time = new Date();
+
+    getRemind([email])
+        .then((data) => {
+            const oldHash = hash.replace(/slash/g, "/");
+            const trueHash = data[0].remindhash;
+            const oldHours = data[0].hours;
+            const oldMinutes = data[0].minutes;
+
+            if (oldHours !== time.getHours() || (time.getMinutes() - oldMinutes > 10)) {
+                res.status(200).json({
+                    message: "Your restore link is time out",
+                    success: false
+                })
+            }
+
+            if (oldHash === trueHash) {
+                res.status(200).json({
+                    message: "Cool",
+                    success: true
+                })
+            }
+            else {
+                res.status(200).json({
+                    message: "Timeout",
+                    success: false
+                })
+            }
+        })
+})
+
+router.post('/remind/restore', async (req, res) => {
+    const { email, password } = req.body;
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(password, salt);
+
+    changePass([hash, email])
+        .then((data) => {
+            if (data[0].id) {
+                res.status(200).json({
+                    message: "Password changed successfully",
+                    success: true
+                })
+            }
+            else {
+                res.status(200).json({
+                    message: "Oopsy",
+                    success: false
+                })
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
 })
 
 module.exports = router

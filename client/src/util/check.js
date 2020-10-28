@@ -35,6 +35,9 @@ const isValidInput = (type, value) => {
         case 'newPass':
             return (value.length > 0);
 
+        case 'rePass':
+            return (value.length > 0);
+
         case 'currentPass':
             return (value.length > 0);
 

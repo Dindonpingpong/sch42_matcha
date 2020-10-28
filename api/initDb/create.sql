@@ -30,7 +30,7 @@ CREATE TABLE  Users (
     confirm boolean DEFAULT FALSE,
     confirmHash text,
     remindHash text,
-    remindTima timestamp,
+    remindTime timestamp,
     PRIMARY KEY (id)
 );
 

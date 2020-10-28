@@ -1,0 +1,2 @@
+UPDATE Users SET remindHash = 'hash', remindtime = CURRENT_TIMESTAMP WHERE email = 'd_ng@mail.ru';
+SELECT remindHash, EXTRACT(HOUR FROM remindtime) AS hours, EXTRACT(MINUTE FROM remindtime) AS minutes from Users;

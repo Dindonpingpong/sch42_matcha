@@ -116,25 +116,21 @@ const EditProfile = (props) => {
             about: props.edit.about,
             sex: props.edit.sex,
             sexpreferences: props.edit.sexpreferences,
-            tags: props.edit.tags,
+            newtags: props.edit.tags,
+            oldtags: props.login.me.tags,
             newpass: props.edit.newpass
         }
 
-        props.fetchEditProfile(data, props.login.me.nickname)
-            .then(() => {
-                let login;
+        if (data)
+            props.fetchEditProfile(data, props.login.me.nickname)
+                .then(() => {
+                    let login = (props.edit.nickname === null) ? props.login.me.nickname : props.edit.nickname;
 
-                if (props.edit.nickname === null) {
-                    login = props.login.me.nickname;
-                }
-                else {
-                    login = props.edit.nickname;
-                }
-                props.fetchUpdateLogin(login)
-                    .then(() => {
-                        history.push(`/users/${login}`);
-                    })
-            })
+                    props.fetchUpdateLogin(login)
+                        .then(() => {
+                            history.push(`/users/${login}`);
+                        })
+                })
     }
 
     const tagsHandle = (e) => {
@@ -182,7 +178,7 @@ const EditProfile = (props) => {
                     props.setSex(e.target.value);
                     checkBtn();
                 }}>
-                    <option value="famale">Female</option>
+                    <option value="female">Female</option>
                     <option value="male">Male</option>
                 </Input>
 
@@ -191,9 +187,9 @@ const EditProfile = (props) => {
                     props.setSexPref(e.target.value);
                     checkBtn();
                 }}>
-                    <option value="bisexual">bisexual</option>
-                    <option value="heterosexual">heterosexual</option>
-                    <option value="homosexual">homosexual</option>
+                    <option value="bisexual">Bisexual</option>
+                    <option value="heterosexual">Heterosexual</option>
+                    <option value="homosexual">Homosexual</option>
                 </Input>
 
                 <p className="font-profile-head">Tags</p>
@@ -201,13 +197,13 @@ const EditProfile = (props) => {
                     tagsHandle(e);
                     checkBtn();
                 }} >
-                    <option value="sport">sport</option>
-                    <option value="movie">movie</option>
-                    <option value="food">food</option>
-                    <option value="art">art</option>
-                    <option value="travel">travel</option>
-                    <option value="dance">dance</option>
-                    <option value="animal">animal</option>
+                    <option value="sport">Sport</option>
+                    <option value="movie">Movie</option>
+                    <option value="food">Food</option>
+                    <option value="art">Art</option>
+                    <option value="travel">Travel</option>
+                    <option value="dance">Dance</option>
+                    <option value="animal">Animal</option>
                 </Input>
 
                 <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
