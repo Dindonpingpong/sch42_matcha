@@ -1,12 +1,24 @@
 import React from 'react';
 import { useState } from 'react';
 import { Button, Col, Container, Form, Input, Row } from 'reactstrap';
+import { request } from '../../util/http';
 
 const Remind = () => {
     const [email, setEmail] = useState('');
 
     const remind = () => {
-        console.log(email);
+        const time = new Date();
+        const data = {
+            email: email,
+            time: time
+        }
+
+        request('/api/user/remind', data, 'POST')
+            .then(res => res.json())
+            .then(res => {
+                console.log(res.time);
+                console.log(res.message);
+            })
     }
 
     return (

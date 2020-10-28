@@ -9,7 +9,7 @@ const upload = multer({ dest: "uploads" });
 const fs = require('fs');
 // const c = require('config');
 // const { has } = require('config');
-// const { sendMail } = require('../util/mail');
+const { sendMail } = require('../util/mail');
 
 router.post('/login', async (req, res) => {
     try {
@@ -406,7 +406,6 @@ router.post('/profile/status/update', async (req, res) => {
     try {
         const { me, you, status, newStatus } = req.body;
 
-        console.log("2", me, you, status, newStatus);
         if (status === 'like' || status === 'ignore' || status === 'unlike') {
             updateStatus([me, you, newStatus])
                 .then(data => {
@@ -608,7 +607,6 @@ router.post('/edit/tags/:nickname', async (req, res) => {
 
     deleteTags([login])
         .then(() => {
-            console.log(tags);
             if (tags.length > 0) {
                 insertTags([login, tags])
                     .then((data) => {
@@ -682,6 +680,20 @@ router.post('/register/location/:nickname', async (req, res) => {
                 success: false
             })
         })
+})
+
+router.post('/remind', async (req, res) => {
+    const { email, time } = req.body;
+
+    const saltRounds = 10;
+    const salt = bcrypt.genSaltSync(saltRounds);
+    const hash = bcrypt.hashSync(email + time, salt);
+    
+    res.status(200).json({
+        message: hash,
+        time: time,
+        success: true
+    })
 })
 
 module.exports = router
