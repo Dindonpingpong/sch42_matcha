@@ -1,12 +1,13 @@
 const config = require('config');
+const { param } = require('../routes/user.routes');
 const connector = config.get('urlDb');
 const pgp = require('pg-promise')();
 const db = pgp(connector);
 
 const sign = (params) => {
   const sql =
-    `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) 
-  VALUES ($1, $2, $3, $4, $5, $6) 
+    `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth, sex) 
+  VALUES ($1, $2, $3, $4, $5, $6, $7) 
   RETURNING nickName`;
 
   return db.one(sql, params);
@@ -17,7 +18,7 @@ const getPassword = (login) => {
     `SELECT nickName, firstName, lastName, email, 
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
     dateBirth, sexPreferences, 
-  sex, rate, about, photos, location, password 
+  sex, rate, about, photos, location, confirm, password 
   FROM Users WHERE nickName=$1`;
 
   return db.any(sql, login);
@@ -202,9 +203,10 @@ const getInfoLogin = (params) => {
 const insertLocation = (params) => {
   const sql = `UPDATE Users 
   SET location[1] = $1, location[2] = $2, location[3] = $3 
-  WHERE nickName = $4 RETURNING id`;
+  WHERE nickName = $4 
+  RETURNING id`;
 
-  return db.one(sql, params);
+  return db.any(sql, params);
 }
 
 const insertRemind = (params) => {
@@ -290,6 +292,27 @@ const addConfirmHash = (params) => {
   return db.any(sql, params);
 }
 
+const getConfirmHash = (params) => {
+  const sql = `SELECT confirmHash, created_at_user FROM Users
+  WHERE nickName = $1`;
+
+  return db.any(sql, params);
+}
+
+const userDel = (params) => {
+  const sql = `DELETE FROM Users WHERE nickName = $1 RETURNING id`;
+
+  return db.any(sql, params);
+}
+
+const confirmUser = (params) => {
+  const sql = `UPDATE Users 
+  SET confirm = true
+  WHERE nickName = $1
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
 
 exports.sign = sign;
 exports.getPassword = getPassword;
@@ -320,3 +343,6 @@ exports.getRemind = getRemind;
 exports.delRemind = delRemind;
 exports.changePass = changePass;
 exports.addConfirmHash = addConfirmHash;
+exports.getConfirmHash = getConfirmHash;
+exports.userDel = userDel;
+exports.confirmUser = confirmUser;

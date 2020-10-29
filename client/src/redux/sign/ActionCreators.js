@@ -35,6 +35,11 @@ export const formEmail = (email) => ({
     email: email
 });
 
+export const formSex = (sex) => ({
+    type: ActionTypes.USER_FORM_SEX_ADD,
+    sex: sex
+});
+
 export const formPassword = (pass) => ({
     type: ActionTypes.USER_FORM_PASSWORD_ADD,
     password: pass
@@ -66,6 +71,10 @@ export const setEmail = (email) => (dispatch) => {
     dispatch(formEmail(email));
 };
 
+export const setSex = (sex) => (dispatch) => {
+    dispatch(formSex(sex));
+};
+
 export const setPassword = (pass) => (dispatch) => {
     dispatch(formPassword(pass));
 };
@@ -86,9 +95,10 @@ export const fetchRegister = (data) => (dispatch) => {
         .then(result => {
             if (result.success === true) {
                 const login = result.login;
+                console.log(result,login);
                 request('https://extreme-ip-lookup.com/json/')
                     .then(res => res.json())
-                    .then(result => {
+                    .then((result) => {
                         const data = {
                             country: result.country,
                             region: result.region,

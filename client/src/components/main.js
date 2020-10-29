@@ -18,13 +18,14 @@ export function Main() {
             <Router>
             <Header />
                 <Switch>
-                    <Route path='/login' component={Login} />
+                    <Route exact={true} path='/login' component={Login} />
+                    <Route path='/login/:nickname/:hash' component={Login} />
                     <Route path='/register' component={Sign} />
                     <Route exact={true} path='/users/page/:page' component={Users} />
                     <Route path='/users/:nickname' component={Profile} />
                     <Route path='/edit' component={EditProfile} />
                     <Route exact={true} path='/remind' component={Remind} />
-                    <Route  path='/remind/:email/:hash' component={Restore} />
+                    <Route path='/remind/:email/:hash' component={Restore} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>

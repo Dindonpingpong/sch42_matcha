@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, addConfirmHash } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, addConfirmHash, getConfirmHash, userDel, confirmUser } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -10,6 +10,7 @@ const fs = require('fs');
 // const c = require('config');
 // const { has } = require('config');
 const { sendMail } = require('../util/mail');
+const { has } = require('config');
 
 router.post('/login', async (req, res) => {
     try {
@@ -26,6 +27,12 @@ router.post('/login', async (req, res) => {
                 if (len == 0 || check == false) {
                     res.status(200).json({
                         message: "Login or pass is incorrect",
+                        success: false
+                    })
+                }
+                else if (!data[0].confirm) {
+                    res.status(200).json({
+                        message: "Confirm your account via email.",
                         success: false
                     })
                 }
@@ -129,7 +136,7 @@ router.post('/register/check/pass', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
-        const { nickName, lastName, firstName, email, password, date } = req.body;
+        const { nickName, lastName, firstName, email, password, date, sex } = req.body;
         const time = new Date();
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
@@ -141,28 +148,29 @@ router.post('/register', async (req, res) => {
             firstName,
             email,
             hash,
-            date
+            date,
+            sex
         ];
 
         sign(params)
             .then(data => {
                 if (data.nickname) {
                     const login = data.nickname;
-                    const confirmHash = bcrypt.hashSync(login + time, salt);
+                    const confirmHash = bcrypt.hashSync(login + time, salt).replace(/\//g, "slash");
 
                     addConfirmHash([confirmHash, login])
                         .then((data) => {
-                            console.log(data);
                             sendMail(email, 'Confirmation',
                                 'You have 1 day to confirm your account',
                                 `<a href='http://localhost:3000/login/${nickName}/${confirmHash}'>1 day to confirm</a>`);
                             res.status(200).json({
                                 message: "Check your email &)",
+                                login: login,
                                 success: true
                             })
+                            return;
                         })
-                        .catch((e) =>{
-                            console.log('hrere');
+                        .catch((e) => {
                             res.status(200).json({
                                 message: e.message,
                                 success: false
@@ -171,7 +179,6 @@ router.post('/register', async (req, res) => {
                 }
             })
             .catch((e) => {
-                console.log('hrere12');
                 res.status(200).json({
                     message: e.message,
                     success: false
@@ -179,7 +186,6 @@ router.post('/register', async (req, res) => {
             })
 
     } catch (e) {
-        console.log('hrere123');
         res.status(200).json({
             message: e.message,
             success: false
@@ -655,7 +661,8 @@ router.post('/register/location/:nickname', async (req, res) => {
 
     insertLocation(params)
         .then((data) => {
-            if (data.id) {
+            console.log(data);
+            if (data[0].id) {
                 res.status(200).json({
                     message: "Updated",
                     success: true
@@ -798,4 +805,54 @@ router.post('/users/page', async (req, res) => {
     }
 })
 
-module.exports = router
+router.post('/confirm', async (req, res) => {
+    const { nickname, hash } = req.body;
+    const time = new Date();
+
+    getConfirmHash([nickname])
+        .then((data) => {
+            if (data[0].confirmhash) {
+                const trueHash = data[0].confirmhash;
+                const oldTime = data[0].created_at_user;
+
+                if (time.getDate() !== oldTime.getDate() || hash !== trueHash) {
+                    userDel([nickname])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Your confirm link is time out",
+                                success: false
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
+                else {
+                    confirmUser([nickname])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Cool! Welcome to",
+                                success: true
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+module.exports = router;

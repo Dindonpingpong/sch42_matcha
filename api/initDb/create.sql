@@ -21,7 +21,6 @@ CREATE TABLE  Users (
     email text DEFAULT NULL,
     dateBirth date NOT NULL,
     password text NOT NULL,
-    confirm boolean DEFAULT FALSE,
     sexPreferences preferences DEFAULT 'bisexual', 
     sex sexType NOT NULL,
     rate int DEFAULT 500,
@@ -29,6 +28,10 @@ CREATE TABLE  Users (
     -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
     location text[3],
+    confirm boolean DEFAULT FALSE,
+    confirmHash text,
+    remindHash text,
+    remindTime timestamp,
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
