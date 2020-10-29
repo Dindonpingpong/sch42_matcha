@@ -333,41 +333,6 @@ router.get('/message/:from/:to', async (req, res) => {
     }
 })
 
-router.get('/cards/:user/:page', async (req, res) => {
-    try {
-        const user = req.params.user;
-        const page = (req.params.page - 1) * 6;
-
-        getCards([user, page])
-            .then(data => {
-                if (data.length > 0) {
-                    res.status(200).json({
-                        result: data,
-                        message: "Ok",
-                        success: true
-                    });
-                }
-                else
-                    res.status(200).json({
-                        result: [],
-                        message: "No messages",
-                        success: false
-                    })
-            })
-            .catch((e) => {
-                res.status(500).json({
-                    message: e.message,
-                    success: false
-                })
-            })
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            success: false
-        })
-    }
-})
-
 router.post('/profile/status', async (req, res) => {
     try {
         const { me, you } = req.body;
@@ -703,7 +668,7 @@ router.post('/remind', async (req, res) => {
     insertRemind([hash, time, email])
         .then(() => {
             const newHash = hash.replace(/\//g, "slash");
-            sendMail(email, "Remind", 'You have 10 minutes to restore your account' , `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
+            sendMail(email, "Remind", 'You have 10 minutes to restore your account', `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
             res.status(200).json({
                 message: "Ok",
                 success: true
@@ -777,6 +742,42 @@ router.post('/remind/restore', async (req, res) => {
                 success: false
             })
         })
+})
+
+router.post('/users/page', async (req, res) => {
+    try {
+        // console.log(req.body);
+        const nickname = req.body.nickname;
+        const page = (req.body.page * 6);
+
+        getCards([nickname, page])
+            .then(data => {
+                console.log(data);
+                if (data.length > 0) {
+                    res.status(200).json({
+                        result: data,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        message: "No users",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
 })
 
 module.exports = router
