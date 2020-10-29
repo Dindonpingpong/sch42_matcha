@@ -1,4 +1,4 @@
-import React, { useEffect, Component } from 'react';
+import React, { useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchUsersCard: (nickname, page) => dispatch(fetchUsersCard(nickname, page)),
+    fetchUsersCard: (nickname, page, sort) => dispatch(fetchUsersCard(nickname, page, sort)),
     fetchFilter: (data) => dispatch(fetchFilter(data)),
     filterClear: () => dispatch(initFilter()),
     setAgeFrom: (ageFrom) => dispatch(setAgeFrom(ageFrom)),
@@ -61,15 +61,16 @@ function Filter(props) {
                         <Input
                             type="select"
                             onChange={e => { props.setSort(e.target.value) }}
+                            defaultValue={props.sortType}
                         >
-                            <option>Age ↑</option>
-                            <option>Age ↓</option>
-                            <option>Rate ↑</option>
-                            <option>Rate ↓</option>
-                            <option>Location A-Z</option>
-                            <option>Location Z-A</option>
-                            <option>Tags A-Z</option>
-                            <option>Tags Z-A</option>
+                            <option value="ageAsc">Age ↑</option>
+                            <option value="ageDesc">Age ↓</option>
+                            <option value="rateAsc">Rate ↑</option>
+                            <option value="rateDesc">Rate ↓</option>
+                            <option value="tagsAsc">Tags ↑</option>
+                            <option value="tagsDesc">Tags ↓</option>
+                            <option value="locationAsc">Location A-Z</option>
+                            <option value="locationDesc">Location Z-A</option>
                         </Input>
                     </FormGroup>
                 </Col>
@@ -178,14 +179,14 @@ function Filter(props) {
                         </Row>
 
                         <ModalFooter className="d-flex justify-content-between align-items-center">
-                            <Button color="success">Save</Button>
+                            <Button color="success" onClick={handleSubmit}>Save</Button>
                             <Button color="secondary" onClick={toggleModal}>Cancel</Button>
                         </ModalFooter>
                     </ModalBody>
                 </Modal>
             </Row>
         </Nav>
-    )
+    );
 }
 
 function TagsList(props) {
@@ -259,14 +260,14 @@ function CardsPagination() {
     );
 }
 
-function Users(props) {
+const Users = (props) => {
     useEffect(() => {
-        console.log('nick', props.login.me.nickname);
-        console.log('page', props.match.params.page);
-        props.fetchUsersCard(props.login.me.nickname, props.match.params.page);
-    }, [props.login.me.nickname, props.match.params.page]);
-
-    // console.log('info', props.filter);
+        // console.log('nick', props.login.me.nickname);
+        // console.log('page', props.match.params.page);
+        props.fetchUsersCard(props.login.me.nickname, props.match.params.page, props.filter.sortType);
+    }, [props.match.params.page, props.filter.sortType]);
+    // props.login.me.nickname
+    console.log('info', props.filter);
     // console.log(props.match.params.page);
 
     if (props.filter.isLoading) {
@@ -288,7 +289,7 @@ function Users(props) {
         return (
             <section className="users">
                 <Container>
-                    <Filter />
+                    <Filter setSort={props.setSort} sortType={props.filter.sortType}/>
                     <UserCards cards={props.filter.info} />
                     <CardsPagination />
                 </Container>

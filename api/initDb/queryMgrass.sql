@@ -71,8 +71,8 @@
 
 -- SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
 -- (SELECT UNNEST (array_cat(
--- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = 2),
--- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = 4))) AS u) t;
+-- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = 6),
+-- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = Users.id))) AS u) t;
 
 -- select 'rkina' me, nickName you From Users;
 
@@ -253,6 +253,44 @@ AND location[3] IN ('Moscow', 'Podolsk')
 AND tags = array['movie'];
 
 SELECT DISTINCT(location[1]) FROM Users;
-SELECT DISTINCT(location[2]) FROM Users WHERE location[1] = 'Russia';
+SELECT DISTINCT(location[2]) FROM Users WHERE location[1] IN 'Russia';
 -- SELECT location[2] FROM Users WHERE location[1] = 'Russia';
-SELECT DISTINCT(location[3]) FROM Users WHERE location[2] = 'Moscow';
+SELECT DISTINCT(location[3]) FROM Users WHERE location[2] IN 'Moscow';
+
+
+
+SELECT * FROM (
+    SELECT 'test6' as me, nickName, firstName, lastName, EXTRACT(YEAR FROM age(dateBirth)) as age, rate, location, photos[1][2], sex, sexpreferences,
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) as tags,
+    (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
+    (SELECT UNNEST (array_cat(
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'test6')),
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
+    CASE
+    WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 6) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 6) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 6) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'homosexual')
+        THEN true
+    WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 6) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'homosexual')
+        THEN true
+    ELSE NULL
+    END AS contact
+    FROM Users
+    WHERE nickName != 'test6'
+    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'test6') 
+    AND status = 'ignore'), 0))
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName='test6')
+    ORDER BY age ASC, count DESC, rate DESC
+) t WHERE contact IS NOT NULL;
+
+AND age > 18 AND age < 65
+AND rate > 0 AND rate < 1000
+-- AND sex = 'female' AND sex = 'male';
+AND location[3] IN ('Moscow', 'Podolsk')
+AND tags = array['movie'];

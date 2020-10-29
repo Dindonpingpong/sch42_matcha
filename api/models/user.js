@@ -246,7 +246,7 @@ const changePass = (params) => {
   return db.any(sql, params);
 }
 
-const getCards = (params) => {
+const getCards = (params, sort) => {
   const sql = `
   SELECT * FROM (
     SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) age, rate, location[3] AS city, photos[1][2], sex, sexpreferences,
@@ -275,7 +275,7 @@ const getCards = (params) => {
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
     AND location[3] = (SELECT location[3] FROM Users WHERE nickName = $1)
-    ORDER BY count DESC, rate DESC
+    ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL`;
 
   return db.any(sql, params);

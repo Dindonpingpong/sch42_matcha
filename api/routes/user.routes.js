@@ -747,10 +747,23 @@ router.post('/remind/restore', async (req, res) => {
 router.post('/users/page', async (req, res) => {
     try {
         // console.log(req.body);
-        const nickname = req.body.nickname;
-        const page = (req.body.page * 6);
+        // const nickname = req.body.nickname;
+        // const page = (req.body.page * 6);
+        // const sort = req.body.sort;
 
-        getCards([nickname, page])
+        const { nickname, page, sort } = req.body;
+        let sqlSort
+
+        if (sort === 'ageAsc' || sort === 'ageDesc')
+            sqlSort = (sort === 'ageAsc') ? 'age ASC, rate DESC, count DESC' : 'age DESC, rate DESC, count DESC';
+        else if (sort === 'rateAsc' || sort === 'rateDesc')
+            sqlSort = (sort === 'rateAsc') ? 'rate ASC, age ASC, count DESC' : 'rate DESC, age ASC, count DESC';
+        else if (sort === 'tagsAsc' || sort === 'tagsDesc')
+            sqlSort = (sort === 'tagsAsc') ? 'count ASC, rate DESC, age ASC' : 'count DESC, rate DESC, age ASC';
+        // if (sort === 'locationAsc' || sort === 'locationDesc')
+        //     let sqlSort = (sort === 'ageAsc') ? 'age ASC, rate DESC, count DESC' : 'age DESC, rate DESC, count DESC';
+
+        getCards([nickname, page], sqlSort)
             .then(data => {
                 console.log(data);
                 if (data.length > 0) {

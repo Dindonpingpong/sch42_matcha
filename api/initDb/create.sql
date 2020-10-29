@@ -87,13 +87,15 @@ CREATE TABLE Reports (
 
 CREATE TABLE User_Reports (
     id SERIAL,
-    idUser int,
+    idFrom int,
+    idTo int,
     idReport int,
     message text,
     PRIMARY KEY (id),
-    FOREIGN KEY (idUser) REFERENCES Users (id),
+    FOREIGN KEY (idFrom) REFERENCES Users (id),
+    FOREIGN KEY (idTo) REFERENCES Users (id),
     FOREIGN KEY (idReport) REFERENCES Reports (id)
-);
+); (
 
 INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location) VALUES
     ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
@@ -181,3 +183,15 @@ INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, passwor
 
 INSERT INTO User_Tags (idUser, idTag) VALUES 
     ('14', '2');
+
+INSERT INTO Reports (report) VALUES
+    ('pornography'),
+    ('spam'),
+    ('offensive behavior'),
+    ('fraud');
+
+UPDATE Users SET rate = 499 WHERE id = 14;
+UPDATE Users SET rate = 99 WHERE id = 3;
+UPDATE Users SET rate = 150 WHERE id = 5;
+UPDATE Users SET rate = 502 WHERE id = 11;
+UPDATE Users SET rate = 502 WHERE id = 8;

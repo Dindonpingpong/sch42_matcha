@@ -109,15 +109,16 @@ export const setSort = (sortType) => (dispatch) => {
     dispatch(sortTypeAdd(sortType));
 };
 
-export const fetchUsersCard = (nickname, page) => (dispatch) => {
+export const fetchUsersCard = (nickname, page, sort) => (dispatch) => {
     dispatch(filterLoading());
 
     const data = {
         nickname: nickname,
-        page: page
+        page: page,
+        sort: sort
     }
 
-    console.log('data', data);
+    // console.log('data', data);
     
     return request('/api/user/users/page', data, 'POST')
         .then(response => response.json())

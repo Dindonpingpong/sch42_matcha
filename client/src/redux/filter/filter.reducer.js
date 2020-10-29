@@ -11,7 +11,7 @@ const initialState = {
     sex: 'both',
     tags: [],
     location: [],
-    sortType: null,
+    sortType: 'ageAsc',
     info: {}
 }
 
