@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { setLogin, setFirstName, setLastName, setEmail, setPassword, setRepassword, setDate, fetchRegister } from '../../redux/sign/ActionCreators';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, FormGroup, Label, Input, FormFeedback, Button, Container } from 'reactstrap';
+import { Row, Col, FormGroup, Label, Input, FormFeedback, Button, Container, Alert } from 'reactstrap';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { request } from '../../util/http';
 import { useHistory } from "react-router-dom";
@@ -214,13 +214,22 @@ const Sign = (props) => {
             toggleBtn(true);
     }
 
+    if (props.sign.isLoading) {
+        return (
+            <Loading />
+        )
+    }
 
+    if (props.errMsg) {
+        return(
+            <Alert color='info'>{props.errMsg}</Alert>
+        )
+    }
 
     return (
         <Row>
             <Col md={8} className="m-auto">
                 <Container>
-
                     <Row xs='1'>
                         <InputForm
                             set={props.setLastName} onBlur={checkBtn} labelName='Last name'
@@ -241,7 +250,7 @@ const Sign = (props) => {
                     />
                     <Password setPass={props.setPassword} onBlur={checkBtn} />
                     <Col>
-                        <Button className="btn btn" color="primary" type="submit" disabled={props.isActiveBtn} onClick={handleSubmit} onBlur={checkBtn}>Sign Up</Button>
+                        <Button className="btn btn" color="primary" type="submit" disabled={isActiveBtn} onClick={handleSubmit} onBlur={checkBtn}>Sign Up</Button>
                     </Col>
 
                 </Container>

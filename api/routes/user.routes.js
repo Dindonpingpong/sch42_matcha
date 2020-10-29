@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, addConfirmHash } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -130,6 +130,7 @@ router.post('/register/check/pass', async (req, res) => {
 router.post('/register', async (req, res) => {
     try {
         const { nickName, lastName, firstName, email, password, date } = req.body;
+        const time = new Date();
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
@@ -145,21 +146,41 @@ router.post('/register', async (req, res) => {
 
         sign(params)
             .then(data => {
-                res.status(200).json({
-                    login: data.nickname,
-                    success: true
-                })
-                sendMail(email, 'Confirmation', 'You have 1 day to confirm your account', `<a href='http://localhost:3000/login/${nickName}/${newHash}'>1 day to confirm</a>`);
+                if (data.nickname) {
+                    const login = data.nickname;
+                    const confirmHash = bcrypt.hashSync(login + time, salt);
+
+                    addConfirmHash([confirmHash, login])
+                        .then((data) => {
+                            console.log(data);
+                            sendMail(email, 'Confirmation',
+                                'You have 1 day to confirm your account',
+                                `<a href='http://localhost:3000/login/${nickName}/${confirmHash}'>1 day to confirm</a>`);
+                            res.status(200).json({
+                                message: "Check your email &)",
+                                success: true
+                            })
+                        })
+                        .catch((e) =>{
+                            console.log('hrere');
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
             })
             .catch((e) => {
-                res.status(500).json({
+                console.log('hrere12');
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
 
     } catch (e) {
-        res.status(500).json({
+        console.log('hrere123');
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -594,7 +615,6 @@ router.post('/edit/:nickname', async (req, res) => {
             })
         })
         .catch(e => {
-            console.log(e.message);
             res.status(200).json({
                 message: e.message,
                 success: false
@@ -606,7 +626,6 @@ router.post('/edit/tags/:nickname', async (req, res) => {
     const login = req.params.nickname;
     const { newtags, oldtags } = req.body;
 
-    // console.log(newtags, oldtags);
     if (newtags === null || JSON.stringify(newtags) == JSON.stringify(oldtags)) {
         res.status(200).json({
             msg: 'Ok1',
@@ -695,7 +714,6 @@ router.post('/register/location/:nickname', async (req, res) => {
 router.post('/remind', async (req, res) => {
     const { email } = req.body;
     const time = new Date();
-
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(email + time, salt);
@@ -703,7 +721,7 @@ router.post('/remind', async (req, res) => {
     insertRemind([hash, time, email])
         .then(() => {
             const newHash = hash.replace(/\//g, "slash");
-            sendMail(email, "Remind", 'You have 10 minutes to restore your account' , `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
+            sendMail(email, "Remind", 'You have 10 minutes to restore your account', `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
             res.status(200).json({
                 message: "Ok",
                 success: true

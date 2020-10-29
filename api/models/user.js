@@ -259,6 +259,15 @@ const changePass = (params) => {
   return db.any(sql, params);
 }
 
+const addConfirmHash = (params) => {
+  const sql = `UPDATE Users
+  SET confirmHash = $1
+  WHERE nickName = $2
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -287,3 +296,4 @@ exports.insertRemind = insertRemind;
 exports.getRemind = getRemind;
 exports.delRemind = delRemind;
 exports.changePass = changePass;
+exports.addConfirmHash = addConfirmHash;
