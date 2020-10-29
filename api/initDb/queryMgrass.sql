@@ -6,7 +6,7 @@
 -- SELECT status FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'test4') AND idTo = (SELECT id FROM Users WHERE nickName = 'rkina');
 -- SELECT status FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'test4') AND idTo = (SELECT id FROM Users WHERE nickName = 'test4') OR false;
 -- UPDATE Connections SET status = 'like' WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'test4') AND idTo = (SELECT id FROM Users WHERE nickName = 'test5') RETURNING id;
--- INSERT INTO Connections (idFrom, idTo, status) VALUES ((SELECT id FROM Users WHERE nickName = 'test4'), (SELECT id FROM Users WHERE nickName = 'test6'), 'like');
+-- INSERT INTO Connections (idFrom, idTo, status) VALUES ((SELECT id FROM Users WHERE nickName = 'test4'), (SELECT id FROM Users WHERE nickName = 'mgrass'), 'like');
 -- INSERT INTO Connections (idFrom, idTo, status) VALUES ((SELECT id FROM Users WHERE nickName = 'test4'), (SELECT id FROM Users WHERE nickName = 'test7'), 'like') RETURNING id;
 
 -- SELECT u.id, u.nickName, u.dateBirth, u.photos[1], u.about FROM Users u JOIN History h ON u.id = h.idvisitor WHERE h.idvisited = (SELECT id FROM Users WHERE nickName = 'rkina');
@@ -71,12 +71,12 @@
 
 -- SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
 -- (SELECT UNNEST (array_cat(
--- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = 1),
+-- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = 2),
 -- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = 4))) AS u) t;
 
 -- select 'rkina' me, nickName you From Users;
 
--- SELECT 'rkina', nickName, date_part('year', age(dateBirth::date)) AS age, rate, sex, sexPreferences, location[3] as city, photos[1][1],
+-- SELECT 'rkina', nickName, date_part('year', age(dateBirth::date)) AS age, rate, sex, sexPreferences, location[3] as city, photos[1][2],
 -- (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
 -- (SELECT UNNEST (array_cat(
 -- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'rkina')),
@@ -89,16 +89,16 @@
 -- ORDER BY count DESC, rate DESC;
 --   LIMIT 6;
 
-
 -- SELECT 'rkina', nickName, date_part('year', age(dateBirth::date)) AS age, rate,
--- location[3] as city, photos[1][1],
+-- location[3] as city, photos[1][2],
+-- (select array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id),
 -- (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
 -- (SELECT UNNEST (array_cat(
 -- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'rkina')),
 -- (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count
 -- From Users
 -- WHERE nickName != 'rkina'
--- AND id !=( coalesce((SELECT  idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'rkina') 
+-- AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'rkina') 
 --   AND status = 'ignore'), 0)) AND location[3] =
 --   (SELECT location[3] FROM Users WHERE nickName='rkina')
 -- ORDER BY count DESC, rate DESC;
@@ -124,33 +124,92 @@
 --   LIMIT 6;
 
 SELECT * FROM (
-    SELECT 'test6', nickName, firstName, lastName, date_part('year', age(dateBirth::date)) age, rate, location[3] as city, photos[1][1], sex, sexpreferences,
+    SELECT 'mgrass', nickName, firstName, lastName, date_part('year', age(dateBirth::date)) age, rate, location[3] as city, photos[1][2], sex, sexpreferences,
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id),
     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
     (SELECT UNNEST (array_cat( 
-    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'test6')),
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'mgrass')),
     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-        AND ((SELECT sex FROM Users WHERE id = 6) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'heterosexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'heterosexual')
         THEN true
     WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-        AND ((SELECT sex FROM Users WHERE id = 6) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'heterosexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'heterosexual')
         THEN true
     WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-        AND ((SELECT sex FROM Users WHERE id = 6) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'homosexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'homosexual')
         THEN true
     WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-        AND ((SELECT sex FROM Users WHERE id = 6) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 6) = 'homosexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'homosexual')
         THEN true
     ELSE NULL
     END AS contact
     FROM Users
-    WHERE nickName != 'test6'
-    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'test6') 
+    WHERE nickName != 'mgrass'
+    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'mgrass') 
     AND status = 'ignore'), 0))
-    AND location[3] = (SELECT location[3] FROM Users WHERE nickName='test6')
+    AND location[3] = (SELECT location[3] FROM Users WHERE nickName='mgrass')
     ORDER BY count DESC, rate DESC
 ) t WHERE contact IS NOT NULL;
 
 select array_to_string(array['sport', 'art'], ',');
 INSERT INTO User_Tags (idTag, idUser) SELECT id, 3 FROM Tags WHERE tag IN (SELECT unnest(array['movie','sport']));
+
+
+
+SELECT * FROM (
+    SELECT 'mgrass' as me, nickName, firstName, lastName, EXTRACT(YEAR FROM age(dateBirth)) as age, rate, location[3] as city, photos[1][2], sex, sexpreferences,
+    (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
+    (SELECT UNNEST (array_cat( 
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'mgrass')),
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
+    CASE
+    WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'homosexual')
+        THEN true
+    WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'homosexual')
+        THEN true
+    ELSE NULL
+    END AS contact
+    FROM Users
+    WHERE nickName != 'mgrass'
+    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'mgrass') 
+    AND status = 'ignore'), 0))
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName='mgrass')
+    ORDER BY count DESC, rate DESC
+) t WHERE contact IS NOT NULL
+AND age > 18 AND age < 45
+AND rate > 0 AND rate < 1000
+-- AND sex = 'female' AND sex = 'male';
+AND city = 'Moscow'
+AND tags...;
+
+select nickname from Users where
+(sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+AND ((SELECT sex FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = 'mgrass')) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = 'mgrass')) = 'heterosexual')
+
+
+-- SELECT 'rkina', nickName, date_part('year', age(dateBirth::date)) AS age, rate,
+SELECT 'rkina', nickName, (select EXTRACT(YEAR FROM age(dateBirth)) as age FROM Users) s, rate,
+location[3] as city, photos[1][2],
+(SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id),
+(SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
+(SELECT UNNEST (array_cat(
+(SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'rkina')),
+(SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count
+From Users
+WHERE nickName != 'rkina'
+AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'rkina') 
+AND status = 'ignore'), 0))
+AND location[2] = (SELECT location[2] FROM Users WHERE nickName='rkina')
+ORDER BY count DESC, rate DESC, age ASC;
+
+select * from (select EXTRACT(YEAR FROM age(dateBirth)) as age FROM Users) s where age > 18;

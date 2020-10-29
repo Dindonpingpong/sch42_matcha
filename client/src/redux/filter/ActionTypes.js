@@ -1,6 +1,6 @@
+export const FILTER_ADD = 'FILTER_ADD';
 export const FILTER_LOADING = 'FILTER_LOADING';
 export const FILTER_FAILED = 'FILTER_FAILED';
-export const FILTER_ADD = 'FILTER_ADD';
 export const FILTER_CLEAR = 'FILTER_CLEAR';
 export const FILTER_AGE_FROM_ADD = 'FILTER_AGE_FROM_ADD';
 export const FILTER_AGE_TO_ADD = 'FILTER_AGE_TO_ADD';
@@ -9,3 +9,4 @@ export const FILTER_RATE_TO_ADD = 'FILTER_RATE_TO_ADD';
 export const FILTER_SEX_ADD = 'FILTER_SEX_ADD';
 export const FILTER_TAGS_ADD = 'FILTER_TAGS_ADD';
 export const FILTER_LOCATION_ADD = 'FILTER_LOCATION_ADD';
+export const USERS_CARD_ADD = 'USERS_CARD_ADD';

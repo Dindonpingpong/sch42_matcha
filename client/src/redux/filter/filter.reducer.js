@@ -10,10 +10,11 @@ const initialState = {
     rateTo: 1000,
     sex: 'both',
     tags: [],
-    location: []
+    location: [],
+    info: {}
 }
 
-export const LoginReducer = (state = initialState, action) => {
+export const FilterReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case ActionTypes.FILTER_ADD:
@@ -21,7 +22,7 @@ export const LoginReducer = (state = initialState, action) => {
 
         case ActionTypes.FILTER_CLEAR:
             return { ...initialState };
-            
+
         case ActionTypes.FILTER_LOADING:
             return { ...state, isLoading: true, errMsg: null, filterStatus: null };
 
@@ -48,6 +49,9 @@ export const LoginReducer = (state = initialState, action) => {
 
         case ActionTypes.FILTER_LOCATION_ADD:
             return { ...state, isLoading: false, errMsg: null, location: action.location };
+
+        case ActionTypes.USERS_CARD_ADD:
+            return { ...state, isLoading: false, errMsg: null, info: action.payload };
 
         default:
             return state;

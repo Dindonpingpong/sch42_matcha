@@ -1,10 +1,34 @@
-import React, { Component } from 'react';
+import React, { useEffect, Component } from 'react';
+import { Link, withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import {
-    Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Collapse, Card, CardBody, CardImg, CardTitle,
-    CardSubtitle, Badge, InputGroup, InputGroupAddon,
+    Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Card, CardBody, CardImg, CardTitle, Badge,
     FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink
 } from 'reactstrap';
+import { fetchUsersCard, fetchFilter, initFilter, setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation } from '../../redux/filter/ActionCreators';
+import { Loading } from '../Loading';
 import './Users.css'
+
+const mapStateToProps = (state) => {
+    return {
+        login: state.login,
+        profile: state.profile,
+        filter: state.filter
+    }
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    fetchUsersCard: (nickname, page) => dispatch(fetchUsersCard(nickname, page)),
+    fetchFilter: (data) => dispatch(fetchFilter(data)),
+    filterClear: () => dispatch(initFilter()),
+    setAgeFrom: (ageFrom) => dispatch(setAgeFrom(ageFrom)),
+    setAgeTo: (ageTo) => dispatch(setAgeTo(ageTo)),
+    setRateFrom: (rateFrom) => dispatch(setRateFrom(rateFrom)),
+    setRateTo: (rateTo) => dispatch(setRateTo(rateTo)),
+    setSex: (sex) => dispatch(setSex(sex)),
+    setTags: (tags) => dispatch(setTags(tags)),
+    setLocation: (location) => dispatch(setLocation(location)),
+});
 
 class Filter extends Component {
     constructor(props) {
@@ -20,7 +44,6 @@ class Filter extends Component {
     toggleCollapse = () => this.setState({ collapse: !this.state.collapse });
 
     render() {
-
         return (
             <Nav expand="lg" color="light">
                 <Row className="users-sort-filter">
@@ -154,33 +177,47 @@ class Filter extends Component {
     }
 }
 
-function UserCards(props) {
-    const listCards = props.cards.map((card, item) =>
-        <Col md={4} key={item}>
-            <Card className="mb-4">
-                <CardImg width="100%" top src={'../' + card.photos} />
-                <CardBody>
-                    <CardTitle>
-                        {card.firstname} <Badge color="danger" pill>{card.age}</Badge>
-                    </CardTitle>
-                    <ListGroup flush>
-                        <ListGroupItem>{card.firstname} {card.firstname}, 20</ListGroupItem>
-                        <ListGroupItem>{card.region}, {card.city}</ListGroupItem>
-                        <ListGroupItem>{card.sex}</ListGroupItem>
-                        <ListGroupItem>{card.sexpreferences}</ListGroupItem>
-                        {/* <ListGroupItem>{card.tags}</ListGroupItem> */}
-                        <ListGroupItem>#test #test #test</ListGroupItem>
-                    </ListGroup>
-                    <Button color="secondary card-btn">Go to profile</Button>
-                </CardBody>
-            </Card>
-        </Col>
-    );
+function TagsList(props) {
+    let listItems;
+    if (props.tags) {
+        listItems = props.tags.map((tag, item) =>
+            // <NavItem className="tags" key={item}>
+            //     <Link to="#">#{tag}</Link>
+            // </NavItem>
+            <span className="tags" key={item}>#{tag}</span>
+        );
+    }
     return (
-        <Row>
-            {listCards}
-        </Row>
-    )
+        <ListGroupItem>{listItems}</ListGroupItem>
+    );
+}
+
+function UserCards(props) {
+    // if (props.cards.length > 0) {
+        const listCards = props.cards.map((card, item) =>
+            <Col md={4} key={item}>
+                <Card className="mb-4">
+                    <CardImg width="100%" top src={`/api/user/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
+                    <CardBody>
+                        <CardTitle>
+                            {card.nickname} <Badge color="danger" pill> {card.rate} </Badge>
+                        </CardTitle>
+                        <ListGroup flush>
+                            <ListGroupItem>{card.firstname} {card.lastname}, {card.age}</ListGroupItem>
+                            <ListGroupItem>{card.city}</ListGroupItem>
+                            <ListGroupItem>{card.sex}</ListGroupItem>
+                            <ListGroupItem>{card.sexpreferences}</ListGroupItem>
+                            <TagsList tags={card.tags} />
+                        </ListGroup>
+                        <Link to={`/users/${card.nickname}`} className="card-btn btn btn-secondary">Go to profile</Link>
+                    </CardBody>
+                </Card>
+            </Col>
+        );
+        return (
+            <Row>{listCards}</Row>
+        );
+    // }
 }
 
 function CardsPagination() {
@@ -212,86 +249,60 @@ function CardsPagination() {
 }
 
 function Users(props) {
-    const mock = [
-        {
-            nickname: 'test12',
-            firstname: 'test12',
-            age: 45,
-            rate: 0,
-            sex: 'prefer not to say',
-            sexpreferences: 'bisexual',
-            region: 'Moscow',
-            city: 'Moscow',
-            photos: '../img/avatar.svg'
-        },
-        {
-            nickname: 'test13',
-            firstname: 'test13',
-            age: 55,
-            rate: 0,
-            sex: 'prefer not to say',
-            sexpreferences: 'bisexual',
-            region: 'Moscow',
-            city: 'Moscow',
-            photos: '../img/avatar.svg'
-        },
-        {
-            nickname: 'test12',
-            firstname: 'test12',
-            age: 45,
-            rate: 0,
-            sex: 'prefer not to say',
-            sexpreferences: 'bisexual',
-            region: 'Moscow',
-            city: 'Moscow',
-            photos: '../img/avatar.svg'
-        },
-        {
-            nickname: 'test12',
-            firstname: 'test12',
-            age: 45,
-            rate: 0,
-            sex: 'prefer not to say',
-            sexpreferences: 'bisexual',
-            region: 'Moscow',
-            city: 'Moscow',
-            photos: '../img/avatar.svg'
-        },
-        {
-            nickname: 'test13',
-            firstname: 'test13',
-            age: 55,
-            rate: 0,
-            sex: 'prefer not to say',
-            sexpreferences: 'bisexual',
-            region: 'Moscow',
-            city: 'Moscow',
-            photos: '../img/avatar.svg'
-        },
-        {
-            nickname: 'test12',
-            firstname: 'test12',
-            age: 45,
-            rate: 0,
-            sex: 'prefer not to say',
-            sexpreferences: 'bisexual',
-            region: 'Moscow',
-            city: 'Moscow',
-            photos: '../img/avatar.svg'
-        }
-    ]
+    useEffect(() => {
+        console.log('nick', props.login.me.nickname);
+        console.log('page', props.match.params.page);
+        props.fetchUsersCard(props.login.me.nickname, props.match.params.page);
+    }, [props.login.me.nickname, props.match.params.page]);
 
-    return (
-        <div>
+    // console.log('info', props.filter);
+
+    // const handleSubmit = () => {
+    //     const data = {
+    //         ageFrom: props.edit.ageFrom,
+    //         ageTo: props.edit.ageTo,
+    //         rateFrom: props.edit.rateFrom,
+    //         rateTo: props.edit.rateTo,
+    //         sex: props.edit.sex,
+    //         tags: props.edit.tags,
+    //         location: props.edit.location
+    //     }
+
+    //     props.fetchFilter(data);
+    // }
+
+    // console.log(props.match.params.page);
+
+    if (props.filter.isLoading) {
+        return (
+            <Loading />
+        );
+    }
+    else if (props.filter.errMsg) {
+        return (
+            <Container>
+                <Row>
+                    {/* <h4>{props.profile.errProfile}</h4> */}
+                    <h4>Error</h4>
+                </Row>
+            </Container>
+        );
+    }
+    else if (props.filter.info != null) {
+        return (
             <section className="users">
                 <Container>
                     <Filter></Filter>
-                    <UserCards cards={mock} />
+                    <UserCards cards={props.filter.info} />
                     <CardsPagination />
                 </Container>
             </section>
-        </div>
-    );
+        );
+    }
+    else
+        return (
+            <div>Not</div>
+        );
 }
 
-export default Users;
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Users));
