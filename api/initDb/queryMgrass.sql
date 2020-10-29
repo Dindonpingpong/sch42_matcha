@@ -213,3 +213,46 @@ AND location[2] = (SELECT location[2] FROM Users WHERE nickName='rkina')
 ORDER BY count DESC, rate DESC, age ASC;
 
 select * from (select EXTRACT(YEAR FROM age(dateBirth)) as age FROM Users) s where age > 18;
+
+SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = 'rkina'
+select nickname from Users where
+select idUser FROM User_Tags WHERE idTag IN (SELECT id FROM Tags WHERE tag IN (SELECT unnest(array['sport', 'art'])));
+
+
+
+/* + */
+SELECT * FROM (
+    SELECT 'mgrass' as me, nickName, firstName, lastName, EXTRACT(YEAR FROM age(dateBirth)) as age, rate, location, photos[1][2], sex, sexpreferences,
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) as tags,
+    CASE
+    WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'homosexual')
+        THEN true
+    WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = 2) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = 2) = 'homosexual')
+        THEN true
+    ELSE NULL
+    END AS contact
+    FROM Users
+    WHERE nickName != 'mgrass'
+    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'mgrass') 
+    AND status = 'ignore'), 0))
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName='mgrass')
+    ORDER BY rate DESC
+) t WHERE contact IS NOT NULL
+AND age > 18 AND age < 65
+AND rate > 0 AND rate < 1000
+-- AND sex = 'female' AND sex = 'male';
+AND location[3] IN ('Moscow', 'Podolsk')
+AND tags = array['movie'];
+
+SELECT DISTINCT(location[1]) FROM Users;
+SELECT DISTINCT(location[2]) FROM Users WHERE location[1] = 'Russia';
+-- SELECT location[2] FROM Users WHERE location[1] = 'Russia';
+SELECT DISTINCT(location[3]) FROM Users WHERE location[2] = 'Moscow';

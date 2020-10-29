@@ -5,9 +5,13 @@ import {
     Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Card, CardBody, CardImg, CardTitle, Badge,
     FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink
 } from 'reactstrap';
-import { fetchUsersCard, fetchFilter, initFilter, setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation } from '../../redux/filter/ActionCreators';
+import {
+    fetchUsersCard, fetchFilter, initFilter,
+    setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation, setSort
+} from '../../redux/filter/ActionCreators';
 import { Loading } from '../Loading';
 import './Users.css'
+import { useState } from 'react';
 
 const mapStateToProps = (state) => {
     return {
@@ -28,153 +32,160 @@ const mapDispatchToProps = (dispatch) => ({
     setSex: (sex) => dispatch(setSex(sex)),
     setTags: (tags) => dispatch(setTags(tags)),
     setLocation: (location) => dispatch(setLocation(location)),
+    setSort: (sortType) => dispatch(setSort(sortType))
 });
 
-class Filter extends Component {
-    constructor(props) {
-        super(props);
+function Filter(props) {
+    const [show, setModal] = useState(false);
+    const toggleModal = () => setModal(!show);
 
-        this.state = {
-            modal: false,
-            collapse: false
+    const handleSubmit = () => {
+        const data = {
+            ageFrom: props.edit.ageFrom,
+            ageTo: props.edit.ageTo,
+            rateFrom: props.edit.rateFrom,
+            rateTo: props.edit.rateTo,
+            sex: props.edit.sex,
+            tags: props.edit.tags,
+            location: props.edit.location
         }
+
+        props.fetchFilter(data);
     }
 
-    toggleModal = () => this.setState({ modal: !this.state.modal });
-    toggleCollapse = () => this.setState({ collapse: !this.state.collapse });
-
-    render() {
-        return (
-            <Nav expand="lg" color="light">
-                <Row className="users-sort-filter">
-                    <Col xs={6}>
-                        <FormGroup>
-                            <Input type="select" className="form-control">
-                                <option>Age ↑</option>
-                                <option>Age ↓</option>
-                                <option>Rate ↑</option>
-                                <option>Rate ↓</option>
-                                <option>Location A-Z</option>
-                                <option>Location Z-A</option>
-                                <option>Tags A-Z</option>
-                                <option>Tags Z-A</option>
-                            </Input>
-                        </FormGroup>
-                    </Col>
-
-                    <Col xs={4} className="users-filter">
-                        <Button
-                            type="button"
-                            color="primary"
-                            onClick={this.toggleModal}
-                            color="secondary"
+    return (
+        <Nav expand="lg" color="light">
+            <Row className="users-sort-filter">
+                <Col xs={6}>
+                    <FormGroup>
+                        <Input
+                            type="select"
+                            onChange={e => { props.setSort(e.target.value) }}
                         >
-                            Filters
-                            </Button>
-                    </Col>
+                            <option>Age ↑</option>
+                            <option>Age ↓</option>
+                            <option>Rate ↑</option>
+                            <option>Rate ↓</option>
+                            <option>Location A-Z</option>
+                            <option>Location Z-A</option>
+                            <option>Tags A-Z</option>
+                            <option>Tags Z-A</option>
+                        </Input>
+                    </FormGroup>
+                </Col>
 
-                    <Modal isOpen={this.state.modal}>
-                        <ModalHeader>
-                            <Row>
-                                <Col xs={12}>
-                                    <p>Filters</p>
-                                </Col>
-                            </Row>
-                        </ModalHeader>
-                        <ModalBody className="text-center">
-                            <Row>
-                                <Col xs={12}>
-                                    <p className="font-profile-head">Age</p>
-                                </Col>
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="18"
-                                    >
-                                    </Input>
-                                </Col>
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="80"
-                                    >
-                                    </Input>
-                                </Col>
-                            </Row>
+                <Col xs={4} className="users-filter">
+                    <Button
+                        type="button"
+                        color="primary"
+                        onClick={toggleModal}
+                        color="secondary"
+                    >
+                        Filters
+                    </Button>
+                </Col>
 
-                            <Row className="mt-2">
-                                <Col xs={12}>
-                                    <p className="font-profile-head">Rate</p>
-                                </Col>
+                <Modal isOpen={show}>
+                    <ModalHeader>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Filters</p>
+                            </Col>
+                        </Row>
+                    </ModalHeader>
+                    <ModalBody className="text-center">
+                        <Row>
+                            <Col xs={12}>
+                                <p className="font-profile-head">Age</p>
+                            </Col>
+                            <Col xs={6}>
+                                <Input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="18"
+                                >
+                                </Input>
+                            </Col>
+                            <Col xs={6}>
+                                <Input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="80"
+                                >
+                                </Input>
+                            </Col>
+                        </Row>
 
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="0"
-                                    >
-                                    </Input>
-                                </Col>
+                        <Row className="mt-2">
+                            <Col xs={12}>
+                                <p className="font-profile-head">Rate</p>
+                            </Col>
 
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="1000"
-                                    >
-                                    </Input>
-                                </Col>
+                            <Col xs={6}>
+                                <Input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="0"
+                                >
+                                </Input>
+                            </Col>
 
-                            </Row>
+                            <Col xs={6}>
+                                <Input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="1000"
+                                >
+                                </Input>
+                            </Col>
 
-                            <Row className="mt-2 ">
-                                <Col xs={12}>
-                                    <p className="font-profile-head">Sex</p>
-                                    <Input type='select'>
-                                        <option value="famale">Female</option>
-                                        <option value="male">Male</option>
-                                        <option value="both">Both</option>
-                                    </Input>
-                                </Col>
-                            </Row>
+                        </Row>
 
-                            <Row className="mt-2">
-                                <Col xs={12} className="mb-1">
-                                    <p className="font-profile-head">Tags</p>
-                                    <Input type='select' multiple>
-                                        <option value="sport">sport</option>
-                                        <option value="movie">movie</option>
-                                        <option value="food">food</option>
-                                        <option value="art">art</option>
-                                        <option value="travel">travel</option>
-                                        <option value="dance">dance</option>
-                                        <option value="animal">animal</option>
-                                    </Input>
-                                </Col>
-                            </Row>
+                        <Row className="mt-2 ">
+                            <Col xs={12}>
+                                <p className="font-profile-head">Sex</p>
+                                <Input type='select'>
+                                    <option value="famale">Female</option>
+                                    <option value="male">Male</option>
+                                    <option value="both">Both</option>
+                                </Input>
+                            </Col>
+                        </Row>
 
-                            <Row className="mt-2">
-                                <Col xs={12} className="mb-1">
-                                    <p className="font-profile-head">Location</p>
-                                    <Input type='select' multiple>
-                                        <option value="Moscow">Moscow</option>
-                                        <option value="Podolsk">Podolsk</option>
-                                    </Input>
-                                </Col>
-                            </Row>
+                        <Row className="mt-2">
+                            <Col xs={12} className="mb-1">
+                                <p className="font-profile-head">Tags</p>
+                                <Input type='select' multiple>
+                                    <option value="sport">sport</option>
+                                    <option value="movie">movie</option>
+                                    <option value="food">food</option>
+                                    <option value="art">art</option>
+                                    <option value="travel">travel</option>
+                                    <option value="dance">dance</option>
+                                    <option value="animal">animal</option>
+                                </Input>
+                            </Col>
+                        </Row>
 
-                            <ModalFooter className="d-flex justify-content-between align-items-center">
-                                <Button color="success">Save</Button>
-                                <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
-                            </ModalFooter>
-                        </ModalBody>
-                    </Modal>
-                </Row>
-            </Nav>
-        )
-    }
+                        <Row className="mt-2">
+                            <Col xs={12} className="mb-1">
+                                <p className="font-profile-head">Location</p>
+                                <Input type='select' multiple>
+                                    <option value="Moscow">Moscow</option>
+                                    <option value="Podolsk">Podolsk</option>
+                                </Input>
+                            </Col>
+                        </Row>
+
+                        <ModalFooter className="d-flex justify-content-between align-items-center">
+                            <Button color="success">Save</Button>
+                            <Button color="secondary" onClick={toggleModal}>Cancel</Button>
+                        </ModalFooter>
+                    </ModalBody>
+                </Modal>
+            </Row>
+        </Nav>
+    )
 }
 
 function TagsList(props) {
@@ -194,29 +205,29 @@ function TagsList(props) {
 
 function UserCards(props) {
     // if (props.cards.length > 0) {
-        const listCards = props.cards.map((card, item) =>
-            <Col md={4} key={item}>
-                <Card className="mb-4">
-                    <CardImg width="100%" top src={`/api/user/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
-                    <CardBody>
-                        <CardTitle>
-                            {card.nickname} <Badge color="danger" pill> {card.rate} </Badge>
-                        </CardTitle>
-                        <ListGroup flush>
-                            <ListGroupItem>{card.firstname} {card.lastname}, {card.age}</ListGroupItem>
-                            <ListGroupItem>{card.city}</ListGroupItem>
-                            <ListGroupItem>{card.sex}</ListGroupItem>
-                            <ListGroupItem>{card.sexpreferences}</ListGroupItem>
-                            <TagsList tags={card.tags} />
-                        </ListGroup>
-                        <Link to={`/users/${card.nickname}`} className="card-btn btn btn-secondary">Go to profile</Link>
-                    </CardBody>
-                </Card>
-            </Col>
-        );
-        return (
-            <Row>{listCards}</Row>
-        );
+    const listCards = props.cards.map((card, item) =>
+        <Col md={4} key={item}>
+            <Card className="mb-4">
+                <CardImg width="100%" top src={`/api/user/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
+                <CardBody>
+                    <CardTitle>
+                        {card.nickname} <Badge color="danger" pill> {card.rate} </Badge>
+                    </CardTitle>
+                    <ListGroup flush>
+                        <ListGroupItem>{card.firstname} {card.lastname}, {card.age}</ListGroupItem>
+                        <ListGroupItem>{card.city}</ListGroupItem>
+                        <ListGroupItem>{card.sex}</ListGroupItem>
+                        <ListGroupItem>{card.sexpreferences}</ListGroupItem>
+                        <TagsList tags={card.tags} />
+                    </ListGroup>
+                    <Link to={`/users/${card.nickname}`} className="card-btn btn btn-secondary">Go to profile</Link>
+                </CardBody>
+            </Card>
+        </Col>
+    );
+    return (
+        <Row>{listCards}</Row>
+    );
     // }
 }
 
@@ -256,21 +267,6 @@ function Users(props) {
     }, [props.login.me.nickname, props.match.params.page]);
 
     // console.log('info', props.filter);
-
-    // const handleSubmit = () => {
-    //     const data = {
-    //         ageFrom: props.edit.ageFrom,
-    //         ageTo: props.edit.ageTo,
-    //         rateFrom: props.edit.rateFrom,
-    //         rateTo: props.edit.rateTo,
-    //         sex: props.edit.sex,
-    //         tags: props.edit.tags,
-    //         location: props.edit.location
-    //     }
-
-    //     props.fetchFilter(data);
-    // }
-
     // console.log(props.match.params.page);
 
     if (props.filter.isLoading) {
@@ -292,7 +288,7 @@ function Users(props) {
         return (
             <section className="users">
                 <Container>
-                    <Filter></Filter>
+                    <Filter />
                     <UserCards cards={props.filter.info} />
                     <CardsPagination />
                 </Container>
@@ -301,7 +297,9 @@ function Users(props) {
     }
     else
         return (
-            <div>Not</div>
+            <Container>
+                <h2>Not</h2>
+            </Container>
         );
 }
 

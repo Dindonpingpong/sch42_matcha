@@ -1,6 +1,6 @@
 DO $$
     DECLARE
-        COUNTER INTEGER := 14;
+        COUNTER INTEGER := 15;
         AGE INTEGER := 2;
     
     BEGIN

@@ -100,6 +100,15 @@ export const usersCardAdd = (info) => ({
     payload: info.result
 });
 
+export const sortTypeAdd = (sortType) => ({
+    type: ActionTypes.SORT_TYPE_ADD,
+    sortType: sortType
+});
+
+export const setSort = (sortType) => (dispatch) => {
+    dispatch(sortTypeAdd(sortType));
+};
+
 export const fetchUsersCard = (nickname, page) => (dispatch) => {
     dispatch(filterLoading());
 

@@ -168,4 +168,16 @@ INSERT INTO Tags (Tag) VALUES
     ('pornography'),
     ('spam'),
     ('offensive behavior'),
-    ('fraud');   
+    ('fraud');
+
+
+INSERT INTO User_Tags (idUser, idTag) VALUES 
+    ('8', '2'),
+    ('9', '2'),
+    ('11', '2');
+
+INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location) VALUES
+    ('test14', 'Dima', 'Ng', 'd_ng@meail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Podolsk']);
+
+INSERT INTO User_Tags (idUser, idTag) VALUES 
+    ('14', '2');

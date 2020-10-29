@@ -11,6 +11,7 @@ const initialState = {
     sex: 'both',
     tags: [],
     location: [],
+    sortType: null,
     info: {}
 }
 
@@ -18,7 +19,7 @@ export const FilterReducer = (state = initialState, action) => {
 
     switch (action.type) {
         case ActionTypes.FILTER_ADD:
-            return { ...state, isLoading: false, errMsg: null, isLogged: true, filterStatus: action.payload };
+            return { ...state, isLoading: false, errMsg: null, isLogged: true, filterStatus: action.payload, sortType: null };
 
         case ActionTypes.FILTER_CLEAR:
             return { ...initialState };
@@ -52,6 +53,9 @@ export const FilterReducer = (state = initialState, action) => {
 
         case ActionTypes.USERS_CARD_ADD:
             return { ...state, isLoading: false, errMsg: null, info: action.payload };
+
+        case ActionTypes.SORT_TYPE_ADD:
+            return { ...state, isLoading: false, errMsg: null, sortType: action.sortType };
 
         default:
             return state;
