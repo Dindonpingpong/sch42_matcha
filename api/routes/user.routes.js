@@ -661,7 +661,6 @@ router.post('/register/location/:nickname', async (req, res) => {
 
     insertLocation(params)
         .then((data) => {
-            console.log(data);
             if (data[0].id) {
                 res.status(200).json({
                     message: "Updated",
@@ -777,7 +776,6 @@ router.post('/users/page', async (req, res) => {
 
         getCards([nickname, page])
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,

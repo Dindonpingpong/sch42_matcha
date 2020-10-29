@@ -97,6 +97,18 @@ function InputForm(props) {
     )
 }
 
+function Geo(props) {
+    
+    return (
+        <div>
+            <p className="font-profile-head">Location</p>
+            <Button onClick={geo}>Use my geo</Button>
+            <p>Location via your geo</p>
+            <p>Russia, Moscow, Moscow</p>
+        </div>
+    )
+}
+
 const EditProfile = (props) => {
     const history = useHistory();
     useEffect(() => {
@@ -152,6 +164,18 @@ const EditProfile = (props) => {
             toggleBtn(true);
     }
 
+    const geo = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updatePosition);
+        } else {
+            alert('Ooopsy');
+        }
+
+        function updatePosition(position) {
+            console.log(position.coords.latitude, 'fdsa,', position.coords.longitude);
+        }
+    }
+
     if (props.login.isLoading)
         return (
             <Loading />
@@ -205,6 +229,8 @@ const EditProfile = (props) => {
                     <option value="dance">Dance</option>
                     <option value="animal">Animal</option>
                 </Input>
+
+                <Geo />
 
                 <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
                 <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />
