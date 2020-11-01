@@ -101,8 +101,9 @@ export const fetchRegister = (data) => (dispatch) => {
                     .then((result) => {
                         const data = {
                             country: result.country,
-                            region: result.region,
-                            city: result.city
+                            city: result.city,
+                            longitude: result.lon,
+                            latitude: result.lat
                         }
                         request(`/api/user/register/location/${login}`, data, 'POST')
                             .then(res => res.json())

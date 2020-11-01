@@ -98,6 +98,17 @@ function InputForm(props) {
 }
 
 function Geo(props) {
+    const geo = () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updatePosition);
+        } else {
+            alert('Ooopsy');
+        }
+
+        function updatePosition(position) {
+            console.log(position.coords.latitude, 'fdsa,', position.coords.longitude);
+        }
+    }
     
     return (
         <div>
@@ -162,18 +173,6 @@ const EditProfile = (props) => {
             toggleBtn(false);
         else
             toggleBtn(true);
-    }
-
-    const geo = () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(updatePosition);
-        } else {
-            alert('Ooopsy');
-        }
-
-        function updatePosition(position) {
-            console.log(position.coords.latitude, 'fdsa,', position.coords.longitude);
-        }
     }
 
     if (props.login.isLoading)

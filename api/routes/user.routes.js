@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, addConfirmHash, getConfirmHash, userDel, confirmUser } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, addConfirmHash, getConfirmHash, userDel, confirmUser, updateGeo, getCities, getCountires } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -655,9 +655,9 @@ router.get('/login/:nickname', async (req, res) => {
 
 router.post('/register/location/:nickname', async (req, res) => {
     const login = req.params.nickname;
-    const { country, region, city } = req.body;
+    const { country, city, longitude, latitude } = req.body;
 
-    const params = [country, region, city, login];
+    const params = [country, city, longitude, latitude, login];
 
     insertLocation(params)
         .then((data) => {
@@ -774,6 +774,7 @@ router.post('/users/page', async (req, res) => {
         const nickname = req.body.nickname;
         const page = (req.body.page * 6);
 
+        console.log(nickname, page);
         getCards([nickname, page])
             .then(data => {
                 if (data.length > 0) {
@@ -852,5 +853,84 @@ router.post('/confirm', async (req, res) => {
             })
         })
 })
+
+router.post('/edit/geo', async (req, res) => {
+    const { country, region, city, nickname } = req.body;
+
+    updateGeo([country, region, city, nickname])
+        .then((data) => {
+
+        })
+
+    getCards([nickname, page])
+        .then(data => {
+            if (data.length > 0) {
+                res.status(200).json({
+                    result: data,
+                    message: "Ok",
+                    success: true
+                });
+            }
+            else
+                res.status(200).json({
+                    message: "No users",
+                    success: false
+                })
+        })
+        .catch((e) => {
+            res.status(500).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+router.get('/countries', async (req, res) => {
+    getCountires()
+    .then( data => {
+        const result = [];
+            if (data.length > 0) {
+                data.forEach(el => {
+                    result.push(el.location);
+                })
+            }
+        res.status(200).json({
+            data: result,
+            success: true
+        })
+    })
+    .catch( (e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+
+router.post('/cities', async (req, res) => {
+    const countries = req.body.countries;
+    getCities([countries])
+        .then((data) => {
+            const result = [];
+            if (data.length > 0) {
+                data.forEach(el => {
+                    result.push(el.location);
+                })
+            }
+            res.status(200).json({
+                data: result,
+                success: true
+            })
+        })
+        .catch( (e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+
 
 module.exports = router;

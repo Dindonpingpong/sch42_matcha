@@ -44,7 +44,7 @@ const getLogin = (login) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
-  sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city,
+  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city,
   (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
 
@@ -202,8 +202,8 @@ const getInfoLogin = (params) => {
 
 const insertLocation = (params) => {
   const sql = `UPDATE Users 
-  SET location[1] = $1, location[2] = $2, location[3] = $3 
-  WHERE nickName = $4 
+  SET location[1] = $1, location[2] = $2, position = point($3, $4)
+  WHERE nickName = $5 
   RETURNING id`;
 
   return db.any(sql, params);
@@ -314,6 +314,33 @@ const confirmUser = (params) => {
   return db.any(sql, params);
 }
 
+const updateGeo = (params) => {
+  const sql = `UPDATE Users
+  SET location[1] = $1,
+  location[2] = $2,
+  location[3] = $3
+  WHERE nickname = $4
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
+
+const getCountires = () => {
+  const sql = `SELECT DISTINCT(location[1])
+  FROM Users`;
+
+  return db.any(sql);
+}
+
+const getCities = (params) => {
+  const sql = `SELECT DISTINCT(location[3]) 
+  FROM Users
+  WHERE location[1] = ANY($1)`;
+
+  return db.any(sql, params);
+}
+
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -346,3 +373,6 @@ exports.addConfirmHash = addConfirmHash;
 exports.getConfirmHash = getConfirmHash;
 exports.userDel = userDel;
 exports.confirmUser = confirmUser;
+exports.updateGeo = updateGeo;
+exports.getCountires = getCountires;
+exports.getCities = getCities;
