@@ -1,5 +1,4 @@
 const config = require('config');
-const { param } = require('../routes/user.routes');
 const connector = config.get('urlDb');
 const pgp = require('pg-promise')();
 const db = pgp(connector);
@@ -44,7 +43,7 @@ const getLogin = (login) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
-  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city,
+  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, position,
   (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
 
@@ -169,7 +168,7 @@ const insertViewFailed = (params) => {
 
 const editProfile = (que, params, i) => {
   const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
-
+  console.log(sql);
   return db.one(sql, params);
 }
 

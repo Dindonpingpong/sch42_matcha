@@ -74,7 +74,7 @@ const NotFound = () => {
                 <div>You position</div>
                 <YMaps >
                     <div>
-                        <Map width={700} height={600} defaultState={{ center: [55.75, 37.57], zoom: 9, controls: [] }} onClick={(e) => {
+                        <Map width={500} height={300} defaultState={{ center: [55.75, 37.57], zoom: 9, controls: [] }} onClick={(e) => {
                             console.log(e.get('coords'));
                             changeCoords(e.get('coords'));
                         }}>
