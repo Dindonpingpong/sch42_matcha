@@ -64,6 +64,11 @@ export const editTagsAdd = (tags) => ({
     tags: tags
 });
 
+export const editCoordsAdd = (coords) => ({
+    type: ActionTypes.COORDS_ADD,
+    coords: coords
+});
+
 export const editNewpassAdd = (newpass) => ({
     type: ActionTypes.NEWPASSWORD_ADD,
     newpass: newpass
@@ -98,16 +103,20 @@ export const setAbout = (date) => (dispatch) => {
     dispatch(editAboutAdd(date));
 };
 
-export const setSex = (date) => (dispatch) => {
-    dispatch(editSexAdd(date));
+export const setSex = (sex) => (dispatch) => {
+    dispatch(editSexAdd(sex));
 };
 
-export const setSexPref = (date) => (dispatch) => {
-    dispatch(editSexpreferenceAdd(date));
+export const setSexPref = (sexpref) => (dispatch) => {
+    dispatch(editSexpreferenceAdd(sexpref));
 };
 
-export const setTags = (date) => (dispatch) => {
-    dispatch(editTagsAdd(date));
+export const setTags = (tags) => (dispatch) => {
+    dispatch(editTagsAdd(tags));
+};
+
+export const setCoords = (coords) => (dispatch) => {
+    dispatch(editCoordsAdd(coords));
 };
 
 export const setNewPassword = (pass) => (dispatch) => {
@@ -126,12 +135,18 @@ export const fetchEditProfile = (data, login) => (dispatch) => {
         .then((res) => {
             console.log(res);
             if (res.success) {
-                request(`/api/user/edit/${login}`, data, 'POST')
+                request(`api/user/edit/location/${login}`, data, 'POST')
                     .then(response => response.json())
-                    .then(result => dispatch(editProfileStatus(result)))
+                    .then((res) => {
+                        if (res.success) {
+                            request(`/api/user/edit/${login}`, data, 'POST')
+                                .then(response => response.json())
+                                .then(result => dispatch(editProfileStatus(result)))
+                                .catch(error => dispatch(editProfileFailed(error.message)));
+                        }
+                    })
                     .catch(error => dispatch(editProfileFailed(error.message)));
             }
-
         })
         .catch(error => dispatch(editProfileFailed(error.message)));
 };

@@ -45,7 +45,7 @@ function InputForm(props) {
 }
 
 const Restore = () => {
-    let { email, hash } = useParams();
+    const { email, hash } = useParams();
     const [isLoading, setLoading] = useState(true);
     const [Msg, setMsg] = useState(null);
     const [newPass, setPass] = useState();

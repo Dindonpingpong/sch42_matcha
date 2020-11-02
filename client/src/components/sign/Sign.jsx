@@ -1,9 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import { setLogin, setFirstName, setLastName, setEmail, setPassword, setRepassword, setDate, fetchRegister } from '../../redux/sign/ActionCreators';
+import { setLogin, setFirstName, setLastName, setEmail, setPassword, setRepassword, setDate, fetchRegister, setSex } from '../../redux/sign/ActionCreators';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, FormGroup, Label, Input, FormFeedback, Button, Container } from 'reactstrap';
+import { Row, Col, FormGroup, Label, Input, FormFeedback, Button, Container, Alert } from 'reactstrap';
 import { isValidInput, isValidPassword } from '../../util/check';
 import { request } from '../../util/http';
 import { useHistory } from "react-router-dom";
@@ -24,6 +24,7 @@ const mapDispatchToProps = (dispatch) => ({
     setPassword: (Password) => dispatch(setPassword(Password)),
     setRepassword: (Repassword) => dispatch(setRepassword(Repassword)),
     setDate: (date) => dispatch(setDate(date)),
+    setSex: (sex) => dispatch(setSex(sex)),
     fetchRegister: (data) => dispatch(fetchRegister(data))
 });
 
@@ -187,7 +188,7 @@ const Sign = (props) => {
     const [isActiveBtn, toggleBtn] = useState(false);
 
     const handleSubmit = () => {
-        const { nickName, lastName, firstName, email, password, dateBirth } = props.sign;
+        const { nickName, lastName, firstName, email, password, dateBirth, sex } = props.sign;
 
         let data = {
             nickName: nickName,
@@ -195,10 +196,11 @@ const Sign = (props) => {
             firstName: firstName,
             email: email,
             password: password,
-            date: dateBirth
+            date: dateBirth,
+            sex: sex
         }
 
-        props.fetchRegister(data) 
+        props.fetchRegister(data)
             .then(() => {
                 history.push('/login');
             })
@@ -214,13 +216,22 @@ const Sign = (props) => {
             toggleBtn(true);
     }
 
+    if (props.sign.isLoading) {
+        return (
+            <Loading />
+        )
+    }
 
+    if (props.errMsg) {
+        return (
+            <Alert color='info'>{props.errMsg}</Alert>
+        )
+    }
 
     return (
         <Row>
             <Col md={8} className="m-auto">
                 <Container>
-
                     <Row xs='1'>
                         <InputForm
                             set={props.setLastName} onBlur={checkBtn} labelName='Last name'
@@ -235,13 +246,25 @@ const Sign = (props) => {
                         <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='login' placeholder='rkina7' />
                         <InputFormWithFetch set={props.setEmail} onBlur={checkBtn} labelName='email' placeholder='rkina@mail.ru' />
                     </Row>
-                    <InputForm
-                        set={props.setDate} onBlur={checkBtn} labelName='Date birth'
-                        name='birthDate' type='date' feedback='You too young for this'
-                    />
+                    <Row>
+                        <InputForm
+                            set={props.setDate} onBlur={checkBtn} labelName='Date birth'
+                            name='birthDate' type='date' feedback='You too young for this'
+                        />
+                        <Col>
+                            <p className="font-profile-head">Sex</p>
+                            <Input type='select' onChange={e => {
+                                props.setSex(e.target.value);
+                                checkBtn();
+                            }}>
+                                <option value="female">Female</option>
+                                <option value="male">Male</option>
+                            </Input>
+                        </Col>
+                    </Row>
                     <Password setPass={props.setPassword} onBlur={checkBtn} />
                     <Col>
-                        <Button className="btn btn" color="primary" type="submit" disabled={props.isActiveBtn} onClick={handleSubmit} onBlur={checkBtn}>Sign Up</Button>
+                        <Button className="btn btn" color="primary" type="submit" disabled={isActiveBtn} onClick={handleSubmit} onBlur={checkBtn}>Sign Up</Button>
                     </Col>
 
                 </Container>

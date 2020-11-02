@@ -8,7 +8,8 @@ import { request } from '../../util/http';
 import { Loading } from '../Loading';
 import { fetchUpdateLogin } from '../../redux/login/ActionCreators';
 import moment from 'moment';
-import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword } from '../../redux/editProfile/ActionCreators';
+import { YMaps, Map, Placemark, ZoomControl, GeolocationControl } from 'react-yandex-maps';
+import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword, setCoords } from '../../redux/editProfile/ActionCreators';
 
 const mapStateToProps = (state) => {
     return {
@@ -31,6 +32,7 @@ const mapDispatchToProps = (dispatch) => ({
     setSex: (sex) => dispatch(setSex(sex)),
     setSexPref: (sexPref) => dispatch(setSexPref(sexPref)),
     setTags: (tags) => dispatch(setTags(tags)),
+    setGeo: (coords) => dispatch(setCoords(coords)),
     setNewPassword: (newPass) => dispatch(setNewPassword(newPass))
 });
 
@@ -97,6 +99,61 @@ function InputForm(props) {
     )
 }
 
+function Geo(props) {
+    const newPos = (e) => {
+        const newCoords = e.get("coords");
+
+        props.set({ x: newCoords[0], y: newCoords[1] });
+        props.checkBtn();
+    }
+
+    const myPos = () => {
+        const updatePosition = (position) => {
+            props.set({ x: position.coords.latitude, y: position.coords.longitude });
+            props.checkBtn();
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(updatePosition);
+        }
+    }
+
+    return (
+        <div>
+            <p className="font-profile-head">Location</p>
+            <YMaps
+                enterprise
+                query={{
+                    apikey: '74b2ed32-1340-405d-be18-ab91a877defe',
+                }}
+            >
+                <div>
+                    <Map
+                        width={500}
+                        height={300}
+                        defaultState={{
+                            center: [props.position.x, props.position.y],
+                            zoom: 9,
+                            controls: []
+                        }}
+                        onClick={newPos}
+                    >
+                        <GeolocationControl options={{ float: 'left' }} onClick={myPos} />
+                        <ZoomControl options={{ float: 'right' }} />
+                        {props.editPos &&
+                            <Placemark geometry={[props.editPos.x, props.editPos.y]} />
+                        }
+                        {
+                            !props.editPos &&
+                            <Placemark defaultGeometry={[props.position.x, props.position.y]} />
+                        }
+                    </Map>
+                </div>
+            </YMaps>
+        </div>
+    )
+}
+
 const EditProfile = (props) => {
     const history = useHistory();
     useEffect(() => {
@@ -118,6 +175,7 @@ const EditProfile = (props) => {
             sexpreferences: props.edit.sexpreferences,
             newtags: props.edit.tags,
             oldtags: props.login.me.tags,
+            coords: props.edit.coords,
             newpass: props.edit.newpass
         }
 
@@ -205,6 +263,8 @@ const EditProfile = (props) => {
                     <option value="dance">Dance</option>
                     <option value="animal">Animal</option>
                 </Input>
+
+                <Geo position={props.profile.info.position} set={props.setGeo} editPos={props.edit.coords} checkBtn={checkBtn}/>
 
                 <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
                 <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />

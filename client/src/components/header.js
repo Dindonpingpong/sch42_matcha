@@ -29,11 +29,11 @@ const mapDispatchToProps = (dispatch) => ({
 const Header = (props) => {
     const history = useHistory();
     const name = props.login.isLogged === 'true' ? <i className="fa fa-sign-out"></i> : <i className="fa fa-sign-in"></i>;
-    const urls = ['/login', '/register', '/remind'];
+    const urls = ['/login', '/register', '/remind', '/confirm'];
     const path = props.location.pathname;
 
     useEffect(() => {
-        if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind'))
+        if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
             history.push('/login');
     }, [path]);
 

@@ -2,14 +2,20 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
+<<<<<<< HEAD
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, 
+    getRemind, changePass, getCountCards, addConfirmHash, getConfirmHash, userDel, confirmUser, updateGeo, getCities, getCountires } = require('../models/user');
+=======
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, getCountCards } = require('../models/user');
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
 const fs = require('fs');
-// const c = require('config');
-// const { has } = require('config');
+const config = require('config');
+const API_KEY = config.get('apiKey');
 const { sendMail } = require('../util/mail');
+const fetch = require('node-fetch');
 
 router.post('/login', async (req, res) => {
     try {
@@ -26,6 +32,12 @@ router.post('/login', async (req, res) => {
                 if (len == 0 || check == false) {
                     res.status(200).json({
                         message: "Login or pass is incorrect",
+                        success: false
+                    })
+                }
+                else if (!data[0].confirm) {
+                    res.status(200).json({
+                        message: "Confirm your account via email.",
                         success: false
                     })
                 }
@@ -129,7 +141,8 @@ router.post('/register/check/pass', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
-        const { nickName, lastName, firstName, email, password, date } = req.body;
+        const { nickName, lastName, firstName, email, password, date, sex } = req.body;
+        const time = new Date();
         const saltRounds = 10;
         const salt = bcrypt.genSaltSync(saltRounds);
         const hash = bcrypt.hashSync(password, salt);
@@ -140,26 +153,45 @@ router.post('/register', async (req, res) => {
             firstName,
             email,
             hash,
-            date
+            date,
+            sex
         ];
 
         sign(params)
             .then(data => {
-                res.status(200).json({
-                    login: data.nickname,
-                    success: true
-                })
-                sendMail(email, 'Confirmation', 'You have 1 day to confirm your account', `<a href='http://localhost:3000/login/${nickName}/${newHash}'>1 day to confirm</a>`);
+                if (data.nickname) {
+                    const login = data.nickname;
+                    const confirmHash = bcrypt.hashSync(login + time, salt).replace(/\//g, "slash");
+
+                    addConfirmHash([confirmHash, login])
+                        .then(() => {
+                            sendMail(email, 'Confirmation',
+                                'You have 1 day to confirm your account',
+                                `<a href='http://localhost:3000/login/${nickName}/${confirmHash}'>1 day to confirm</a>`);
+                            res.status(200).json({
+                                message: "Check your email &)",
+                                login: login,
+                                success: true
+                            })
+                            return;
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
             })
             .catch((e) => {
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
 
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -526,7 +558,7 @@ router.post('/edit/:nickname', async (req, res) => {
     let i = 1;
 
     for (const [key, value] of Object.entries(req.body)) {
-        if (value !== null && key !== 'newtags' && key !== 'newpass' && key !== 'oldtags') {
+        if (value !== null && key !== 'newtags' && key !== 'newpass' && key !== 'oldtags' && key !== 'coords') {
             keys.push(`${key} = $${i++}`);
             params.push(value);
         }
@@ -559,7 +591,6 @@ router.post('/edit/:nickname', async (req, res) => {
             })
         })
         .catch(e => {
-            console.log(e.message);
             res.status(200).json({
                 message: e.message,
                 success: false
@@ -571,10 +602,8 @@ router.post('/edit/tags/:nickname', async (req, res) => {
     const login = req.params.nickname;
     const { newtags, oldtags } = req.body;
 
-    // console.log(newtags, oldtags);
     if (newtags === null || JSON.stringify(newtags) == JSON.stringify(oldtags)) {
         res.status(200).json({
-            msg: 'Ok1',
             success: true
         })
         return;
@@ -586,7 +615,6 @@ router.post('/edit/tags/:nickname', async (req, res) => {
                 insertTags([login, newtags])
                     .then((data) => {
                         res.status(200).json({
-                            msg: 'Ok2',
                             d: data,
                             success: true
                         })
@@ -594,7 +622,6 @@ router.post('/edit/tags/:nickname', async (req, res) => {
             }
             else {
                 res.status(200).json({
-                    msg: 'Ok3',
                     success: true
                 })
             }
@@ -606,6 +633,57 @@ router.post('/edit/tags/:nickname', async (req, res) => {
             })
         })
 
+})
+
+router.post('/edit/location/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    const { x, y } = req.body.coords;
+
+    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY}&format=json&geocode=${y},${x}`)
+        .then(res => res.json())
+        .then(result => {
+            const tmp = result.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text.split(',');
+
+            if (tmp.length < 2) {
+                res.status(200).json({
+                    message: "Ooopsy",
+                    success: false
+                });
+                return;
+            }
+
+            const country = tmp[0];
+            const city = tmp[1];
+            const params = [country, city, x, y, login];
+
+            insertLocation(params)
+                .then((data) => {
+                    if (data[0].id) {
+                        res.status(200).json({
+                            message: "Updated",
+                            success: true
+                        })
+                    }
+                    else {
+                        res.status(200).json({
+                            message: "Ooopsy",
+                            success: false
+                        })
+                    }
+                })
+                .catch((e) => {
+                    res.status(200).json({
+                        message: e.message,
+                        success: false
+                    })
+                })
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
 })
 
 router.get('/login/:nickname', async (req, res) => {
@@ -630,13 +708,13 @@ router.get('/login/:nickname', async (req, res) => {
 
 router.post('/register/location/:nickname', async (req, res) => {
     const login = req.params.nickname;
-    const { country, region, city } = req.body;
+    const { country, city, latitude, longitude } = req.body;
 
-    const params = [country, region, city, login];
+    const params = [country, city, latitude, longitude, login];
 
     insertLocation(params)
         .then((data) => {
-            if (data.id) {
+            if (data[0].id) {
                 res.status(200).json({
                     message: "Updated",
                     success: true
@@ -660,7 +738,6 @@ router.post('/register/location/:nickname', async (req, res) => {
 router.post('/remind', async (req, res) => {
     const { email } = req.body;
     const time = new Date();
-
     const saltRounds = 10;
     const salt = bcrypt.genSaltSync(saltRounds);
     const hash = bcrypt.hashSync(email + time, salt);
@@ -774,11 +851,19 @@ router.post('/users/page', async (req, res) => {
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
+<<<<<<< HEAD
+            : `AND sex = '${sex}' `;
+=======
             : `AND sex = ${sex} `;
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $3`;
 
+<<<<<<< HEAD
+        // console.log(params, sqlSort, sqlSortTags, sqlFilter);
+=======
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
                 if (data.length > 0) {
@@ -817,7 +902,11 @@ router.post('/users/count/pages', async (req, res) => {
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
+<<<<<<< HEAD
+            : `AND sex = '${sex}' `;
+=======
             : `AND sex = ${sex} `;
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $2`;
@@ -854,4 +943,103 @@ router.post('/users/count/pages', async (req, res) => {
     }
 })
 
+<<<<<<< HEAD
+router.post('/confirm', async (req, res) => {
+    const { nickname, hash } = req.body;
+    const time = new Date();
+
+    getConfirmHash([nickname])
+        .then((data) => {
+            if (data[0].confirmhash) {
+                const trueHash = data[0].confirmhash;
+                const oldTime = data[0].created_at_user;
+
+                if (time.getDate() !== oldTime.getDate() || hash !== trueHash) {
+                    userDel([nickname])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Your confirm link is time out",
+                                success: false
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
+                else {
+                    confirmUser([nickname])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Cool! Welcome to",
+                                success: true
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+router.get('/countries', async (req, res) => {
+    getCountires()
+        .then(data => {
+            const result = [];
+            if (data.length > 0) {
+                data.forEach(el => {
+                    result.push(el.location);
+                })
+            }
+            res.status(200).json({
+                data: result,
+                success: true
+            })
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+router.post('/cities', async (req, res) => {
+    const countries = req.body.countries;
+    getCities([countries])
+        .then((data) => {
+            const result = [];
+            if (data.length > 0) {
+                data.forEach(el => {
+                    result.push(el.location);
+                })
+            }
+            res.status(200).json({
+                data: result,
+                success: true
+            })
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+module.exports = router;
+=======
 module.exports = router
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716

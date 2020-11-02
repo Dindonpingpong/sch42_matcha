@@ -12,8 +12,8 @@ ReactDOM.render(
   //   <App />
   // </React.StrictMode>,
   <React.Fragment>
-    <App />
-  </React.Fragment>,
+  <App />
+</React.Fragment>,
   document.getElementById('root')
 );
 

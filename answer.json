@@ -1,0 +1,102 @@
+{
+    "response": {
+      "GeoObjectCollection": {
+        "metaDataProperty": {
+          "GeocoderResponseMetaData": {
+            "Point": {
+              "pos": "55.500558 37.55732"
+            },
+            "request": "55.500558399999996,37.557319899999996",
+            "results": "10",
+            "found": "2"
+          }
+        },
+        "featureMember": [
+          {
+            "GeoObject": {
+              "metaDataProperty": {
+                "GeocoderMetaData": {
+                  "precision": "other",
+                  "text": "Иран, Голестан",
+                  "kind": "province",
+                  "Address": {
+                    "country_code": "IR",
+                    "formatted": "Иран, Голестан",
+                    "Components": [
+                      {
+                        "kind": "country",
+                        "name": "Иран"
+                      },
+                      {
+                        "kind": "province",
+                        "name": "Голестан"
+                      }
+                    ]
+                  },
+                  "AddressDetails": {
+                    "Country": {
+                      "AddressLine": "Иран, Голестан",
+                      "CountryNameCode": "IR",
+                      "CountryName": "Иран",
+                      "AdministrativeArea": {
+                        "AdministrativeAreaName": "Голестан"
+                      }
+                    }
+                  }
+                }
+              },
+              "name": "Голестан",
+              "description": "Иран",
+              "boundedBy": {
+                "Envelope": {
+                  "lowerCorner": "53.723036 36.491486",
+                  "upperCorner": "56.314056 38.111537"
+                }
+              },
+              "Point": {
+                "pos": "55.308428 37.578935"
+              }
+            }
+          },
+          {
+            "GeoObject": {
+              "metaDataProperty": {
+                "GeocoderMetaData": {
+                  "precision": "other",
+                  "text": "Иран",
+                  "kind": "country",
+                  "Address": {
+                    "country_code": "IR",
+                    "formatted": "Иран",
+                    "Components": [
+                      {
+                        "kind": "country",
+                        "name": "Иран"
+                      }
+                    ]
+                  },
+                  "AddressDetails": {
+                    "Country": {
+                      "AddressLine": "Иран",
+                      "CountryNameCode": "IR",
+                      "CountryName": "Иран"
+                    }
+                  }
+                }
+              },
+              "name": "Иран",
+              "boundedBy": {
+                "Envelope": {
+                  "lowerCorner": "44.032702 24.872455",
+                  "upperCorner": "63.317241 39.782107"
+                }
+              },
+              "Point": {
+                "pos": "54.221233 33.733982"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
