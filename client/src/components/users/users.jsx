@@ -301,7 +301,7 @@ function CardsPagination(props) {
         }
 
         const listItems = pages.map((page, item) =>
-            <PaginationItem key={item}>
+            <PaginationItem key={item} className={page == props.getPage ? 'active' : ''}>
                 <PaginationLink href={`/users/page/${page}`}>
                     {page}
                 </PaginationLink>
