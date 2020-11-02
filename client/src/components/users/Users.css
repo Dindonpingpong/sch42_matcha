@@ -95,3 +95,12 @@
     background: #218838;
   }
   
+  .users .active-link a {
+    background: #6c757d;
+    color: #fff;
+}
+
+.users .active-link:hover a {
+    background: #343a40;
+    color: #fff;
+}
