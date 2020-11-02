@@ -5,8 +5,8 @@ const db = pgp(connector);
 
 const sign = (params) => {
   const sql =
-    `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth) 
-  VALUES ($1, $2, $3, $4, $5, $6) 
+    `INSERT INTO Users (nickName, firstName, lastName, email, password, dateBirth, sex) 
+  VALUES ($1, $2, $3, $4, $5, $6, $7) 
   RETURNING nickName`;
 
   return db.one(sql, params);
@@ -17,7 +17,7 @@ const getPassword = (login) => {
     `SELECT nickName, firstName, lastName, email, 
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
     dateBirth, sexPreferences, 
-  sex, rate, about, photos, location, password 
+  sex, rate, about, photos, location, confirm, password 
   FROM Users WHERE nickName=$1`;
 
   return db.any(sql, login);
@@ -43,7 +43,7 @@ const getLogin = (login) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
-  sexPreferences, sex, rate, about, photos, location[1] AS country, location[3] AS city,
+  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, position,
   (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
 
@@ -168,7 +168,7 @@ const insertViewFailed = (params) => {
 
 const editProfile = (que, params, i) => {
   const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
-
+  console.log(sql);
   return db.one(sql, params);
 }
 
@@ -201,10 +201,11 @@ const getInfoLogin = (params) => {
 
 const insertLocation = (params) => {
   const sql = `UPDATE Users 
-  SET location[1] = $1, location[2] = $2, location[3] = $3 
-  WHERE nickName = $4 RETURNING id`;
+  SET location[1] = $1, location[2] = $2, position = point($3, $4)
+  WHERE nickName = $5 
+  RETURNING id`;
 
-  return db.one(sql, params);
+  return db.any(sql, params);
 }
 
 const insertRemind = (params) => {
@@ -246,11 +247,15 @@ const changePass = (params) => {
   return db.any(sql, params);
 }
 
+<<<<<<< HEAD
 const getCards = (params, sort) => {
+=======
+const getCards = (params, sort, sortTags, sqlFilter) => {
+>>>>>>> master
   const sql = `
   SELECT * FROM (
-    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) age, rate, location[3] AS city, photos[1][2], sex, sexpreferences,
-    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags ,
+    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, photos[1][2], sex, sexpreferences,
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
     (SELECT UNNEST (array_cat( 
     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = $1)),
@@ -274,12 +279,108 @@ const getCards = (params, sort) => {
     WHERE nickName != $1
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
+<<<<<<< HEAD
     AND location[3] = (SELECT location[3] FROM Users WHERE nickName = $1)
     ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL`;
+=======
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
+    ORDER BY ${sort}
+) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($2 - 6)`;
+
+// console.log(sql);
 
   return db.any(sql, params);
 }
+
+const getCountCards = (params, sqlFilter) => {
+  const sql = `
+  SELECT * FROM (
+    SELECT nickName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, sex, sexpreferences,
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
+    CASE
+    WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'male' AND (SELECT sexpreferences FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'homosexual')
+        THEN true
+    WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ((SELECT sex FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'female' AND (SELECT sexpreferences FROM Users WHERE id = (SELECT id FROM Users WHERE nickName = $1)) = 'homosexual')
+        THEN true
+    ELSE NULL
+    END AS contact
+    FROM Users
+    WHERE nickName != $1
+    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
+    AND status = 'ignore'), 0))
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
+) t WHERE contact IS NOT NULL ${sqlFilter}`;
+
+  return db.any(sql, params);
+}
+
+const addConfirmHash = (params) => {
+  const sql = `UPDATE Users
+  SET confirmHash = $1
+  WHERE nickName = $2
+  RETURNING id`;
+>>>>>>> master
+
+  return db.any(sql, params);
+}
+
+const getConfirmHash = (params) => {
+  const sql = `SELECT confirmHash, created_at_user FROM Users
+  WHERE nickName = $1`;
+
+  return db.any(sql, params);
+}
+
+const userDel = (params) => {
+  const sql = `DELETE FROM Users WHERE nickName = $1 RETURNING id`;
+
+  return db.any(sql, params);
+}
+
+const confirmUser = (params) => {
+  const sql = `UPDATE Users 
+  SET confirm = true
+  WHERE nickName = $1
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
+
+const updateGeo = (params) => {
+  const sql = `UPDATE Users
+  SET location[1] = $1,
+  location[2] = $2,
+  location[3] = $3
+  WHERE nickname = $4
+  RETURNING id`;
+
+  return db.any(sql, params);
+}
+
+const getCountires = () => {
+  const sql = `SELECT DISTINCT(location[1])
+  FROM Users`;
+
+  return db.any(sql);
+}
+
+const getCities = (params) => {
+  const sql = `SELECT DISTINCT(location[3]) 
+  FROM Users
+  WHERE location[1] = ANY($1)`;
+
+  return db.any(sql, params);
+}
+
 
 exports.sign = sign;
 exports.getPassword = getPassword;
@@ -309,3 +410,11 @@ exports.insertRemind = insertRemind;
 exports.getRemind = getRemind;
 exports.delRemind = delRemind;
 exports.changePass = changePass;
+exports.getCountCards = getCountCards;
+exports.addConfirmHash = addConfirmHash;
+exports.getConfirmHash = getConfirmHash;
+exports.userDel = userDel;
+exports.confirmUser = confirmUser;
+exports.updateGeo = updateGeo;
+exports.getCountires = getCountires;
+exports.getCities = getCities; 

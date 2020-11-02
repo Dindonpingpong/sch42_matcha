@@ -1,5 +1,5 @@
-import React from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { useParams, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { NavLink } from 'reactstrap';
@@ -8,6 +8,7 @@ import { fetchLogin, setLogin, setPassword } from '../../redux/login/ActionCreat
 import { isValidInput, isValidPassword } from '../../util/check';
 import { useHistory } from "react-router-dom";
 import { Loading } from '../Loading';
+import { request } from '../../util/http';
 
 const mapStateToProps = (state) => {
     return {
@@ -84,6 +85,8 @@ function Password(props) {
 }
 
 function Login(props) {
+    const { nickname, hash } = useParams();
+    const [msg, setMsg] = useState(null);
     const history = useHistory();
 
     const Sign = () => {
@@ -92,9 +95,11 @@ function Login(props) {
         props.fetchLogin(nickname, password);
     }
 
-    if (props.login.isLogged) {
-        history.push("/users/page/1");
-    }
+    useEffect(() => {
+        if (props.login.isLogged) {
+            history.push("/users/page/1");
+        }
+    }, [props.login.isLogged]);
 
     if (props.login.isLoading) {
         return (
@@ -102,12 +107,28 @@ function Login(props) {
         )
     }
 
+    if (nickname, hash) {
+        const data = {
+            nickname: nickname,
+            hash: hash
+        };
+
+        request('/api/user/confirm', data, "POST")
+            .then(res => res.json())
+            .then((result) => {
+                setMsg(result.msg)
+            })
+            .catch((e) => {
+                setMsg(e.message)
+            })
+    }
+
     return (
         <Row>
             <Col md={6} className="m-auto">
                 {
-                    props.login.errMsg && 
-                    <Alert color='danger' >{props.login.errMsg}</Alert>
+                    (props.login.errMsg || msg) &&
+                <Alert color='danger' >{props.login.errMsg}{msg}</Alert>
                 }
                 <form >
                     <LoginInput setLogin={props.setLogin} />

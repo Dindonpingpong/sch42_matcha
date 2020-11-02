@@ -9,7 +9,6 @@ const Remind = () => {
     const [msg, setMsg] = useState(null);
 
     const remind = () => {
-        // const time = new Date();
         const data = {
             email: email
         }

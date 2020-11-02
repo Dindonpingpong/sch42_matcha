@@ -21,14 +21,18 @@ CREATE TABLE  Users (
     email text DEFAULT NULL,
     dateBirth date NOT NULL,
     password text NOT NULL,
+    position point,
     confirm boolean DEFAULT FALSE,
+    confirmHash text,
+    remindHash text,
+    remindTime timestamp,
     sexPreferences preferences DEFAULT 'bisexual', 
     sex sexType NOT NULL,
     rate int DEFAULT 500,
     about text DEFAULT 'About me...',
     -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
-    location text[3],
+    location text[2],
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
@@ -95,22 +99,22 @@ CREATE TABLE User_Reports (
     FOREIGN KEY (idFrom) REFERENCES Users (id),
     FOREIGN KEY (idTo) REFERENCES Users (id),
     FOREIGN KEY (idReport) REFERENCES Reports (id)
-); (
+); 
 
-INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location) VALUES
-    ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('mgrass', 'nya', 'milk', 'nyamilk@yandex.ru', '1990-12-26', 'female', '$2b$10$9jPn1ZpuXtOCA3dmO4gkeuj5749pfppkjd4jb.jbKKrrZ38S08rLu' , ARRAY['Russia','Moscow','Podolsk']),
-    ('kusmene', 'kus', 'mene', 'kus@mene.ru', '1995-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test4', 'test4', 'test4', 'test4@test4.ru', '1990-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test5', 'test5', 'test5', 'test5@test5.ru', '1985-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test6', 'test6', 'test6', 'test6@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Troitsk']),
-    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test9', 'test9', 'test9', 'test9@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test10', 'test10', 'test10', 'test10@test5.ru', '1985-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test11', 'test11', 'test11', 'test11@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test12', 'test12', 'test12', 'test12@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Moscow']),
-    ('test13', 'test13', 'test13', 'test13@test8.ru', '1965-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Podolsk']);
+INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location, position, confirm) VALUES
+    ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('mgrass', 'nya', 'milk', 'nyamilk@yandex.ru', '1990-12-26', 'female', '$2b$10$9jPn1ZpuXtOCA3dmO4gkeuj5749pfppkjd4jb.jbKKrrZ38S08rLu' , ARRAY['Russia','Podolsk'], point(55.751244,37.618423), TRUE),
+    ('kusmene', 'kus', 'mene', 'kus@mene.ru', '1995-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test4', 'test4', 'test4', 'test4@test4.ru', '1990-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test5', 'test5', 'test5', 'test5@test5.ru', '1985-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test6', 'test6', 'test6', 'test6@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Troitsk'], point(55.751244,37.618423), TRUE),
+    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test9', 'test9', 'test9', 'test9@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test10', 'test10', 'test10', 'test10@test5.ru', '1985-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test11', 'test11', 'test11', 'test11@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test12', 'test12', 'test12', 'test12@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test13', 'test13', 'test13', 'test13@test8.ru', '1965-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Podolsk'], point(55.751244,37.618423), TRUE);
 
 UPDATE Users SET sexPreferences = 'heterosexual' WHERE id IN (1, 2, 4);
 UPDATE Users SET sexPreferences = 'heterosexual' WHERE id = 14;

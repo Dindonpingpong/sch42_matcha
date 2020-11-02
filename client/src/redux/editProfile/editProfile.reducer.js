@@ -13,6 +13,7 @@ const initialState = {
     sexpreferences: null,
     tags: null,
     newpass: null,
+    coords: null,
     passwordStatus: false,
     editProfileStatus: null
 };
@@ -57,6 +58,9 @@ export const EditProfileReducer = (state = initialState, action) => {
 
         case ActionTypes.TAGS_ADD:
             return { ...state, isLoading: false, errProfile: null, tags: action.tags };
+
+        case ActionTypes.COORDS_ADD:
+            return { ...state, isLoading: false, errProfile: null, coords: action.coords };
 
         case ActionTypes.NEWPASSWORD_ADD:
             return { ...state, isLoading: false, errProfile: null, newpass: action.newpass };

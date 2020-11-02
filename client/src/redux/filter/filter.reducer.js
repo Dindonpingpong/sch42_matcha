@@ -3,6 +3,7 @@ import * as ActionTypes from './ActionTypes';
 const initialState = {
     isLoading: true,
     errMsg: null,
+    sortType: 'ageAsc',
     filterStatus: null,
     ageFrom: 18,
     ageTo: 120,
@@ -11,24 +12,29 @@ const initialState = {
     sex: 'both',
     tags: [],
     location: [],
+<<<<<<< HEAD
     sortType: 'ageAsc',
+=======
+    allUsersCount: null,
+    allPagesCount: null,
+>>>>>>> master
     info: {}
 }
 
 export const FilterReducer = (state = initialState, action) => {
 
     switch (action.type) {
-        case ActionTypes.FILTER_ADD:
-            return { ...state, isLoading: false, errMsg: null, isLogged: true, filterStatus: action.payload, sortType: null };
-
         case ActionTypes.FILTER_CLEAR:
             return { ...initialState };
 
         case ActionTypes.FILTER_LOADING:
-            return { ...state, isLoading: true, errMsg: null, filterStatus: null };
+            return { ...state, isLoading: true, errMsg: null };
 
         case ActionTypes.FILTER_FAILED:
-            return { ...state, isLoading: false, errMsg: action.payload, filterStatus: null };
+            return { ...state, isLoading: false, errMsg: action.payload };
+
+        case ActionTypes.FILTER_ADD:
+            return { ...state, isLoading: false, errMsg: null, isLogged: true, filterStatus: action.status };
 
         case ActionTypes.FILTER_AGE_FROM_ADD:
             return { ...state, isLoading: false, errMsg: null, ageFrom: action.ageFrom };
@@ -57,6 +63,12 @@ export const FilterReducer = (state = initialState, action) => {
         case ActionTypes.SORT_TYPE_ADD:
             return { ...state, isLoading: false, errMsg: null, sortType: action.sortType };
 
+<<<<<<< HEAD
+=======
+        case ActionTypes.COUNT_CARD_ADD:
+            return { ...state, isLoading: false, errMsg: null, allUsersCount: action.payload };
+
+>>>>>>> master
         default:
             return state;
     }
