@@ -12,17 +12,8 @@ const initialState = {
     sex: 'both',
     tags: [],
     location: [],
-<<<<<<< HEAD
-<<<<<<< HEAD
-    sortType: 'ageAsc',
-=======
     allUsersCount: null,
     allPagesCount: null,
->>>>>>> master
-=======
-    allUsersCount: null,
-    allPagesCount: null,
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     info: {}
 }
 
@@ -68,18 +59,9 @@ export const FilterReducer = (state = initialState, action) => {
         case ActionTypes.SORT_TYPE_ADD:
             return { ...state, isLoading: false, errMsg: null, sortType: action.sortType };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
         case ActionTypes.COUNT_CARD_ADD:
             return { ...state, isLoading: false, errMsg: null, allUsersCount: action.payload };
 
->>>>>>> master
-=======
-        case ActionTypes.COUNT_CARD_ADD:
-            return { ...state, isLoading: false, errMsg: null, allUsersCount: action.payload };
-
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         default:
             return state;
     }

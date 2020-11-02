@@ -247,21 +247,10 @@ const changePass = (params) => {
   return db.any(sql, params);
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-const getCards = (params, sort) => {
-=======
 const getCards = (params, sort, sortTags, sqlFilter) => {
->>>>>>> master
   const sql = `
   SELECT * FROM (
     SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, photos[1][2], sex, sexpreferences,
-=======
-const getCards = (params, sort, sortTags, sqlFilter) => {
-  const sql = `
-  SELECT * FROM (
-    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[3] AS city, photos[1][2], sex, sexpreferences,
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
     (SELECT UNNEST (array_cat( 
@@ -286,34 +275,19 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     WHERE nickName != $1
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
-<<<<<<< HEAD
-    AND location[3] = (SELECT location[3] FROM Users WHERE nickName = $1)
-    ORDER BY ${sort}
-<<<<<<< HEAD
-) t WHERE contact IS NOT NULL`;
-=======
     AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
     ORDER BY ${sort}
-=======
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($2 - 6)`;
 
 // console.log(sql);
 
   return db.any(sql, params);
 }
-<<<<<<< HEAD
 
 const getCountCards = (params, sqlFilter) => {
   const sql = `
   SELECT * FROM (
     SELECT nickName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, sex, sexpreferences,
-=======
-const getCountCards = (params, sqlFilter) => {
-  const sql = `
-  SELECT * FROM (
-    SELECT nickName, date_part('year', age(dateBirth::date)) AS age, rate, location[3] AS city, sex, sexpreferences,
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
@@ -334,11 +308,7 @@ const getCountCards = (params, sqlFilter) => {
     WHERE nickName != $1
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
-<<<<<<< HEAD
     AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
-=======
-    AND location[3] = (SELECT location[3] FROM Users WHERE nickName = $1)
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 ) t WHERE contact IS NOT NULL ${sqlFilter}`;
 
   return db.any(sql, params);
@@ -349,7 +319,6 @@ const addConfirmHash = (params) => {
   SET confirmHash = $1
   WHERE nickName = $2
   RETURNING id`;
->>>>>>> master
 
   return db.any(sql, params);
 }
@@ -431,7 +400,6 @@ exports.insertRemind = insertRemind;
 exports.getRemind = getRemind;
 exports.delRemind = delRemind;
 exports.changePass = changePass;
-<<<<<<< HEAD
 exports.getCountCards = getCountCards;
 exports.addConfirmHash = addConfirmHash;
 exports.getConfirmHash = getConfirmHash;
@@ -440,6 +408,3 @@ exports.confirmUser = confirmUser;
 exports.updateGeo = updateGeo;
 exports.getCountires = getCountires;
 exports.getCities = getCities; 
-=======
-exports.getCountCards = getCountCards;
->>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
