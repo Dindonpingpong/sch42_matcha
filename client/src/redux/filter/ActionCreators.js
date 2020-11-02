@@ -122,7 +122,7 @@ export const countCardAdd = (count) => ({
 
 export const fetchAllUsers = (data) => (dispatch) => {
     dispatch(filterLoading());
-    // console.log('log', nickname);
+    console.log('log', data);
     return request('/api/user/users/count/pages', data, 'POST')
         .then(response => response.json())
         .then(result => dispatch(countCardAdd(result)))

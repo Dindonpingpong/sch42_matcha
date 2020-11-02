@@ -8,9 +8,12 @@ import 'font-awesome/css/font-awesome.css';
 import './index.css'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // <React.StrictMode>
+  //   <App />
+  // </React.StrictMode>,
+  <React.Fragment>
+  <App />
+</React.Fragment>,
   document.getElementById('root')
 );
 

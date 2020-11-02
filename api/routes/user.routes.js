@@ -847,13 +847,15 @@ router.post('/users/page', async (req, res) => {
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
-            : `AND sex = ${sex} `;
+            : `AND sex = '${sex}' `;
         sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $3`;
 
+        // console.log(params, sqlSort, sqlSortTags, sqlFilter);
         getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
+                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
@@ -890,7 +892,7 @@ router.post('/users/count/pages', async (req, res) => {
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
-            : `AND sex = ${sex} `;
+            : `AND sex = '${sex}' `;
         sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $2`;

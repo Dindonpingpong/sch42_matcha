@@ -12,8 +12,6 @@ DROP TYPE IF EXISTS preferences;
 CREATE TYPE preferences AS ENUM ('heterosexual', 'homosexual', 'bisexual');
 DROP TYPE IF EXISTS connectionType;
 CREATE TYPE connectionType AS ENUM ('like', 'ignore', 'unlike');
-CREATE extension cube;
-CREATE extension earthdistance;
 
 CREATE TABLE  Users (
     id SERIAL,
@@ -23,6 +21,11 @@ CREATE TABLE  Users (
     email text DEFAULT NULL,
     dateBirth date NOT NULL,
     password text NOT NULL,
+    position point,
+    confirm boolean DEFAULT FALSE,
+    confirmHash text,
+    remindHash text,
+    remindTime timestamp,
     sexPreferences preferences DEFAULT 'bisexual', 
     sex sexType NOT NULL,
     rate int DEFAULT 500,
@@ -30,11 +33,6 @@ CREATE TABLE  Users (
     -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
     location text[2],
-    position point,
-    confirm boolean DEFAULT FALSE,
-    confirmHash text,
-    remindHash text,
-    remindTime timestamp,
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
 );
@@ -93,28 +91,30 @@ CREATE TABLE Reports (
 
 CREATE TABLE User_Reports (
     id SERIAL,
-    idUser int,
+    idFrom int,
+    idTo int,
     idReport int,
     message text,
     PRIMARY KEY (id),
-    FOREIGN KEY (idUser) REFERENCES Users (id),
+    FOREIGN KEY (idFrom) REFERENCES Users (id),
+    FOREIGN KEY (idTo) REFERENCES Users (id),
     FOREIGN KEY (idReport) REFERENCES Reports (id)
-);
+); 
 
-INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location, position) VALUES
-    ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('mgrass', 'nya', 'milk', 'nyamilk@yandex.ru', '1990-12-26', 'female', '$2b$10$9jPn1ZpuXtOCA3dmO4gkeuj5749pfppkjd4jb.jbKKrrZ38S08rLu' , ARRAY['Russia', 'Podolsk'], point(55.751244,37.618423)),
-    ('kusmene', 'kus', 'mene', 'kus@mene.ru', '1995-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test4', 'test4', 'test4', 'test4@test4.ru', '1990-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test5', 'test5', 'test5', 'test5@test5.ru', '1985-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test6', 'test6', 'test6', 'test6@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Troitsk'], point(55.751244,37.618423)),
-    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test9', 'test9', 'test9', 'test9@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test10', 'test10', 'test10', 'test10@test5.ru', '1985-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test11', 'test11', 'test11', 'test11@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test12', 'test12', 'test12', 'test12@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Moscow'], point(55.751244,37.618423)),
-    ('test13', 'test13', 'test13', 'test13@test8.ru', '1965-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia', 'Podolsk'], point(55.751244,37.618423));
+INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location, position, confirm) VALUES
+    ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('mgrass', 'nya', 'milk', 'nyamilk@yandex.ru', '1990-12-26', 'female', '$2b$10$9jPn1ZpuXtOCA3dmO4gkeuj5749pfppkjd4jb.jbKKrrZ38S08rLu' , ARRAY['Russia','Podolsk'], point(55.751244,37.618423), TRUE),
+    ('kusmene', 'kus', 'mene', 'kus@mene.ru', '1995-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test4', 'test4', 'test4', 'test4@test4.ru', '1990-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test5', 'test5', 'test5', 'test5@test5.ru', '1985-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test6', 'test6', 'test6', 'test6@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test7', 'test7', 'test7', 'test7@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Troitsk'], point(55.751244,37.618423), TRUE),
+    ('test8', 'test8', 'test8', 'test8@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test9', 'test9', 'test9', 'test9@test8.ru', '1965-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test10', 'test10', 'test10', 'test10@test5.ru', '1985-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test11', 'test11', 'test11', 'test11@test6.ru', '1980-02-23', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test12', 'test12', 'test12', 'test12@test7.ru', '1975-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
+    ('test13', 'test13', 'test13', 'test13@test8.ru', '1965-02-23', 'female', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Podolsk'], point(55.751244,37.618423), TRUE);
 
 UPDATE Users SET sexPreferences = 'heterosexual' WHERE id IN (1, 2, 4);
 UPDATE Users SET sexPreferences = 'heterosexual' WHERE id = 14;
@@ -174,4 +174,28 @@ INSERT INTO Tags (Tag) VALUES
     ('pornography'),
     ('spam'),
     ('offensive behavior'),
-    ('fraud');   
+    ('fraud');
+
+
+INSERT INTO User_Tags (idUser, idTag) VALUES 
+    ('8', '2'),
+    ('9', '2'),
+    ('11', '2');
+
+INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location) VALUES
+    ('test14', 'Dima', 'Ng', 'd_ng@meail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow','Podolsk']);
+
+INSERT INTO User_Tags (idUser, idTag) VALUES 
+    ('14', '2');
+
+INSERT INTO Reports (report) VALUES
+    ('pornography'),
+    ('spam'),
+    ('offensive behavior'),
+    ('fraud');
+
+UPDATE Users SET rate = 499 WHERE id = 14;
+UPDATE Users SET rate = 99 WHERE id = 3;
+UPDATE Users SET rate = 150 WHERE id = 5;
+UPDATE Users SET rate = 502 WHERE id = 11;
+UPDATE Users SET rate = 502 WHERE id = 8;
