@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useParams, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
@@ -95,9 +95,11 @@ function Login(props) {
         props.fetchLogin(nickname, password);
     }
 
-    if (props.login.isLogged) {
-        history.push("/users/page/1");
-    }
+    useEffect(() => {
+        if (props.login.isLogged) {
+            history.push("/users/page/1");
+        }
+    }, [props.login.isLogged]);
 
     if (props.login.isLoading) {
         return (

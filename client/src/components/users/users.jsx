@@ -1,13 +1,18 @@
-import React, { useEffect, Component } from 'react';
+import React, { useEffect } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
     Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Card, CardBody, CardImg, CardTitle, Badge,
-    FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink
+    FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Pagination, PaginationItem, PaginationLink,
+    FormFeedback
 } from 'reactstrap';
-import { fetchUsersCard, fetchFilter, initFilter, setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation } from '../../redux/filter/ActionCreators';
+import {
+    fetchAllUsers, fetchUsersCard, setFilterStatus, initFilter,
+    setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation, setSort
+} from '../../redux/filter/ActionCreators';
 import { Loading } from '../Loading';
 import './Users.css'
+import { useState } from 'react';
 
 const mapStateToProps = (state) => {
     return {
@@ -18,9 +23,10 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchUsersCard: (nickname, page) => dispatch(fetchUsersCard(nickname, page)),
-    fetchFilter: (data) => dispatch(fetchFilter(data)),
-    filterClear: () => dispatch(initFilter()),
+    fetchAllUsers: (nickname) => dispatch(fetchAllUsers(nickname)),
+    fetchUsersCard: (nickname, page, sort) => dispatch(fetchUsersCard(nickname, page, sort)),
+    clearFilter: () => dispatch(initFilter()),
+    setFilterStatus: (status) => dispatch(setFilterStatus(status)),
     setAgeFrom: (ageFrom) => dispatch(setAgeFrom(ageFrom)),
     setAgeTo: (ageTo) => dispatch(setAgeTo(ageTo)),
     setRateFrom: (rateFrom) => dispatch(setRateFrom(rateFrom)),
@@ -28,153 +34,198 @@ const mapDispatchToProps = (dispatch) => ({
     setSex: (sex) => dispatch(setSex(sex)),
     setTags: (tags) => dispatch(setTags(tags)),
     setLocation: (location) => dispatch(setLocation(location)),
+    setSort: (sortType) => dispatch(setSort(sortType))
 });
 
-class Filter extends Component {
-    constructor(props) {
-        super(props);
+function InputForm(props) {
+    const [isValid, toggleValid] = useState('is-valid');
+    const [feedback, setFeedback] = useState(props.feedback);
 
-        this.state = {
-            modal: false,
-            collapse: false
+    const inputChange = (e) => {
+        const { name, value } = e.target;
+        // добавить проверку на A > B?
+
+        let isAge = (value.match(/^\d{2,3}$/)) ? true : false;
+        let isRate = (value.match(/^\d{1,4}$/)) ? true : false;
+
+        // console.log('ic', props);
+
+        if (isAge) {
+            if (name === 'agefrom') {
+                return (value < 18 || value > 120)
+                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only 1"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+            if (name === 'ageto') {
+                return (value < 18 || value > 120)
+                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only 2"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
         }
+        else
+            toggleValid('is-invalid');
+
+        if (isRate) {
+            if (name === 'ratefrom') {
+                return (value < 0 || value > 1000)
+                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only 1"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+            if (name === 'rateto') {
+                return (value < 0 || value > 1000)
+                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only 2"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+        }
+        else
+            toggleValid('is-invalid');
+    };
+
+    const checkInput = () => {
+        props.setStatusButton((document.querySelectorAll(".is-invalid").length > 0) ? false : true);
     }
 
-    toggleModal = () => this.setState({ modal: !this.state.modal });
-    toggleCollapse = () => this.setState({ collapse: !this.state.collapse });
+    return (
+        <Col xs={6}>
+            <Input
+                type="number"
+                name={props.name}
+                defaultValue={props.defaultValue}
+                onChange={inputChange}
+                className={isValid}
+                onBlur={checkInput}
+            />
+            <FormFeedback>{feedback}</FormFeedback>
+        </Col>
+    )
+}
 
-    render() {
-        return (
-            <Nav expand="lg" color="light">
-                <Row className="users-sort-filter">
-                    <Col xs={6}>
-                        <FormGroup>
-                            <Input type="select" className="form-control">
-                                <option>Age ↑</option>
-                                <option>Age ↓</option>
-                                <option>Rate ↑</option>
-                                <option>Rate ↓</option>
-                                <option>Location A-Z</option>
-                                <option>Location Z-A</option>
-                                <option>Tags A-Z</option>
-                                <option>Tags Z-A</option>
-                            </Input>
-                        </FormGroup>
-                    </Col>
+function Filter(props) {
+    const [show, setModal] = useState(false);
+    const toggleModal = () => setModal(!show);
 
-                    <Col xs={4} className="users-filter">
-                        <Button
-                            type="button"
-                            color="primary"
-                            onClick={this.toggleModal}
-                            color="secondary"
+    const [isValidInput, setStatusButton] = useState(true);
+
+    const tagsHandle = (e) => {
+        let value = [];
+
+        if (e.target.value) {
+            value = Array.from(e.target.selectedOptions, option => option.value);
+        }
+
+        props.filter.setTags(value);
+    }
+
+    return (
+        <Nav expand="lg" color="light">
+            <Row className="users-sort-filter">
+                <Col xs={6}>
+                    <FormGroup>
+                        <Input
+                            type="select"
+                            onChange={e => { props.filter.setSort(e.target.value) }}
+                            defaultValue={props.filter.filter.sortType}
                         >
-                            Filters
-                            </Button>
-                    </Col>
+                            <option value="ageAsc">Age ↑</option>
+                            <option value="ageDesc">Age ↓</option>
+                            <option value="rateAsc">Rate ↑</option>
+                            <option value="rateDesc">Rate ↓</option>
+                            <option value="tagsAsc">Tags ↑</option>
+                            <option value="tagsDesc">Tags ↓</option>
+                            <option value="locationAsc">Location A-Z</option>
+                            <option value="locationDesc">Location Z-A</option>
+                        </Input>
+                    </FormGroup>
+                </Col>
 
-                    <Modal isOpen={this.state.modal}>
-                        <ModalHeader>
-                            <Row>
-                                <Col xs={12}>
-                                    <p>Filters</p>
-                                </Col>
-                            </Row>
-                        </ModalHeader>
-                        <ModalBody className="text-center">
-                            <Row>
-                                <Col xs={12}>
-                                    <p className="font-profile-head">Age</p>
-                                </Col>
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="18"
-                                    >
-                                    </Input>
-                                </Col>
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="80"
-                                    >
-                                    </Input>
-                                </Col>
-                            </Row>
+                <Col xs={4} className="users-filter">
+                    <Button
+                        type="button"
+                        onClick={toggleModal}
+                        color="secondary"
+                    >
+                        Filters
+                    </Button>
+                </Col>
 
-                            <Row className="mt-2">
-                                <Col xs={12}>
-                                    <p className="font-profile-head">Rate</p>
-                                </Col>
+                <Modal isOpen={show}>
+                    <ModalHeader>
+                        <Row>
+                            <Col xs={12}>
+                                <p>Filters</p>
+                            </Col>
+                        </Row>
+                    </ModalHeader>
+                    <ModalBody className="text-center">
+                        <Row>
+                            <Col xs={12}>
+                                <p className="font-profile-head">Age</p>
+                            </Col>
+                            <InputForm name='agefrom' defaultValue={props.filter.filter.ageFrom} set={props.filter.setAgeFrom} setStatusButton={setStatusButton} />
+                            <InputForm name='ageto' defaultValue={props.filter.filter.ageTo} set={props.filter.setAgeTo} setStatusButton={setStatusButton} />
+                        </Row>
 
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="0"
-                                    >
-                                    </Input>
-                                </Col>
+                        <Row className="mt-2">
+                            <Col xs={12}>
+                                <p className="font-profile-head">Rate</p>
+                            </Col>
+                            <InputForm name='ratefrom' defaultValue={props.filter.filter.rateFrom} set={props.filter.setRateFrom} setStatusButton={setStatusButton} />
+                            <InputForm name='rateto' defaultValue={props.filter.filter.rateTo} set={props.filter.setRateTo} setStatusButton={setStatusButton} />
+                        </Row>
 
-                                <Col xs={6}>
-                                    <Input
-                                        type="text"
-                                        className="form-control"
-                                        placeholder="1000"
-                                    >
-                                    </Input>
-                                </Col>
+                        <Row className="mt-2 ">
+                            <Col xs={12}>
+                                <p className="font-profile-head">Sex</p>
+                                <Input type='select' defaultValue='both' onChange={e => props.filter.setSex(e.target.value)}>
+                                    <option value="female">Female</option>
+                                    <option value="male">Male</option>
+                                    <option value="both">Both</option>
+                                </Input>
+                            </Col>
+                        </Row>
 
-                            </Row>
+                        <Row className="mt-2">
+                            <Col xs={12} className="mb-1 slidecontainer">
+                                <p className="font-profile-head">Location</p>
+                                <p className="">Distance km</p>
+                                <Input className="mb-1 slider" type='range' min="0" max="1000" step="100" />
+                            </Col>
+                        </Row>
 
-                            <Row className="mt-2 ">
-                                <Col xs={12}>
-                                    <p className="font-profile-head">Sex</p>
-                                    <Input type='select'>
-                                        <option value="famale">Female</option>
-                                        <option value="male">Male</option>
-                                        <option value="both">Both</option>
-                                    </Input>
-                                </Col>
-                            </Row>
+                        {/* <Row className="mt-2">
+                            <Col xs={12} className="mb-1">
+                                <p className="font-profile-head">Location</p>
+                                <Input type='select' multiple>
+                                    <option value="Moscow">Moscow</option>
+                                    <option value="Podolsk">Podolsk</option>
+                                </Input>
+                            </Col>
+                        </Row> */}
 
-                            <Row className="mt-2">
-                                <Col xs={12} className="mb-1">
-                                    <p className="font-profile-head">Tags</p>
-                                    <Input type='select' multiple>
-                                        <option value="sport">sport</option>
-                                        <option value="movie">movie</option>
-                                        <option value="food">food</option>
-                                        <option value="art">art</option>
-                                        <option value="travel">travel</option>
-                                        <option value="dance">dance</option>
-                                        <option value="animal">animal</option>
-                                    </Input>
-                                </Col>
-                            </Row>
+                        <Row className="mt-2">
+                            <Col xs={12} className="mb-1">
+                                <p className="font-profile-head">Tags</p>
+                                <Input type='select' multiple defaultValue={props.filter.filter.tags} onChange={e => tagsHandle(e)}>
+                                    <option value="sport">sport</option>
+                                    <option value="movie">movie</option>
+                                    <option value="food">food</option>
+                                    <option value="art">art</option>
+                                    <option value="travel">travel</option>
+                                    <option value="dance">dance</option>
+                                    <option value="animal">animal</option>
+                                </Input>
+                            </Col>
+                        </Row>
 
-                            <Row className="mt-2">
-                                <Col xs={12} className="mb-1">
-                                    <p className="font-profile-head">Location</p>
-                                    <Input type='select' multiple>
-                                        <option value="Moscow">Moscow</option>
-                                        <option value="Podolsk">Podolsk</option>
-                                    </Input>
-                                </Col>
-                            </Row>
-
-                            <ModalFooter className="d-flex justify-content-between align-items-center">
-                                <Button color="success">Save</Button>
-                                <Button color="secondary" onClick={this.toggleModal}>Cancel</Button>
-                            </ModalFooter>
-                        </ModalBody>
-                    </Modal>
-                </Row>
-            </Nav>
-        )
-    }
+                        <ModalFooter className="d-flex justify-content-between align-items-center">
+                            <Button color="success" className={isValidInput ? '' : 'disabled-button'} onClick={() => { toggleModal(); props.filter.setFilterStatus('active') }}>Save</Button>
+                            <Button color="secondary" onClick={toggleModal}>Cancel</Button>
+                        </ModalFooter>
+                    </ModalBody>
+                </Modal>
+            </Row>
+        </Nav>
+    );
 }
 
 function TagsList(props) {
@@ -193,8 +244,9 @@ function TagsList(props) {
 }
 
 function UserCards(props) {
-    // if (props.cards.length > 0) {
-        const listCards = props.cards.map((card, item) =>
+    let listItems;
+    if (props.cards) {
+        listItems = props.cards.map((card, item) =>
             <Col md={4} key={item}>
                 <Card className="mb-4">
                     <CardImg width="100%" top src={`/api/user/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
@@ -214,63 +266,104 @@ function UserCards(props) {
                 </Card>
             </Col>
         );
-        return (
-            <Row>{listCards}</Row>
-        );
-    // }
+    }
+    return (
+        <Row>{listItems}</Row>
+    );
 }
 
-function CardsPagination() {
-    return (
-        <Pagination className="users-pagination">
-            <PaginationItem>
+function CardsPagination(props) {
+    const countPages = Math.ceil(props.allUsers / 6);
+
+    if (countPages > 1) {
+        let pages = [];
+        for (let i = 1; i <= countPages; i++) {
+            pages.push(i);
+        }
+
+        const listItems = pages.map((page, item) =>
+            <PaginationItem key={item}>
+                <PaginationLink href={`/users/page/${page}`}>
+                    {page}
+                </PaginationLink>
+            </PaginationItem>
+        );
+
+        return (
+            <Pagination className="users-pagination">
+                {
+                    countPages > 3 &&
+                    <PaginationItem>
+                        <PaginationLink first href="/users/page/1" />
+                    </PaginationItem>
+                }
+
+                {listItems}
+
+                {
+                    countPages > 3 &&
+                    <PaginationItem>
+                        <PaginationLink last href={`/users/page/${countPages}`} />
+                    </PaginationItem>
+                }
+            </Pagination>
+            // <Pagination className="users-pagination">
+            /* <PaginationItem>
                 <PaginationLink first href="#" />
             </PaginationItem>
+    
             <PaginationItem>
                 <PaginationLink href="#">
                     1
-            </PaginationLink>
+        </PaginationLink>
             </PaginationItem>
+    
             <PaginationItem>
                 <PaginationLink href="#">
                     2
-            </PaginationLink>
+        </PaginationLink>
             </PaginationItem>
             <PaginationItem>
                 <PaginationLink href="#">
                     3
-            </PaginationLink>
+        </PaginationLink>
             </PaginationItem>
             <PaginationItem>
                 <PaginationLink last href="#" />
-            </PaginationItem>
-        </Pagination>
-    );
+            </PaginationItem> */
+            // </Pagination>
+        );
+    }
+    else
+        return (<div></div>);
 }
 
-function Users(props) {
+const Users = (props) => {
+
     useEffect(() => {
-        console.log('nick', props.login.me.nickname);
-        console.log('page', props.match.params.page);
-        props.fetchUsersCard(props.login.me.nickname, props.match.params.page);
-    }, [props.login.me.nickname, props.match.params.page]);
+        // console.log('nick', props.login.me.nickname);
+        // console.log('page', props.match.params.page);
+        const data = {
+            nickname: props.login.me.nickname,
+            page: props.match.params.page,
+            sort: props.filter.sortType,
+            ageFrom: props.filter.ageFrom,
+            ageTo: props.filter.ageTo,
+            rateFrom: props.filter.rateFrom,
+            rateTo: props.filter.rateTo,
+            sex: props.filter.sex,
+            tags: props.filter.tags,
+            location: props.filter.location
+        }
 
-    // console.log('info', props.filter);
+        if (data.page > 0) {
+            props.fetchAllUsers(data);
+            props.fetchUsersCard(data);
+        }
+    }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
+    // props.login.me.nickname
 
-    // const handleSubmit = () => {
-    //     const data = {
-    //         ageFrom: props.edit.ageFrom,
-    //         ageTo: props.edit.ageTo,
-    //         rateFrom: props.edit.rateFrom,
-    //         rateTo: props.edit.rateTo,
-    //         sex: props.edit.sex,
-    //         tags: props.edit.tags,
-    //         location: props.edit.location
-    //     }
-
-    //     props.fetchFilter(data);
-    // }
-
+    // console.log('users', props);
     // console.log(props.match.params.page);
 
     if (props.filter.isLoading) {
@@ -288,20 +381,23 @@ function Users(props) {
             </Container>
         );
     }
-    else if (props.filter.info != null) {
+        else if (props.filter.info != null) {
         return (
             <section className="users">
                 <Container>
-                    <Filter></Filter>
+                    <Filter filter={props} />
                     <UserCards cards={props.filter.info} />
-                    <CardsPagination />
+                    <CardsPagination allUsers={props.filter.allUsersCount} />
                 </Container>
             </section>
         );
     }
     else
         return (
-            <div>Not</div>
+            <Container>
+                 <Filter filter={props} />
+                <h2>Not</h2>
+            </Container>
         );
 }
 

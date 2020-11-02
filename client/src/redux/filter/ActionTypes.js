@@ -10,3 +10,5 @@ export const FILTER_SEX_ADD = 'FILTER_SEX_ADD';
 export const FILTER_TAGS_ADD = 'FILTER_TAGS_ADD';
 export const FILTER_LOCATION_ADD = 'FILTER_LOCATION_ADD';
 export const USERS_CARD_ADD = 'USERS_CARD_ADD';
+export const SORT_TYPE_ADD = 'SORT_TYPE_ADD';
+export const COUNT_CARD_ADD = 'COUNT_CARD_ADD';
