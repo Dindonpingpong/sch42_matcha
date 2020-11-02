@@ -8,10 +8,14 @@ import {
 } from 'reactstrap';
 import {
 <<<<<<< HEAD
+<<<<<<< HEAD
     fetchUsersCard, fetchFilter, initFilter,
 =======
     fetchAllUsers, fetchUsersCard, setFilterStatus, initFilter,
 >>>>>>> master
+=======
+    fetchAllUsers, fetchUsersCard, setFilterStatus, initFilter,
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation, setSort
 } from '../../redux/filter/ActionCreators';
 import { Loading } from '../Loading';
@@ -28,6 +32,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
 <<<<<<< HEAD
+<<<<<<< HEAD
     fetchUsersCard: (nickname, page, sort) => dispatch(fetchUsersCard(nickname, page, sort)),
     fetchFilter: (data) => dispatch(fetchFilter(data)),
     filterClear: () => dispatch(initFilter()),
@@ -37,6 +42,12 @@ const mapDispatchToProps = (dispatch) => ({
     clearFilter: () => dispatch(initFilter()),
     setFilterStatus: (status) => dispatch(setFilterStatus(status)),
 >>>>>>> master
+=======
+    fetchAllUsers: (nickname) => dispatch(fetchAllUsers(nickname)),
+    fetchUsersCard: (nickname, page, sort) => dispatch(fetchUsersCard(nickname, page, sort)),
+    clearFilter: () => dispatch(initFilter()),
+    setFilterStatus: (status) => dispatch(setFilterStatus(status)),
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     setAgeFrom: (ageFrom) => dispatch(setAgeFrom(ageFrom)),
     setAgeTo: (ageTo) => dispatch(setAgeTo(ageTo)),
     setRateFrom: (rateFrom) => dispatch(setRateFrom(rateFrom)),
@@ -48,21 +59,86 @@ const mapDispatchToProps = (dispatch) => ({
 });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+function InputForm(props) {
+    const [isValid, toggleValid] = useState('is-valid');
+    const [feedback, setFeedback] = useState(props.feedback);
+
+    const inputChange = (e) => {
+        const { name, value } = e.target;
+        // добавить проверку на A > B?
+
+        let isAge = (value.match(/^\d{2,3}$/)) ? true : false;
+        let isRate = (value.match(/^\d{1,4}$/)) ? true : false;
+
+        // console.log('ic', props);
+
+        if (isAge) {
+            if (name === 'agefrom') {
+                return (value < 18 || value > 120)
+                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only 1"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+            if (name === 'ageto') {
+                return (value < 18 || value > 120)
+                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only 2"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+        }
+        else
+            toggleValid('is-invalid');
+
+        if (isRate) {
+            if (name === 'ratefrom') {
+                return (value < 0 || value > 1000)
+                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only 1"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+            if (name === 'rateto') {
+                return (value < 0 || value > 1000)
+                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only 2"))
+                    : (toggleValid('is-valid'), props.set(value));
+            }
+        }
+        else
+            toggleValid('is-invalid');
+    };
+
+    const checkInput = () => {
+        props.setStatusButton((document.querySelectorAll(".is-invalid").length > 0) ? false : true);
+    }
+
+    return (
+        <Col xs={6}>
+            <Input
+                type="number"
+                name={props.name}
+                defaultValue={props.defaultValue}
+                onChange={inputChange}
+                className={isValid}
+                onBlur={checkInput}
+            />
+            <FormFeedback>{feedback}</FormFeedback>
+        </Col>
+    )
+}
+
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 function Filter(props) {
     const [show, setModal] = useState(false);
     const toggleModal = () => setModal(!show);
 
-    const handleSubmit = () => {
-        const data = {
-            ageFrom: props.edit.ageFrom,
-            ageTo: props.edit.ageTo,
-            rateFrom: props.edit.rateFrom,
-            rateTo: props.edit.rateTo,
-            sex: props.edit.sex,
-            tags: props.edit.tags,
-            location: props.edit.location
+    const [isValidInput, setStatusButton] = useState(true);
+
+    const tagsHandle = (e) => {
+        let value = [];
+
+        if (e.target.value) {
+            value = Array.from(e.target.selectedOptions, option => option.value);
         }
 
+<<<<<<< HEAD
         props.fetchFilter(data);
 =======
 function InputForm(props) {
@@ -143,6 +219,9 @@ function Filter(props) {
 
         props.filter.setTags(value);
 >>>>>>> master
+=======
+        props.filter.setTags(value);
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     }
 
     return (
@@ -153,12 +232,17 @@ function Filter(props) {
                         <Input
                             type="select"
 <<<<<<< HEAD
+<<<<<<< HEAD
                             onChange={e => { props.setSort(e.target.value) }}
                             defaultValue={props.sortType}
 =======
                             onChange={e => { props.filter.setSort(e.target.value) }}
                             defaultValue={props.filter.filter.sortType}
 >>>>>>> master
+=======
+                            onChange={e => { props.filter.setSort(e.target.value) }}
+                            defaultValue={props.filter.filter.sortType}
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                         >
                             <option value="ageAsc">Age ↑</option>
                             <option value="ageDesc">Age ↓</option>
@@ -176,9 +260,12 @@ function Filter(props) {
                     <Button
                         type="button"
 <<<<<<< HEAD
+<<<<<<< HEAD
                         color="primary"
 =======
 >>>>>>> master
+=======
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                         onClick={toggleModal}
                         color="secondary"
                     >
@@ -200,6 +287,7 @@ function Filter(props) {
                                 <p className="font-profile-head">Age</p>
                             </Col>
 <<<<<<< HEAD
+<<<<<<< HEAD
                             <Col xs={6}>
                                 <Input
                                     type="text"
@@ -220,12 +308,17 @@ function Filter(props) {
                             <InputForm name='agefrom' defaultValue={props.filter.filter.ageFrom} set={props.filter.setAgeFrom} setStatusButton={setStatusButton} />
                             <InputForm name='ageto' defaultValue={props.filter.filter.ageTo} set={props.filter.setAgeTo} setStatusButton={setStatusButton} />
 >>>>>>> master
+=======
+                            <InputForm name='agefrom' defaultValue={props.filter.filter.ageFrom} set={props.filter.setAgeFrom} setStatusButton={setStatusButton} />
+                            <InputForm name='ageto' defaultValue={props.filter.filter.ageTo} set={props.filter.setAgeTo} setStatusButton={setStatusButton} />
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                         </Row>
 
                         <Row className="mt-2">
                             <Col xs={12}>
                                 <p className="font-profile-head">Rate</p>
                             </Col>
+<<<<<<< HEAD
 <<<<<<< HEAD
 
                             <Col xs={6}>
@@ -250,11 +343,16 @@ function Filter(props) {
                             <InputForm name='ratefrom' defaultValue={props.filter.filter.rateFrom} set={props.filter.setRateFrom} setStatusButton={setStatusButton} />
                             <InputForm name='rateto' defaultValue={props.filter.filter.rateTo} set={props.filter.setRateTo} setStatusButton={setStatusButton} />
 >>>>>>> master
+=======
+                            <InputForm name='ratefrom' defaultValue={props.filter.filter.rateFrom} set={props.filter.setRateFrom} setStatusButton={setStatusButton} />
+                            <InputForm name='rateto' defaultValue={props.filter.filter.rateTo} set={props.filter.setRateTo} setStatusButton={setStatusButton} />
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                         </Row>
 
                         <Row className="mt-2 ">
                             <Col xs={12}>
                                 <p className="font-profile-head">Sex</p>
+<<<<<<< HEAD
 <<<<<<< HEAD
                                 <Input type='select'>
                                     <option value="famale">Female</option>
@@ -262,6 +360,10 @@ function Filter(props) {
                                 <Input type='select' defaultValue='both' onChange={e => props.filter.setSex(e.target.value)}>
                                     <option value="female">Female</option>
 >>>>>>> master
+=======
+                                <Input type='select' defaultValue='both' onChange={e => props.filter.setSex(e.target.value)}>
+                                    <option value="female">Female</option>
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                                     <option value="male">Male</option>
                                     <option value="both">Both</option>
                                 </Input>
@@ -270,9 +372,21 @@ function Filter(props) {
 
                         <Row className="mt-2">
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                            <Col xs={12} className="mb-1 slidecontainer">
+                                <p className="font-profile-head">Location</p>
+                                <p className="">Distance km</p>
+                                <Input className="mb-1 slider" type='range' min="0" max="1000" step="100" />
+                            </Col>
+                        </Row>
+
+                        {/* <Row className="mt-2">
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                             <Col xs={12} className="mb-1">
-                                <p className="font-profile-head">Tags</p>
+                                <p className="font-profile-head">Location</p>
                                 <Input type='select' multiple>
+<<<<<<< HEAD
 =======
                             <Col xs={12} className="mb-1 slidecontainer">
                                 <p className="font-profile-head">Location</p>
@@ -285,6 +399,8 @@ function Filter(props) {
                             <Col xs={12} className="mb-1">
                                 <p className="font-profile-head">Location</p>
                                 <Input type='select' multiple>
+=======
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                                     <option value="Moscow">Moscow</option>
                                     <option value="Podolsk">Podolsk</option>
                                 </Input>
@@ -295,7 +411,10 @@ function Filter(props) {
                             <Col xs={12} className="mb-1">
                                 <p className="font-profile-head">Tags</p>
                                 <Input type='select' multiple defaultValue={props.filter.filter.tags} onChange={e => tagsHandle(e)}>
+<<<<<<< HEAD
 >>>>>>> master
+=======
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                                     <option value="sport">sport</option>
                                     <option value="movie">movie</option>
                                     <option value="food">food</option>
@@ -307,6 +426,7 @@ function Filter(props) {
                             </Col>
                         </Row>
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                         <Row className="mt-2">
                             <Col xs={12} className="mb-1">
@@ -324,6 +444,10 @@ function Filter(props) {
                         <ModalFooter className="d-flex justify-content-between align-items-center">
                             <Button color="success" className={isValidInput ? '' : 'disabled-button'} onClick={() => { toggleModal(); props.filter.setFilterStatus('active') }}>Save</Button>
 >>>>>>> master
+=======
+                        <ModalFooter className="d-flex justify-content-between align-items-center">
+                            <Button color="success" className={isValidInput ? '' : 'disabled-button'} onClick={() => { toggleModal(); props.filter.setFilterStatus('active') }}>Save</Button>
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                             <Button color="secondary" onClick={toggleModal}>Cancel</Button>
                         </ModalFooter>
                     </ModalBody>
@@ -350,6 +474,7 @@ function TagsList(props) {
 
 function UserCards(props) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     // if (props.cards.length > 0) {
     const listCards = props.cards.map((card, item) =>
         <Col md={4} key={item}>
@@ -371,9 +496,35 @@ function UserCards(props) {
             </Card>
         </Col>
     );
+=======
+    let listItems;
+    if (props.cards) {
+        listItems = props.cards.map((card, item) =>
+            <Col md={4} key={item}>
+                <Card className="mb-4">
+                    <CardImg width="100%" top src={`/api/user/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
+                    <CardBody>
+                        <CardTitle>
+                            {card.nickname} <Badge color="danger" pill> {card.rate} </Badge>
+                        </CardTitle>
+                        <ListGroup flush>
+                            <ListGroupItem>{card.firstname} {card.lastname}, {card.age}</ListGroupItem>
+                            <ListGroupItem>{card.city}</ListGroupItem>
+                            <ListGroupItem>{card.sex}</ListGroupItem>
+                            <ListGroupItem>{card.sexpreferences}</ListGroupItem>
+                            <TagsList tags={card.tags} />
+                        </ListGroup>
+                        <Link to={`/users/${card.nickname}`} className="card-btn btn btn-secondary">Go to profile</Link>
+                    </CardBody>
+                </Card>
+            </Col>
+        );
+    }
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     return (
-        <Row>{listCards}</Row>
+        <Row>{listItems}</Row>
     );
+<<<<<<< HEAD
     // }
 =======
     let listItems;
@@ -403,6 +554,8 @@ function UserCards(props) {
         <Row>{listItems}</Row>
     );
 >>>>>>> master
+=======
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 }
 
 function CardsPagination(props) {
@@ -473,12 +626,33 @@ function CardsPagination(props) {
 
 const Users = (props) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     useEffect(() => {
         // console.log('nick', props.login.me.nickname);
         // console.log('page', props.match.params.page);
-        props.fetchUsersCard(props.login.me.nickname, props.match.params.page, props.filter.sortType);
-    }, [props.match.params.page, props.filter.sortType]);
+        const data = {
+            nickname: props.login.me.nickname,
+            page: props.match.params.page,
+            sort: props.filter.sortType,
+            ageFrom: props.filter.ageFrom,
+            ageTo: props.filter.ageTo,
+            rateFrom: props.filter.rateFrom,
+            rateTo: props.filter.rateTo,
+            sex: props.filter.sex,
+            tags: props.filter.tags,
+            location: props.filter.location
+        }
+
+        if (data.page > 0) {
+            props.fetchAllUsers(data);
+            props.fetchUsersCard(data);
+        }
+    }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
     // props.login.me.nickname
+<<<<<<< HEAD
     console.log('info', props.filter);
 =======
 
@@ -507,6 +681,10 @@ const Users = (props) => {
 
     // console.log('users', props);
 >>>>>>> master
+=======
+
+    // console.log('users', props);
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
     // console.log(props.match.params.page);
 
     if (props.filter.isLoading) {
@@ -529,10 +707,14 @@ const Users = (props) => {
             <section className="users">
                 <Container>
 <<<<<<< HEAD
+<<<<<<< HEAD
                     <Filter setSort={props.setSort} sortType={props.filter.sortType}/>
 =======
                     <Filter filter={props} />
 >>>>>>> master
+=======
+                    <Filter filter={props} />
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                     <UserCards cards={props.filter.info} />
                     <CardsPagination allUsers={props.filter.allUsersCount} />
                 </Container>
@@ -543,9 +725,13 @@ const Users = (props) => {
         return (
             <Container>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                  <Filter filter={props} />
 >>>>>>> master
+=======
+                 <Filter filter={props} />
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                 <h2>Not</h2>
             </Container>
         );

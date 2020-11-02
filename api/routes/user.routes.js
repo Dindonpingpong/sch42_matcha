@@ -2,8 +2,12 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
+<<<<<<< HEAD
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, 
     getRemind, changePass, getCountCards, addConfirmHash, getConfirmHash, userDel, confirmUser, updateGeo, getCities, getCountires } = require('../models/user');
+=======
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, getCountCards } = require('../models/user');
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -847,15 +851,21 @@ router.post('/users/page', async (req, res) => {
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
+<<<<<<< HEAD
             : `AND sex = '${sex}' `;
+=======
+            : `AND sex = ${sex} `;
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $3`;
 
+<<<<<<< HEAD
         // console.log(params, sqlSort, sqlSortTags, sqlFilter);
+=======
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
@@ -892,7 +902,11 @@ router.post('/users/count/pages', async (req, res) => {
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
+<<<<<<< HEAD
             : `AND sex = '${sex}' `;
+=======
+            : `AND sex = ${sex} `;
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
         sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $2`;
@@ -929,6 +943,7 @@ router.post('/users/count/pages', async (req, res) => {
     }
 })
 
+<<<<<<< HEAD
 router.post('/confirm', async (req, res) => {
     const { nickname, hash } = req.body;
     const time = new Date();
@@ -1025,3 +1040,6 @@ router.post('/cities', async (req, res) => {
 })
 
 module.exports = router;
+=======
+module.exports = router
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716

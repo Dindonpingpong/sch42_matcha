@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
+<<<<<<< HEAD
 import { useParams, withRouter } from 'react-router-dom';
+=======
+import { withRouter } from 'react-router-dom';
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
 import { connect } from 'react-redux';
 import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
 import { NavLink } from 'reactstrap';
@@ -127,8 +131,13 @@ function Login(props) {
         <Row>
             <Col md={6} className="m-auto">
                 {
+<<<<<<< HEAD
                     (props.login.errMsg || msg) &&
                 <Alert color='danger' >{props.login.errMsg}{msg}</Alert>
+=======
+                    props.login.errMsg &&
+                    <Alert color='danger' >{props.login.errMsg}</Alert>
+>>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                 }
                 <form >
                     <LoginInput setLogin={props.setLogin} />
