@@ -354,10 +354,14 @@ function Filter(props) {
                                 <p className="font-profile-head">Sex</p>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 <Input type='select'>
                                     <option value="famale">Female</option>
 =======
                                 <Input type='select' defaultValue='both' onChange={e => props.filter.setSex(e.target.value)}>
+=======
+                                <Input type='select' defaultValue={props.filter.filter.sex} onChange={e => props.filter.setSex(e.target.value)}>
+>>>>>>> master
                                     <option value="female">Female</option>
 >>>>>>> master
 =======
@@ -561,10 +565,29 @@ function UserCards(props) {
 function CardsPagination(props) {
     const countPages = Math.ceil(props.allUsers / 6);
 
+    console.log(props.getPage);
     if (countPages > 1) {
-        let pages = [];
-        for (let i = 1; i <= countPages; i++) {
-            pages.push(i);
+        let count,
+            index,
+            pages = [];
+
+        if (props.getPage == 1) {
+            count = Number(props.getPage) + 2;
+            index = props.getPage;
+        }
+        else {
+            count = Number(props.getPage) + 1;
+            index = Number(props.getPage) - 1;
+        }
+
+        if (props.getPage == countPages) {
+            count = props.getPage;
+            index = Number(props.getPage) - 2;
+        }
+
+        console.log('here', count, index);
+        for (index; index <= count; index++) {
+            pages.push(index);
         }
 
         const listItems = pages.map((page, item) =>
@@ -593,31 +616,6 @@ function CardsPagination(props) {
                     </PaginationItem>
                 }
             </Pagination>
-            // <Pagination className="users-pagination">
-            /* <PaginationItem>
-                <PaginationLink first href="#" />
-            </PaginationItem>
-    
-            <PaginationItem>
-                <PaginationLink href="#">
-                    1
-        </PaginationLink>
-            </PaginationItem>
-    
-            <PaginationItem>
-                <PaginationLink href="#">
-                    2
-        </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-                <PaginationLink href="#">
-                    3
-        </PaginationLink>
-            </PaginationItem>
-            <PaginationItem>
-                <PaginationLink last href="#" />
-            </PaginationItem> */
-            // </Pagination>
         );
     }
     else
@@ -702,7 +700,7 @@ const Users = (props) => {
             </Container>
         );
     }
-        else if (props.filter.info != null) {
+    else if (props.filter.info != null) {
         return (
             <section className="users">
                 <Container>
@@ -716,7 +714,7 @@ const Users = (props) => {
                     <Filter filter={props} />
 >>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
                     <UserCards cards={props.filter.info} />
-                    <CardsPagination allUsers={props.filter.allUsersCount} />
+                    <CardsPagination getPage={props.match.params.page} allUsers={props.filter.allUsersCount} />
                 </Container>
             </section>
         );
@@ -726,12 +724,16 @@ const Users = (props) => {
             <Container>
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                  <Filter filter={props} />
 >>>>>>> master
 =======
                  <Filter filter={props} />
 >>>>>>> a28274185dd2cc451822b0947cdfce76bb759716
+=======
+                <Filter filter={props} />
+>>>>>>> master
                 <h2>Not</h2>
             </Container>
         );
