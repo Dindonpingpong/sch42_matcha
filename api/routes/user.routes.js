@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const { sign, getPassword, getOnlyPass, getEmail, getLogin, getProfile, getViews, getLikes, sendMessage,
     getMessage, getCards, getStatus, putImage, getImage, getTimeView, updateViewFailed, insertViewFailed,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass } = require('../models/user');
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation, insertRemind, getRemind, changePass, getCountCards } = require('../models/user');
 const bcrypt = require('bcrypt');
 const multer = require('multer');
 const upload = multer({ dest: "uploads" });
@@ -751,21 +751,36 @@ router.post('/users/page', async (req, res) => {
         // const page = (req.body.page * 6);
         // const sort = req.body.sort;
 
-        const { nickname, page, sort } = req.body;
-        let sqlSort
+        const { nickname, page, sort, ageFrom, ageTo, rateFrom, rateTo, sex, tags, location } = req.body;
+        let sqlSort = '',
+            sqlFilter = '',
+            sqlSortTags = '',
+            limit = page * 6,
+            params = [nickname, limit, tags];
 
         if (sort === 'ageAsc' || sort === 'ageDesc')
-            sqlSort = (sort === 'ageAsc') ? 'age ASC, rate DESC, count DESC' : 'age DESC, rate DESC, count DESC';
+            sqlSort = (sort === 'ageAsc') ? 'age ASC, count DESC, rate DESC' : 'age DESC, count DESC, rate DESC';
         else if (sort === 'rateAsc' || sort === 'rateDesc')
             sqlSort = (sort === 'rateAsc') ? 'rate ASC, age ASC, count DESC' : 'rate DESC, age ASC, count DESC';
-        else if (sort === 'tagsAsc' || sort === 'tagsDesc')
-            sqlSort = (sort === 'tagsAsc') ? 'count ASC, rate DESC, age ASC' : 'count DESC, rate DESC, age ASC';
-        // if (sort === 'locationAsc' || sort === 'locationDesc')
-        //     let sqlSort = (sort === 'ageAsc') ? 'age ASC, rate DESC, count DESC' : 'age DESC, rate DESC, count DESC';
+        else if (sort === 'tagsAsc' || sort === 'tagsDesc') {
+            sqlSort = (sort === 'tagsAsc') ? 'rate DESC, age ASC' : 'rate DESC, age ASC';
+            sqlSortTags = (sort === 'tagsAsc')
+                ? 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact ORDER BY COUNT(t.tags) ASC, t.tags ASC'
+                : 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact ORDER BY COUNT(t.tags) DESC';
+        }
+        if (sort === 'locationAsc' || sort === 'locationDesc')
+            sqlSort = (sort === 'locationAsc') ? 'location ASC, age ASC, rate DESC, count DESC' : 'location DESC, age ASC, rate DESC, count DESC';
 
-        getCards([nickname, page], sqlSort)
+        // тут проверку на A > B?
+        sqlFilter = (sex === 'both')
+            ? "AND (sex = 'female' OR sex = 'male') "
+            : `AND sex = ${sex} `;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
+        if (tags.length > 0)
+            sqlFilter += `AND tags @> $3`;
+
+        getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
@@ -786,6 +801,52 @@ router.post('/users/page', async (req, res) => {
                 })
             })
     } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/users/count/pages', async (req, res) => {
+    try {
+        const { nickname, ageFrom, ageTo, rateFrom, rateTo, sex, tags } = req.body;
+        let sqlFilter = '',
+            params = [nickname, tags];
+
+        // тут проверку на A > B?
+        sqlFilter = (sex === 'both')
+            ? "AND (sex = 'female' OR sex = 'male') "
+            : `AND sex = ${sex} `;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
+        if (tags.length > 0)
+            sqlFilter += `AND tags @> $2`;
+        // console.log(tags);
+
+        getCountCards(params, sqlFilter)
+            .then(data => {
+                if (data.length > 0) {
+                    res.status(200).json({
+                        result: data.length,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        message: "No users",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                console.log(e.message);
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        console.log(e.message);
         res.status(500).json({
             message: e.message,
             success: false

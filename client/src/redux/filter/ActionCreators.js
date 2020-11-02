@@ -3,7 +3,7 @@ import { request } from '../../util/http';
 
 export const filterStatus = (status) => ({
     type: ActionTypes.FILTER_ADD,
-    payload: status.result
+    status: status
 });
 
 export const filterLoading = () => ({
@@ -54,6 +54,10 @@ export const filterLocationAdd = (location) => ({
     location: location
 });
 
+export const setFilterStatus = (status) => (dispatch) => {
+    dispatch(filterStatus(status));
+}
+
 export const setAgeFrom = (ageFrom) => (dispatch) => {
     dispatch(filterAgeFromAdd(ageFrom));
 };
@@ -86,20 +90,6 @@ export const initFilter = () => (dispatch) => {
     dispatch(filterClear());
 };
 
-export const fetchFilter = (data) => (dispatch) => {
-    dispatch(filterLoading());
-
-    return request('/api/user/users/filter', data, 'POST')
-        .then(response => response.json())
-        .then(result => dispatch(filterStatus(result)))
-        .catch(error => dispatch(filterFailed(error.message)));
-}
-
-export const usersCardAdd = (info) => ({
-    type: ActionTypes.USERS_CARD_ADD,
-    payload: info.result
-});
-
 export const sortTypeAdd = (sortType) => ({
     type: ActionTypes.SORT_TYPE_ADD,
     sortType: sortType
@@ -109,19 +99,32 @@ export const setSort = (sortType) => (dispatch) => {
     dispatch(sortTypeAdd(sortType));
 };
 
-export const fetchUsersCard = (nickname, page, sort) => (dispatch) => {
+export const usersCardAdd = (info) => ({
+    type: ActionTypes.USERS_CARD_ADD,
+    payload: info.result
+});
+
+export const fetchUsersCard = (data) => (dispatch) => {
     dispatch(filterLoading());
-
-    const data = {
-        nickname: nickname,
-        page: page,
-        sort: sort
-    }
-
+    dispatch(setFilterStatus(null));
+    console.log('log', data);
     // console.log('data', data);
-    
     return request('/api/user/users/page', data, 'POST')
         .then(response => response.json())
         .then(result => dispatch(usersCardAdd(result)))
+        .catch(error => dispatch(filterFailed(error.message)));
+};
+
+export const countCardAdd = (count) => ({
+    type: ActionTypes.COUNT_CARD_ADD,
+    payload: count.result
+});
+
+export const fetchAllUsers = (data) => (dispatch) => {
+    dispatch(filterLoading());
+    // console.log('log', nickname);
+    return request('/api/user/users/count/pages', data, 'POST')
+        .then(response => response.json())
+        .then(result => dispatch(countCardAdd(result)))
         .catch(error => dispatch(filterFailed(error.message)));
 };
