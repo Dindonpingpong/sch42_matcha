@@ -257,7 +257,7 @@ function TagsList(props) {
 
 function UserCards(props) {
     let listItems;
-    if (props.cards) {
+    if (props.cards.length > 0) {
         listItems = props.cards.map((card, item) =>
             <Col md={4} key={item}>
                 <Card className="mb-4">
@@ -380,7 +380,7 @@ const Users = (props) => {
     // console.log('users', props);
     // console.log(props.match.params.page);
 
-    if (props.filter.isLoading) {
+    if (props.filter.isLoading || props.filter.info === null) {
         return (
             <Loading />
         );

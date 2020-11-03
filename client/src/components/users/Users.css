@@ -25,6 +25,10 @@
     width: 173px;
   }
   
+  .users .users-pagination ul {
+    justify-content: center;
+  }
+
   .users-pagination .page-link {
     color: #6c757d;
   }

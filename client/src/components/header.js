@@ -12,6 +12,7 @@ import { withRouter } from 'react-router-dom';
 import { logOut } from '../redux/login/ActionCreators';
 import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
+import { initFilter } from '../redux/filter/ActionCreators';
 
 const mapStateToProps = (state) => {
     return {
@@ -20,7 +21,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    logOut: () => dispatch(logOut())
+    logOut: () => dispatch(logOut()),
+    clearFilter: () => dispatch(initFilter())
 });
 
 const Header = (props) => {
@@ -62,7 +64,10 @@ const Header = (props) => {
                     }
                     {!urls.includes(path) &&
                         <NavItem>
-                            <NavLink href='/login' onClick={props.logOut}>
+                            <NavLink href='/login' onClick={() => {
+                                props.clearFilter();
+                                props.logOut();
+                            }}>
                                 {name}
                             </NavLink>
                         </NavItem>
