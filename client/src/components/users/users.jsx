@@ -362,7 +362,7 @@ const Users = (props) => {
             rateTo: props.filter.rateTo,
             sex: props.filter.sex,
             tags: props.filter.tags,
-            location: props.filter.location
+            distance: props.filter.distance
         }
 
         if (data.page > 0) {

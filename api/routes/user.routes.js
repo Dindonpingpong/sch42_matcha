@@ -824,7 +824,7 @@ router.post('/users/page', async (req, res) => {
         // const page = (req.body.page * 6);
         // const sort = req.body.sort;
 
-        const { nickname, page, sort, ageFrom, ageTo, rateFrom, rateTo, sex, tags, location } = req.body;
+        const { nickname, page, sort, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
         let sqlSort = '',
             sqlFilter = '',
             sqlSortTags = '',
@@ -842,13 +842,13 @@ router.post('/users/page', async (req, res) => {
                 : 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact ORDER BY COUNT(t.tags) DESC';
         }
         if (sort === 'locationAsc' || sort === 'locationDesc')
-            sqlSort = (sort === 'locationAsc') ? 'location ASC, age ASC, rate DESC, count DESC' : 'location DESC, age ASC, rate DESC, count DESC';
+            sqlSort = (sort === 'locationAsc') ? 'distance ASC, age ASC, rate DESC, count DESC' : 'distance DESC, age ASC, rate DESC, count DESC';
 
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
             : `AND sex = '${sex}' `;
-        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance}`;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $3`;
 
@@ -868,13 +868,15 @@ router.post('/users/page', async (req, res) => {
                     })
             })
             .catch((e) => {
-                res.status(500).json({
+                console.log('1',e.message);
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        res.status(500).json({
+        console.log('2',e.message);
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -883,7 +885,7 @@ router.post('/users/page', async (req, res) => {
 
 router.post('/users/count/pages', async (req, res) => {
     try {
-        const { nickname, ageFrom, ageTo, rateFrom, rateTo, sex, tags } = req.body;
+        const { nickname, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
         let sqlFilter = '',
             params = [nickname, tags];
 
@@ -891,10 +893,9 @@ router.post('/users/count/pages', async (req, res) => {
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
             : `AND sex = '${sex}' `;
-        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} `;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance}`;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $2`;
-        // console.log(tags);
 
         getCountCards(params, sqlFilter)
             .then(data => {
@@ -912,15 +913,15 @@ router.post('/users/count/pages', async (req, res) => {
                     })
             })
             .catch((e) => {
-                console.log(e.message);
-                res.status(500).json({
+                console.log('21',e.message);
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        console.log(e.message);
-        res.status(500).json({
+        console.log('23',e.message);
+        res.status(200).json({
             message: e.message,
             success: false
         })
