@@ -126,7 +126,7 @@ function LikesList(props) {
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
-                        <Media object src={`/api/user/image/${like.nickname}/1/${like.photos}`} alt={`Profile photo ${like.nickname}`} />
+                        <Media object src={`/api/image/${like.nickname}/1/${like.photos}`} alt={`Profile photo ${like.nickname}`} />
                     </Media>
                     <Media body className="ml-4">
                         <Media heading>{like.nickname}, {like.age}</Media>
