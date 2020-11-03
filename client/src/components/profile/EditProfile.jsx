@@ -162,8 +162,6 @@ const EditProfile = (props) => {
     const [isActiveBtn, toggleBtn] = useState(true);
 
     const handleSubmit = () => {
-        // const [nickname, firstname, lastname, email, datebirth, about, sex, sexpreferences, tags, newpass] = props.edit;
-
         const data = {
             nickname: props.edit.nickname,
             firstname: props.edit.firstname,

@@ -633,6 +633,15 @@ router.post('/edit/tags/:nickname', async (req, res) => {
 
 router.post('/edit/location/:nickname', async (req, res) => {
     const login = req.params.nickname;
+
+    if (req.body.coords === null) {
+        res.status(200).json({
+            message: "Nothing",
+            success: true
+        })
+        return;
+    }
+
     const { x, y } = req.body.coords;
 
     fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY}&format=json&geocode=${y},${x}`)
@@ -848,7 +857,7 @@ router.post('/users/page', async (req, res) => {
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
             : `AND sex = '${sex}' `;
-        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance}`;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $3`;
 
@@ -868,14 +877,12 @@ router.post('/users/page', async (req, res) => {
                     })
             })
             .catch((e) => {
-                console.log('1',e.message);
                 res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        console.log('2',e.message);
         res.status(200).json({
             message: e.message,
             success: false
@@ -893,7 +900,7 @@ router.post('/users/count/pages', async (req, res) => {
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
             : `AND sex = '${sex}' `;
-        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance}`;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance} `;
         if (tags.length > 0)
             sqlFilter += `AND tags @> $2`;
 
@@ -913,14 +920,12 @@ router.post('/users/count/pages', async (req, res) => {
                     })
             })
             .catch((e) => {
-                console.log('21',e.message);
                 res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        console.log('23',e.message);
         res.status(200).json({
             message: e.message,
             success: false

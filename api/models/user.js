@@ -254,7 +254,7 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM
     (SELECT UNNEST (array_cat(
-    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (myId('rkina'))),
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = myId($1)),
     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
@@ -278,7 +278,8 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     AND location[2] = myCity($1)
     ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($2 - 6)`;
-
+console.log(params);
+console.log(sql);
   return db.any(sql, params);
 }
 
@@ -289,7 +290,7 @@ const getCountCards = (params, sqlFilter) => {
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM
     (SELECT UNNEST (array_cat(
-    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (myId('rkina'))),
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (myId($1))),
     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
