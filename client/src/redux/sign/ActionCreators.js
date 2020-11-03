@@ -90,7 +90,7 @@ export const setDate = (date) => (dispatch) => {
 export const fetchRegister = (data) => (dispatch) => {
     dispatch(formLoading());
 
-    return request('/api/user/register', data, 'POST')
+    return request('/api/register', data, 'POST')
         .then(res => res.json())
         .then(result => {
             if (result.success === true) {
@@ -105,7 +105,7 @@ export const fetchRegister = (data) => (dispatch) => {
                             longitude: result.lon,
                             latitude: result.lat
                         }
-                        request(`/api/user/register/location/${login}`, data, 'POST')
+                        request(`/api/register/location/${login}`, data, 'POST')
                             .then(res => res.json())
                             .then(result => {
                                 console.log(result);

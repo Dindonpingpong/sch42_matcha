@@ -113,7 +113,7 @@ function Login(props) {
             hash: hash
         };
 
-        request('/api/user/confirm', data, "POST")
+        request('/api/remind/confirm', data, "POST")
             .then(res => res.json())
             .then((result) => {
                 setMsg(result.msg)

@@ -55,7 +55,7 @@ function PhotoList(props) {
             }
             let formData = new FormData();
             formData.append('photo', file);
-            request(`/api/user/image/${props.me}/${item}`, formData, 'POST', 'image')
+            request(`/api/image/${props.me}/${item}`, formData, 'POST', 'image')
                 .then(data => {
                     if (data)
                         props.fetchProfile(props.me);
@@ -71,7 +71,7 @@ function PhotoList(props) {
         listItems = props.photos.map((photo, item) =>
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
-                    <CardImg src={`/api/user/image/${props.me}/${item + 1}/${photo[1]}`} alt={"Photo profile"} />
+                    <CardImg src={`/api/image/${props.me}/${item + 1}/${photo[1]}`} alt={"Photo profile"} />
                     {
                         props.check &&
                         <CardBody>
@@ -98,7 +98,7 @@ function ViewsList(props) {
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
                     <Media left middle>
-                        <Media object src={`/api/user/image/${view.nickname}/1/${view.photos}`} alt={`Profile photo ${view.nickname}`} />
+                        <Media object src={`/api/image/${view.nickname}/1/${view.photos}`} alt={`Profile photo ${view.nickname}`} />
                     </Media>
                     <Media body className="ml-4">
                         <Media heading>{view.nickname}, {view.age}</Media>
@@ -238,7 +238,7 @@ const Profile = (props) => {
                         <Col className="col-lg-3">
                             {
                                 props.profile.info.photos &&
-                                <img src={`/api/user/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
+                                <img src={`/api/image/${props.profile.info.nickname}/1/${props.profile.info.photos[0][1]}`} alt={`Avatar ${props.profile.info.nickname}`} className="mx-auto d-block profile-avatar rounded-circle" />
                             }
                         </Col>
                         <Col ls="9" className="font-profile-head">

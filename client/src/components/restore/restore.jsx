@@ -57,7 +57,7 @@ const Restore = () => {
             email: email,
             hash: hash
         }
-        request('/api/user/remind/check', data, 'POST')
+        request('/api/remind/check', data, 'POST')
             .then((res) => res.json())
             .then((res) => {
                 setLoading(false);
@@ -83,7 +83,7 @@ const Restore = () => {
             password: newPass
         }
 
-        request('/api/user/remind/restore', data, 'POST')
+        request('/api/remind/restore', data, 'POST')
             .then((res) => res.json())
             .then( (res) => setMsg(res.message));
     }

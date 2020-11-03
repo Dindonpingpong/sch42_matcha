@@ -101,17 +101,20 @@ function InputForm(props) {
 }
 
 function DistanceFrom(props) {
-
+    const [distance, setDistance] = useState(props.defaultValue);
 
     return (
         <Row className="mt-2">
             <Col xs={12} className="mb-1 slidecontainer">
                 <p className="font-profile-head">Location</p>
-                <p className="">Distance km</p>
+                <p className="">Distance {distance} km</p>
                 <Input
-                    className="mb-1 slider" defaultValue='0'
-                    type='range' min="0"
-                    max="1000" step="100" onChange={(e) => props.set(e.target.value)} />
+                    className="mb-1 slider" defaultValue={ props.defaultValue }
+                    type='range' min="50"
+                    max="1000" step="50" onChange={(e) => {
+                        props.set(e.target.value);
+                        setDistance(e.target.value);
+                        }} />
             </Col>
         </Row>
     )
@@ -148,8 +151,8 @@ function Filter(props) {
                             <option value="rateDesc">Rate ↓</option>
                             <option value="tagsAsc">Tags ↑</option>
                             <option value="tagsDesc">Tags ↓</option>
-                            <option value="locationAsc">Location A-Z</option>
-                            <option value="locationDesc">Location Z-A</option>
+                            <option value="locationAsc">Distance ↑</option>
+                            <option value="locationDesc">Distance ↓</option>
                         </Input>
                     </FormGroup>
                 </Col>
@@ -200,7 +203,7 @@ function Filter(props) {
                             </Col>
                         </Row>
 
-                        <DistanceFrom set={ props.filter.setDistance } />
+                        <DistanceFrom set={ props.filter.setDistance } defaultValue={ props.filter.filter.distance }/>
                         {/* <Row className="mt-2">
                             <Col xs={12} className="mb-1">
                                 <p className="font-profile-head">Location</p>
@@ -258,7 +261,7 @@ function UserCards(props) {
         listItems = props.cards.map((card, item) =>
             <Col md={4} key={item}>
                 <Card className="mb-4">
-                    <CardImg width="100%" top src={`/api/user/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
+                    <CardImg width="100%" top src={`/api/image/${card.nickname}/1/${card.photos}`} alt={`Profile photo ${card.nickname}`} />
                     <CardBody>
                         <CardTitle>
                             {card.nickname} <Badge color="danger" pill> {card.rate} </Badge>
@@ -354,6 +357,8 @@ const Users = (props) => {
         // console.log('page', props.match.params.page);
         const data = {
             nickname: props.login.me.nickname,
+            mySex: props.login.me.sex,
+            mySexpref: props.login.me.sexpreferences,
             page: props.match.params.page,
             sort: props.filter.sortType,
             ageFrom: props.filter.ageFrom,

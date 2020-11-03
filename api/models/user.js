@@ -250,24 +250,24 @@ const changePass = (params) => {
 const getCards = (params, sort, sortTags, sqlFilter) => {
   const sql = `
   SELECT * FROM (
-    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, photos[1][2], position <@> myPosition($1) as distance, sex, sexpreferences,
+    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <-> myPosition($1) as distance, photos[1][2], sex, sexpreferences,
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
-    (SELECT COUNT(u) - COUNT(DISTINCT u) FROM
-    (SELECT UNNEST (array_cat(
-    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = myId($1)),
+    (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
+    (SELECT UNNEST (array_cat( 
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = $1)),
     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'male' AND myPref($1) = 'heterosexual')
+        AND ($2 = 'male' AND $3 = 'heterosexual')
         THEN true
-        WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'female' AND myPref($1) = 'heterosexual')
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ($2 = 'female' AND $3 = 'heterosexual')
         THEN true
     WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'male' AND myPref($1) = 'homosexual')
+        AND ($2 = 'male' AND $3 = 'homosexual')
         THEN true
     WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'female' AND myPref($1) = 'homosexual')
+        AND ($2 = 'female' AND $3 = 'homosexual')
         THEN true
     ELSE NULL
     END AS contact
@@ -275,35 +275,30 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     WHERE nickName != $1
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
-    AND location[2] = myCity($1)
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
     ORDER BY ${sort}
-) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($2 - 6)`;
-console.log(params);
-console.log(sql);
+) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($4 - 6)`;
+      console.log(sql);
   return db.any(sql, params);
 }
 
 const getCountCards = (params, sqlFilter) => {
   const sql = `
   SELECT * FROM (
-    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, photos[1][2], position <@> myPosition($1) as distance, sex, sexpreferences,
+    SELECT nickName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <-> myPosition($1) as distance, sex, sexpreferences,
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
-    (SELECT COUNT(u) - COUNT(DISTINCT u) FROM
-    (SELECT UNNEST (array_cat(
-    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (myId($1))),
-    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'male' AND myPref($1) = 'heterosexual')
+        AND ($2 = 'male' AND $3 = 'heterosexual')
         THEN true
-        WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'female' AND myPref($1) = 'heterosexual')
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
+        AND ($2 = 'female' AND $3 = 'heterosexual')
         THEN true
     WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'male' AND myPref($1) = 'homosexual')
+        AND ($2 = 'male' AND $3 = 'homosexual')
         THEN true
     WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-        AND (mySex($1) = 'female' AND myPref($1) = 'homosexual')
+        AND ($2 = 'female' AND $3 = 'homosexual')
         THEN true
     ELSE NULL
     END AS contact
@@ -311,7 +306,7 @@ const getCountCards = (params, sqlFilter) => {
     WHERE nickName != $1
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
-    AND location[2] = myCity($1)
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
 ) t WHERE contact IS NOT NULL ${sqlFilter}`;
 
   return db.any(sql, params);

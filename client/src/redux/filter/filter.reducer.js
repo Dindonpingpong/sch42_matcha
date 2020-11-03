@@ -11,9 +11,8 @@ const initialState = {
     rateTo: 1000,
     sex: 'both',
     tags: [],
-    distance: null,
+    distance: 1000,
     allUsersCount: null,
-    allPagesCount: null,
     info: {}
 }
 

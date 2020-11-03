@@ -67,7 +67,7 @@ function InputFormWithFetch(props) {
     const [feedback, setFeedback] = useState('Oopsy');
 
     const checkExist = (name, value) => {
-        request(`/api/user/register/check/${name}/${value}`)
+        request(`/api/register/check/${name}/${value}`)
             .then(res => res.json())
             .then(
                 result => {

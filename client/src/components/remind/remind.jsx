@@ -13,7 +13,7 @@ const Remind = () => {
             email: email
         }
 
-        request('/api/user/remind', data, 'POST')
+        request('/api/remind', data, 'POST')
             .then(res => res.json())
             .then(res => {
                 setMsg('wow');
