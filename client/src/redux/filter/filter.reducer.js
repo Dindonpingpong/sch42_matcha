@@ -11,7 +11,7 @@ const initialState = {
     rateTo: 1000,
     sex: 'both',
     tags: [],
-    location: [],
+    distance: null,
     allUsersCount: null,
     allPagesCount: null,
     info: {}
@@ -50,8 +50,8 @@ export const FilterReducer = (state = initialState, action) => {
         case ActionTypes.FILTER_TAGS_ADD:
             return { ...state, isLoading: false, errMsg: null, tags: action.tags };
 
-        case ActionTypes.FILTER_LOCATION_ADD:
-            return { ...state, isLoading: false, errMsg: null, location: action.location };
+        case ActionTypes.FILTER_DISTANCE_ADD:
+            return { ...state, isLoading: false, errMsg: null, distance: action.distance };
 
         case ActionTypes.USERS_CARD_ADD:
             return { ...state, isLoading: false, errMsg: null, info: action.payload };

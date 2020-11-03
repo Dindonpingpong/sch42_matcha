@@ -8,7 +8,7 @@ import {
 } from 'reactstrap';
 import {
     fetchAllUsers, fetchUsersCard, setFilterStatus, initFilter,
-    setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setLocation, setSort
+    setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setDistance, setSort
 } from '../../redux/filter/ActionCreators';
 import { Loading } from '../Loading';
 import './Users.css'
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => ({
     setRateTo: (rateTo) => dispatch(setRateTo(rateTo)),
     setSex: (sex) => dispatch(setSex(sex)),
     setTags: (tags) => dispatch(setTags(tags)),
-    setLocation: (location) => dispatch(setLocation(location)),
+    setDistance: (location) => dispatch(setDistance(location)),
     setSort: (sortType) => dispatch(setSort(sortType))
 });
 
@@ -100,10 +100,26 @@ function InputForm(props) {
     )
 }
 
+function DistanceFrom(props) {
+
+
+    return (
+        <Row className="mt-2">
+            <Col xs={12} className="mb-1 slidecontainer">
+                <p className="font-profile-head">Location</p>
+                <p className="">Distance km</p>
+                <Input
+                    className="mb-1 slider" defaultValue='0'
+                    type='range' min="0"
+                    max="1000" step="100" onChange={(e) => props.set(e.target.value)} />
+            </Col>
+        </Row>
+    )
+}
+
 function Filter(props) {
     const [show, setModal] = useState(false);
     const toggleModal = () => setModal(!show);
-
     const [isValidInput, setStatusButton] = useState(true);
 
     const tagsHandle = (e) => {
@@ -184,14 +200,7 @@ function Filter(props) {
                             </Col>
                         </Row>
 
-                        <Row className="mt-2">
-                            <Col xs={12} className="mb-1 slidecontainer">
-                                <p className="font-profile-head">Location</p>
-                                <p className="">Distance km</p>
-                                <Input className="mb-1 slider" type='range' min="0" max="1000" step="100" />
-                            </Col>
-                        </Row>
-
+                        <DistanceFrom set={ props.filter.setDistance } />
                         {/* <Row className="mt-2">
                             <Col xs={12} className="mb-1">
                                 <p className="font-profile-head">Location</p>
@@ -275,33 +284,39 @@ function UserCards(props) {
 function CardsPagination(props) {
     const countPages = Math.ceil(props.allUsers / 6);
 
-    console.log(props.getPage);
     if (countPages > 1) {
         let count,
             index,
-            pages = [];
+            pages = [],
+            currentPage = Number(props.getPage);
 
-        if (props.getPage == 1) {
-            count = Number(props.getPage) + 2;
-            index = props.getPage;
+        if (currentPage === 1 && countPages !== 2) {
+            count = currentPage + 2;
+            index = currentPage;
+        }
+        else if (currentPage === 1 && countPages === 2) {
+            count = currentPage + 1;
+            index = currentPage;
+        }
+        else if (currentPage === 2 && countPages === 2) {
+            count = currentPage;
+            index = currentPage - 1;
         }
         else {
-            count = Number(props.getPage) + 1;
-            index = Number(props.getPage) - 1;
+            count = currentPage + 1;
+            index = currentPage - 1;
+        }
+        if (currentPage === countPages && countPages !== 2) {
+            count = currentPage;
+            index = currentPage - 2;
         }
 
-        if (props.getPage == countPages) {
-            count = props.getPage;
-            index = Number(props.getPage) - 2;
-        }
-
-        console.log('here', count, index);
         for (index; index <= count; index++) {
             pages.push(index);
         }
 
         const listItems = pages.map((page, item) =>
-            <PaginationItem key={item} className={page == props.getPage ? 'active' : ''}>
+            <PaginationItem key={item} className={page === currentPage ? 'active-link' : ''}>
                 <PaginationLink href={`/users/page/${page}`}>
                     {page}
                 </PaginationLink>

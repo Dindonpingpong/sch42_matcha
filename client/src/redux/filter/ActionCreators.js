@@ -49,9 +49,9 @@ export const filterTagsAdd = (tags) => ({
     tags: tags
 });
 
-export const filterLocationAdd = (location) => ({
-    type: ActionTypes.FILTER_LOCATION_ADD,
-    location: location
+export const filterDistanceAdd = (distance) => ({
+    type: ActionTypes.FILTER_DISTANCE_ADD,
+    distance: distance
 });
 
 export const setFilterStatus = (status) => (dispatch) => {
@@ -82,8 +82,8 @@ export const setTags = (tags) => (dispatch) => {
     dispatch(filterTagsAdd(tags));
 };
 
-export const setLocation = (location) => (dispatch) => {
-    dispatch(filterLocationAdd(location));
+export const setDistance = (distance) => (dispatch) => {
+    dispatch(filterDistanceAdd(distance));
 };
 
 export const initFilter = () => (dispatch) => {

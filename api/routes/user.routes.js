@@ -852,10 +852,8 @@ router.post('/users/page', async (req, res) => {
         if (tags.length > 0)
             sqlFilter += `AND tags @> $3`;
 
-        // console.log(params, sqlSort, sqlSortTags, sqlFilter);
         getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,

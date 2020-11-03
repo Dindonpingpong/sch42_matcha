@@ -101,6 +101,26 @@ CREATE TABLE User_Reports (
     FOREIGN KEY (idReport) REFERENCES Reports (id)
 ); 
 
+CREATE OR REPLACE FUNCTION myId(login text) RETURNS integer 
+AS 'SELECT id FROM Users WHERE nickName = $1' 
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION mySex(login text) RETURNS sextype 
+AS 'SELECT sex FROM Users WHERE id = myId($1)' 
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION myPref(login text) RETURNS preferences 
+AS 'SELECT sexpreferences FROM Users WHERE id = myId($1)' 
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION myCity(login text) RETURNS text 
+AS 'SELECT location[2] FROM Users WHERE nickName = $1' 
+LANGUAGE SQL;
+
+CREATE OR REPLACE FUNCTION myPosition(login text) RETURNS point 
+AS 'SELECT position FROM Users WHERE nickName = $1' 
+LANGUAGE SQL;
+
 INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location, position, confirm) VALUES
     ('rkina', 'Dima', 'Ng', 'd_ng@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
     ('mgrass', 'nya', 'milk', 'nyamilk@yandex.ru', '1990-12-26', 'female', '$2b$10$9jPn1ZpuXtOCA3dmO4gkeuj5749pfppkjd4jb.jbKKrrZ38S08rLu' , ARRAY['Russia','Podolsk'], point(55.751244,37.618423), TRUE),

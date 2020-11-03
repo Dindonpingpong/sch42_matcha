@@ -279,8 +279,6 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($2 - 6)`;
 
-// console.log(sql);
-
   return db.any(sql, params);
 }
 
