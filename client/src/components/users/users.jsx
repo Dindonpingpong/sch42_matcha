@@ -109,12 +109,12 @@ function DistanceFrom(props) {
                 <p className="font-profile-head">Location</p>
                 <p className="">Distance {distance} km</p>
                 <Input
-                    className="mb-1 slider" defaultValue={ props.defaultValue }
+                    className="mb-1 slider" defaultValue={props.defaultValue}
                     type='range' min="50"
                     max="1000" step="50" onChange={(e) => {
                         props.set(e.target.value);
                         setDistance(e.target.value);
-                        }} />
+                    }} />
             </Col>
         </Row>
     )
@@ -203,7 +203,7 @@ function Filter(props) {
                             </Col>
                         </Row>
 
-                        <DistanceFrom set={ props.filter.setDistance } defaultValue={ props.filter.filter.distance }/>
+                        <DistanceFrom set={props.filter.setDistance} defaultValue={props.filter.filter.distance} />
                         {/* <Row className="mt-2">
                             <Col xs={12} className="mb-1">
                                 <p className="font-profile-head">Location</p>
@@ -268,7 +268,7 @@ function UserCards(props) {
                         </CardTitle>
                         <ListGroup flush>
                             <ListGroupItem>{card.firstname} {card.lastname}, {card.age}</ListGroupItem>
-                            <ListGroupItem>{card.city}</ListGroupItem>
+                            <ListGroupItem>{card.city} ({Math.floor(Number(card.distance))} km)</ListGroupItem>
                             <ListGroupItem>{card.sex}</ListGroupItem>
                             <ListGroupItem>{card.sexpreferences}</ListGroupItem>
                             <TagsList tags={card.tags} />

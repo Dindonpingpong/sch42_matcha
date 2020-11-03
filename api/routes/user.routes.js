@@ -355,6 +355,7 @@ router.post('/edit/:nickname', async (req, res) => {
     let params = [];
     let i = 1;
 
+    console.log(req.body);
     for (const [key, value] of Object.entries(req.body)) {
         if (value !== null && key !== 'newtags' && key !== 'newpass' && key !== 'oldtags' && key !== 'coords') {
             keys.push(`${key} = $${i++}`);
@@ -370,6 +371,7 @@ router.post('/edit/:nickname', async (req, res) => {
         }
     }
 
+    console.log(params);
     if (params.length === 0) {
         res.status(200).json({
             msg: 'wow',
@@ -380,7 +382,6 @@ router.post('/edit/:nickname', async (req, res) => {
 
     const que = keys.join(', ');
     params.push(login);
-
     editProfile(que, params, i)
         .then(data => {
             res.status(200).json({
@@ -550,7 +551,7 @@ router.post('/users/page', async (req, res) => {
 
         getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
-                console.log(data);
+                // console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
@@ -565,14 +566,14 @@ router.post('/users/page', async (req, res) => {
                     })
             })
             .catch((e) => {
-                console.log(e.message);
+                // console.log(e.message);
                 res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        console.log(e.message);
+        // console.log(e.message);
         res.status(200).json({
             message: e.message,
             success: false

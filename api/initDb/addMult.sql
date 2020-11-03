@@ -5,8 +5,8 @@ DO $$
     
     BEGIN
     WHILE COUNTER < 34 LOOP
-        INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, sexpreferences, password, location, position) VALUES
-        (concat('test', COUNTER), concat('test', COUNTER), concat('test', COUNTER), concat('test', COUNTER, '@test.ru'), '1965-02-23', 'male', 'heterosexual', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(48.94494123946116,13.309798732421875));
+        INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, sexpreferences, password, location, position, confirm) VALUES
+        (concat('test', COUNTER), concat('test', COUNTER), concat('test', COUNTER), concat('test', COUNTER, '@test.ru'), '1965-02-23', 'male', 'heterosexual', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(48.94494123946116,13.309798732421875), true);
         COUNTER := COUNTER + 1;
     END LOOP;
 

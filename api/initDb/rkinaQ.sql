@@ -142,6 +142,35 @@ SELECT * FROM (
 ) t WHERE contact IS NOT NULL AND (sex = 'female' OR sex = 'male') AND age > 18 AND age < 120 AND rate > 0 AND rate < 1000 AND distance <= 2000;
 
 
-INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location, position, confirm) VALUES
-    ('rkina123', 'Dima', 'Ng', 'd_nfdsag@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
-    ('rkina12341', 'Dima', 'Ng', 'd_nfdsag@mail.ru', '1998-07-03', 'male', '$2b$10$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE)
+SELECT * FROM (
+    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <-> myPosition('test6') as distance, photos[1][2], sex, sexpreferences,      
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
+    (SELECT COUNT(u) - COUNT(DISTINCT u) FROM
+    (SELECT UNNEST (array_cat(
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'test6')),
+    (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
+    CASE
+    WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
+        AND ('female' = 'male' AND 'heterosexual' = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex 
+= 'male' AND sexpreferences = 'bisexual')
+        AND ('female' = 'female' AND 'heterosexual' = 'heterosexual')
+        THEN true
+    WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 
+'male' AND sexpreferences = 'bisexual')
+        AND ('female' = 'male' AND 'heterosexual' = 'homosexual')
+        THEN true
+    WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex 
+= 'female' AND sexpreferences = 'bisexual')
+        AND ('female' = 'female' AND 'heterosexual' = 'homosexual')
+        THEN true
+    ELSE NULL
+    END AS contact
+    FROM Users
+    WHERE nickName != 'test6'
+    AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'test6')
+    AND status = 'ignore'), 0))
+    AND location[2] = (SELECT location[2] FROM Users WHERE nickName = 'test6')
+    ORDER BY distance DESC, age ASC, rate DESC, count DESC        
+) t WHERE contact IS NOT NULL AND (sex = 'female' OR sex = 'male') AND age > 18 AND age < 120 AND rate > 0 AND rate < 1000 AND distance <= 700;

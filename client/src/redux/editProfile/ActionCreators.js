@@ -56,7 +56,7 @@ export const editSexAdd = (sex) => ({
 
 export const editSexpreferenceAdd = (sexpreference) => ({
     type: ActionTypes.SEXPREFERENCES_ADD,
-    sexpreference: sexpreference
+    sexpreferences: sexpreference
 });
 
 export const editTagsAdd = (tags) => ({
