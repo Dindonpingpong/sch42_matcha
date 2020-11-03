@@ -122,6 +122,7 @@ function Geo(props) {
         <div>
             <p className="font-profile-head">Location</p>
             <YMaps
+                
                 enterprise
                 query={{
                     apikey: '74b2ed32-1340-405d-be18-ab91a877defe',
@@ -129,8 +130,7 @@ function Geo(props) {
             >
                 <div>
                     <Map
-                        width={500}
-                        height={300}
+                        className="profile-edit-map"
                         defaultState={{
                             center: [props.position.x, props.position.y],
                             zoom: 9,
@@ -262,7 +262,7 @@ const EditProfile = (props) => {
                     <option value="animal">Animal</option>
                 </Input>
 
-                <Geo position={props.profile.info.position} set={props.setGeo} editPos={props.edit.coords} checkBtn={checkBtn}/>
+                <Geo position={props.profile.info.position} set={props.setGeo} editPos={props.edit.coords} checkBtn={checkBtn} />
 
                 <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
                 <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />

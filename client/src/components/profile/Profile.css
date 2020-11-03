@@ -125,3 +125,9 @@ h2 {
 .profile-edit select {
   width: 100%;
 }
+
+.profile-edit-map {
+  margin-top: 10px;
+  width: 100%;
+  height: 300px;
+}
