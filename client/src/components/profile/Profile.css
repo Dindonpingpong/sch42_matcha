@@ -131,3 +131,7 @@ h2 {
   width: 100%;
   height: 300px;
 }
+
+.profile-tabs-item {
+  opacity: .5;
+}

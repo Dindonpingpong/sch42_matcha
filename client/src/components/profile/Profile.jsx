@@ -102,6 +102,11 @@ function ViewsList(props) {
                     <Media body className="ml-4">
                         <Media heading>{view.nickname}, {view.age}</Media>
                         <p>{view.about}</p>
+                        <p className="profile-tabs-item">
+                            {new Intl.DateTimeFormat('en-US',
+                                { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+                                .format(new Date(Date.parse(view.visitime)))}
+                        </p>
                         <Link to={`/users/${view.nickname}`} className="btn btn-secondary">Go to profile</Link>
                     </Media>
                 </Media>
@@ -130,6 +135,11 @@ function LikesList(props) {
                     <Media body className="ml-4">
                         <Media heading>{like.nickname}, {like.age}</Media>
                         <p>{like.about}</p>
+                        <p className="profile-tabs-item">
+                            {new Intl.DateTimeFormat('en-US',
+                                { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric' })
+                                .format(new Date(Date.parse(like.time)))}
+                        </p>
                         <Link to={`/users/${like.nickname}`} className="btn btn-secondary">Go to profile</Link>
                     </Media>
                 </Media>

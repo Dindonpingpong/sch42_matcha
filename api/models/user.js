@@ -52,7 +52,7 @@ const getProfile = (nickname) => {
 
 const getViews = (nickname) => {
   const sql =
-    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1][2], u.about 
+    `SELECT u.nickName, date_part('year', age(u.dateBirth::date)) AS age, u.photos[1][2], u.about, h.visiTime 
     FROM Users u JOIN History h ON u.id = h.idvisitor 
     WHERE h.idvisited = 
     (SELECT id FROM Users WHERE nickName=$1)
