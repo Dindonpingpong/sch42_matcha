@@ -139,9 +139,10 @@ export const fetchEditProfile = (data, login) => (dispatch) => {
             request(`/api/user/edit/${login}`, data, 'POST')
                 .then(response => response.json())
                 .then(result => {
+                    console.log(result);
                     dispatch(fetchUpdateLogin(result.nickname))
                         .then(() => {
-                            dispatch(editProfileStatus(result.message));
+                            dispatch(editProfileStatus(result));
                         })
                 })
                 .catch(error => dispatch(editProfileFailed(error.message)));

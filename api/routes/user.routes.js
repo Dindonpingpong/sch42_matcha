@@ -20,19 +20,19 @@ router.post('/login', async (req, res) => {
                 if (len > 0)
                     check = bcrypt.compareSync(password, data[0].password);
 
-                if (data[0].count_reports > 3) {
-                    res.status(200).json({
-                        message: `Your account has been banned. If you want to get your account back, 
-                        please, contact to admin.`,
-                        success: false
-                    })
-                    return;
-                }
-                else if (len == 0 || check == false) {
+                if (len == 0 || check == false) {
                     res.status(200).json({
                         message: "Login or pass is incorrect",
                         success: false
                     })
+                }
+                else if (data[0].count_reports > 2) {
+                    res.status(200).json({
+                        message: `Your account has been banned. If you want to get your account back, 
+                                    please, contact to admin.`,
+                        success: false
+                    })
+                    return;
                 }
                 else if (!data[0].confirm) {
                     res.status(200).json({
@@ -231,10 +231,8 @@ router.post('/profile/status/update', async (req, res) => {
         const promise = (status === 'like' || status === 'ignore' || status === 'unlike') ? updateStatus([me, you, newStatus]) : insertStatus([me, you, newStatus]);
         let value = 10;
 
-        if (newStatus === 'unlike')
+        if (newStatus === 'unlike' || newStatus === 'ignore')
             value = -10;
-        else if (newStatus === 'ignore')
-            value = -5;
 
         promise
             .then(data => {
@@ -345,6 +343,7 @@ router.post('/edit/:nickname', async (req, res) => {
     if (params.length === 0) {
         res.status(200).json({
             msg: 'wow',
+            nickname: login,
             success: true
         })
         return;

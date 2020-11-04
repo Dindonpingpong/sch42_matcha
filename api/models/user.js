@@ -278,7 +278,8 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
     AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
-    ORDER BY ${sort} AND count_reports < 3
+    AND count_reports < 3
+    ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($4 - 6)`;
       
   return db.any(sql, params);
