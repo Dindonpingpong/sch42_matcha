@@ -223,7 +223,7 @@ function Filter(props) {
                             </Col>
                         </Row>
 
-                        <ModalFooter className="d-flex justify-content-between align-items-center">
+                        <ModalFooter className="justify-content-between">
                         <Button
                                 color="success"
                                 className={isValidInput ? '' : 'disabled-button'}
