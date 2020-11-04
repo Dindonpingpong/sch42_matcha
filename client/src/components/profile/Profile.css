@@ -104,6 +104,10 @@ h2 {
     overflow-x: hidden;
 }
 
+.alert-info {
+  margin: 0 auto;
+}
+
 /* edit */
 .profile-edit .align-items-center {
   padding-top: 20px;
@@ -134,4 +138,8 @@ h2 {
 
 .profile-tabs-item {
   opacity: .5;
+}
+
+.modal-content .modal-body > *{
+  margin-top: 15px;
 }

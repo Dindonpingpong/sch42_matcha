@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { getPassword, getProfile, getViews, getLikes,
     getCards, getStatus, getTimeView, updateViewFailed, insertViewFailed,
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
-    getCountCards, getCities, getCountires, getInfoLogin } = require('../models/user');
+    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -20,7 +20,15 @@ router.post('/login', async (req, res) => {
                 if (len > 0)
                     check = bcrypt.compareSync(password, data[0].password);
 
-                if (len == 0 || check == false) {
+                if (data[0].count_reports > 3) {
+                    res.status(200).json({
+                        message: `Your account has been banned. If you want to get your account back, 
+                        please, contact to admin.`,
+                        success: false
+                    })
+                    return;
+                }
+                else if (len == 0 || check == false) {
                     res.status(200).json({
                         message: "Login or pass is incorrect",
                         success: false
@@ -40,6 +48,12 @@ router.post('/login', async (req, res) => {
                         success: true
                     })
                 }
+            })
+            .catch((e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
+                })
             })
     } catch (e) {
         res.status(200).json({
@@ -61,7 +75,7 @@ router.get('/login/:nickname', async (req, res) => {
                     success: true
                 })
             })
-            .catch( (e) => {
+            .catch((e) => {
                 res.status(200).json({
                     message: e.message,
                     success: false
@@ -95,13 +109,13 @@ router.get('/profile/:nickname', async (req, res) => {
                     })
             })
             .catch((e) => {
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -129,13 +143,13 @@ router.get('/profile/views/:nickname', async (req, res) => {
                     })
             })
             .catch((e) => {
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -163,13 +177,13 @@ router.get('/profile/likes/:nickname', async (req, res) => {
                     })
             })
             .catch((e) => {
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -197,14 +211,14 @@ router.post('/profile/status', async (req, res) => {
                     })
             })
             .catch((e) => {
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     }
     catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -214,46 +228,43 @@ router.post('/profile/status', async (req, res) => {
 router.post('/profile/status/update', async (req, res) => {
     try {
         const { me, you, status, newStatus } = req.body;
+        const promise = (status === 'like' || status === 'ignore' || status === 'unlike') ? updateStatus([me, you, newStatus]) : insertStatus([me, you, newStatus]);
+        let value = 10;
 
-        if (status === 'like' || status === 'ignore' || status === 'unlike') {
-            updateStatus([me, you, newStatus])
-                .then(data => {
-                    if (data)
-                        res.status(200).json({
-                            result: newStatus,
-                            message: "Ok",
-                            success: true
-                        });
-                })
-                .catch((e) => {
-                    res.status(500).json({
-                        message: e.message,
-                        success: false
-                    })
-                })
+        if (newStatus === 'unlike')
+            value = -10;
+        else if (newStatus === 'ignore')
+            value = -5;
 
-        }
-        else {
-            insertStatus([me, you, newStatus])
-                .then(data => {
-                    if (data) {
-                        res.status(200).json({
-                            result: newStatus,
-                            message: "Ok",
-                            success: true
-                        });
-                    }
+        promise
+            .then(data => {
+                if (data) {
+                    updateRate([value, you])
+                        .then((data) => {
+                            res.status(200).json({
+                                result: newStatus,
+                                message: "Ok",
+                                success: true
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
+            })
+            .catch((e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
                 })
-                .catch((e) => {
-                    res.status(500).json({
-                        message: e.message,
-                        success: false
-                    })
-                })
-        }
+            })
+
     }
     catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -277,7 +288,7 @@ router.post('/profile/view', async (req, res) => {
                                     });
                             })
                             .catch((e) => {
-                                res.status(500).json({
+                                res.status(200).json({
                                     message: e.message,
                                     success: false
                                 })
@@ -293,7 +304,7 @@ router.post('/profile/view', async (req, res) => {
                                     });
                             })
                             .catch((e) => {
-                                res.status(500).json({
+                                res.status(200).json({
                                     message: e.message,
                                     success: false
                                 })
@@ -303,7 +314,7 @@ router.post('/profile/view', async (req, res) => {
         }
     }
     catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -483,8 +494,8 @@ router.post('/users/page', async (req, res) => {
         else if (sort === 'tagsAsc' || sort === 'tagsDesc') {
             sqlSort = (sort === 'tagsAsc') ? 'rate DESC, age ASC' : 'rate DESC, age ASC';
             sqlSortTags = (sort === 'tagsAsc')
-                ? 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact, t.distance ORDER BY COUNT(t.tags) ASC, t.tags ASC'
-                : 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact, t.distance ORDER BY COUNT(t.tags) DESC';
+                ? 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact, t.distance, t.count_reports ORDER BY COUNT(t.tags) ASC, t.tags ASC'
+                : 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact, t.distance, t.count_reports ORDER BY COUNT(t.tags) DESC';
         }
         if (sort === 'locationAsc' || sort === 'locationDesc')
             sqlSort = (sort === 'locationAsc') ? 'distance ASC, age ASC, rate DESC, count DESC' : 'distance DESC, age ASC, rate DESC, count DESC';
@@ -596,6 +607,7 @@ router.get('/countries', async (req, res) => {
 
 router.post('/cities', async (req, res) => {
     const countries = req.body.countries;
+
     getCities([countries])
         .then((data) => {
             const result = [];
@@ -615,6 +627,35 @@ router.post('/cities', async (req, res) => {
                 success: false
             })
         })
+})
+
+router.post('/profile/report', async (req, res) => {
+    try {
+        const { me, you, reason, message } = req.body;
+
+        const p1 = insertReport([me, you, reason, message]);
+        const p2 = updateCountReports([you]);
+
+        Promise.all([p1, p2])
+            .then(() => {
+                res.status(200).json({
+                    message: "Ok",
+                    success: true
+                });
+            })
+            .catch((e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    }
+    catch (e) {
+        res.status(200).json({
+            message: e.message,
+            success: false
+        })
+    }
 })
 
 module.exports = router;

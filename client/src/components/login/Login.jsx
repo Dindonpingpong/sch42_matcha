@@ -9,6 +9,8 @@ import { isValidInput, isValidPassword } from '../../util/check';
 import { useHistory } from "react-router-dom";
 import { Loading } from '../Loading';
 import { request } from '../../util/http';
+import Info from '../info';
+
 
 const mapStateToProps = (state) => {
     return {
@@ -127,8 +129,12 @@ function Login(props) {
         <Row>
             <Col md={6} className="m-auto">
                 {
-                    (props.login.errMsg || msg) &&
-                <Alert color='danger' >{props.login.errMsg}{msg}</Alert>
+                    msg &&
+                    <Info message={msg} />
+                }
+                {
+                    props.login.errMsg && 
+                    <Info message={props.login.errMsg} isError={true} />
                 }
                 <form >
                     <LoginInput setLogin={props.setLogin} />

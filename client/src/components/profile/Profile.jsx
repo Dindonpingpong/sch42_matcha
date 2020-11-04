@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
-    Container, Row, Col, Nav, NavItem, NavLink, Card, CardImg, CardBody, TabContent, TabPane, Button, Media, Input, Label,
-    UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle
+    Alert, Container, Row, Col, Nav, NavItem, NavLink, Card, CardImg, CardBody, TabContent, TabPane, Button, Media, Input, Label,
+    UncontrolledButtonDropdown, DropdownMenu, DropdownItem, DropdownToggle, Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
-import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus, fetchUpdateView } from '../../redux/profile/ActionCreators';
+import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus, fetchUpdateView, fetchReport } from '../../redux/profile/ActionCreators';
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
 import { request } from '../../util/http';
@@ -27,7 +27,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchLike: (nickname) => dispatch(fetchLike(nickname)),
     fetchStatus: (me, you) => dispatch(fetchStatus(me, you)),
     fetchUpdateView: (me, you) => dispatch(fetchUpdateView(me, you)),
-    fetchUpdateStatus: (me, you, status, newStatus) => dispatch(fetchUpdateStatus(me, you, status, newStatus))
+    fetchUpdateStatus: (me, you, status, newStatus) => dispatch(fetchUpdateStatus(me, you, status, newStatus)),
+    fetchReport: (data) => dispatch(fetchReport(data))
 });
 
 function TagsList(props) {
@@ -155,6 +156,53 @@ function LikesList(props) {
         );
 }
 
+function Report(props) {
+    const [modal, setModal] = useState(false);
+    const [reason, setReason] = useState("pornography");
+    const [message, setMessage] = useState();
+
+    const toggleModal = () => setModal(!modal);
+
+    const reportSubmit = () => {
+        const data = {
+            me: props.me,
+            you: props.you,
+            reason: reason,
+            message: message
+        }
+        props.fetch(data);
+        setModal(!modal);
+    }
+
+    return (
+        <div>
+            <UncontrolledButtonDropdown>
+                <DropdownToggle caret></DropdownToggle>
+                <DropdownMenu>
+                    <DropdownItem onClick={toggleModal}>Report page</DropdownItem>
+                </DropdownMenu>
+            </UncontrolledButtonDropdown>
+            <Modal isOpen={modal}>
+                <ModalHeader>Report user</ModalHeader>
+                <ModalBody>
+                    <p>Please, let us know the reason why this user should be blocked:</p>
+                    <Input className="modal-item" type="select" onChange={e => setReason(e.target.value)}>
+                        <option value="pornography">Pornography</option>
+                        <option value="spam">Spam</option>
+                        <option value="offensive behavior">Offensive behavior</option>
+                        <option value="fraud">Fraud</option>
+                    </Input>
+                    <Input type="textarea" placeholder="Descride the reason for the report" rows={5} onChange={e => setMessage(e.target.value)} />
+                </ModalBody>
+                <ModalFooter className="justify-content-between">
+                    <Button color="success" onClick={reportSubmit} reason={reason} message={message} >Report</Button>{' '}
+                    <Button color="secondary" onClick={toggleModal}>Cancel</Button>
+                </ModalFooter>
+            </Modal>
+        </div>
+    );
+}
+
 function AsideButton(props) {
     const changeStatus = (e) => {
         if (e.target.value === 'like' || e.target.value === 'ignore' || e.target.value === 'unlike') {
@@ -185,14 +233,7 @@ function AsideButton(props) {
                     onClick={changeStatus}>
                     Ignore
                 </Button>
-                <UncontrolledButtonDropdown>
-                    <DropdownToggle caret></DropdownToggle>
-                    <DropdownMenu>
-                        <DropdownItem>Like</DropdownItem>
-                        <DropdownItem>Ignore</DropdownItem>
-                        <DropdownItem>Report page</DropdownItem>
-                    </DropdownMenu>
-                </UncontrolledButtonDropdown>
+                <Report onClick={changeStatus} me={props.me} you={props.you} fetch={props.fetchReport} />
             </Row>
         );
     }
@@ -231,6 +272,18 @@ const Profile = (props) => {
             </Container>
         );
     }
+    else if (props.profile.info != null && props.profile.info.count_reports > 2) {
+
+        return (
+            <section className="page-state">
+                <Container>
+                    <Row>
+                        <Alert color="info">This account has been banned.</Alert>
+                    </Row>
+                </Container>
+            </section>
+        );
+    }
     else if (props.profile.info != null) {
         const isMe = (props.login.me.nickname === props.match.params.nickname);
 
@@ -241,8 +294,9 @@ const Profile = (props) => {
                         status={props.profile.status}
                         me={props.login.me.nickname}
                         you={props.match.params.nickname}
-                        fetchUpdateStatus={props.fetchUpdateStatus} />
-
+                        fetchUpdateStatus={props.fetchUpdateStatus}
+                        fetchReport={props.fetchReport}
+                    />
                     <Row>
                         <Col className="col-lg-3">
                             {

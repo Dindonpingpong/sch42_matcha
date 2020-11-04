@@ -14,7 +14,7 @@ const sign = (params) => {
 
 const getPassword = (login) => {
   const sql =
-    `SELECT nickName, firstName, lastName, email, 
+    `SELECT nickName, firstName, lastName, email, count_reports, 
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
     dateBirth, sexPreferences, 
   sex, position, rate, about, photos, location, confirm, password 
@@ -42,7 +42,7 @@ const getLogin = (login) => {
 }
 
 const getProfile = (nickname) => {
-  const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
+  const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age, count_reports,
   sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, 
   (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
@@ -252,7 +252,7 @@ const changePass = (params) => {
 const getCards = (params, sort, sortTags, sqlFilter) => {
   const sql = `
   SELECT * FROM (
-    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <-> myPosition($1) as distance, photos[1][2], sex, sexpreferences,
+    SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <-> myPosition($1) as distance, photos[1][2], sex, sexpreferences, count_reports,
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
     (SELECT UNNEST (array_cat( 
@@ -278,7 +278,7 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = $1) 
     AND status = 'ignore'), 0))
     AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
-    ORDER BY ${sort}
+    ORDER BY ${sort} AND count_reports < 3
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($4 - 6)`;
       
   return db.any(sql, params);
@@ -288,7 +288,7 @@ const getCountCards = (params, sqlFilter) => {
   const sql = `
   SELECT * FROM (
     SELECT nickName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <-> myPosition($1) as distance, sex, sexpreferences,
-    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
+    (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags, count_reports,
     CASE
     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
         AND ($2 = 'male' AND $3 = 'heterosexual')
@@ -380,6 +380,37 @@ const getCountMessage = (params) => {
   return db.any(sql, params);
 }
 
+const insertReport = (params) => {
+  const sql = `INSERT INTO User_Reports (idFrom, idTo, idReport, message)
+  VALUES (
+    myId($1),
+    myId($2), 
+    (SELECT id FROM Reports WHERE report = $3), 
+    $4) 
+  RETURNING id`;
+
+  return db.one(sql, params);
+}
+
+const updateCountReports = (params) => {
+  const sql = `UPDATE Users 
+  SET count_reports = (count_reports + 1),
+  rate = rate - 50
+  WHERE nickName = $1
+  RETURNING count_reports`;
+
+  return db.one(sql, params);
+}
+
+const updateRate = (params) => {
+  const sql = `UPDATE Users 
+  SET rate = rate + $1
+  WHERE nickname = $2
+  RETURNING id`;
+
+  return db.one(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -417,3 +448,6 @@ exports.updateGeo = updateGeo;
 exports.getCountires = getCountires;
 exports.getCities = getCities; 
 exports.getCountMessage = getCountMessage;
+exports.insertReport = insertReport;
+exports.updateCountReports = updateCountReports;
+exports.updateRate = updateRate;

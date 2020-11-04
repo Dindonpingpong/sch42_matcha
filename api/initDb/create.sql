@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS Tags CASCADE;
 DROP TABLE IF EXISTS User_Tags CASCADE;
 DROP TABLE IF EXISTS Reports CASCADE;
 DROP TABLE IF EXISTS Report_Type CASCADE;
+DROP TABLE IF EXISTS User_Reports CASCADE;
 DROP TYPE IF EXISTS sexType;
 CREATE TYPE sexType AS ENUM ('male', 'female');
 DROP TYPE IF EXISTS preferences;
@@ -29,12 +30,13 @@ CREATE TABLE  Users (
     remindTime timestamp,
     sexPreferences preferences DEFAULT 'bisexual', 
     sex sexType NOT NULL,
-    rate int DEFAULT 500,
+    rate int DEFAULT 500 CHECK (rate >= 0 AND rate <= 1000),
     about text DEFAULT 'About me...',
     -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
     location text[2],
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
+    count_reports int DEFAULT 0,
     PRIMARY KEY (id)
 );
 

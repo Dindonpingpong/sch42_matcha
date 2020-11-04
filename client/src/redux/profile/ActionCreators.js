@@ -128,3 +128,16 @@ export const fetchUpdateView = (me, you) => (dispatch) => {
         .then(response => response.json())
         .catch(error => dispatch(updateViewFailed(error.message)));
 };
+
+export const fetchReport = (data) => (dispatch) => {
+    //dispatch(profileLoading());
+    return request('/api/user/profile/report', data, 'POST')
+        .then(res => res.json())
+        .then(response => {
+            if (response.success)
+                console.log("OK") ////////!!!!!!!!!!!!! ФИДБЭК!
+            else
+                dispatch(statusFailed(response.message))
+        })
+        .catch(error => dispatch(statusFailed(error.message)));
+};
