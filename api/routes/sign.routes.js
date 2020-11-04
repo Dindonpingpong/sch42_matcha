@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const { sign, getOnlyPass, getEmail, getLogin, insertLocation, addConfirmHash } = require('../models/user');
+const { sign, getOnlyPass, getEmail, getLogin, insertLocation, 
+    addConfirmHash, getConfirmHash, userDel, confirmUser } = require('../models/user');
 const bcrypt = require('bcrypt');
 const { sendMail } = require('../util/mail');
 
@@ -162,6 +163,56 @@ router.post('/location/:nickname', async (req, res) => {
                     message: "Ooopsy",
                     success: false
                 })
+            }
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
+})
+
+router.post('/confirm', async (req, res) => {
+    const { nickname, hash } = req.body;
+    const time = new Date();
+
+    getConfirmHash([nickname])
+        .then((data) => {
+            if (data[0].confirmhash) {
+                const trueHash = data[0].confirmhash;
+                const oldTime = data[0].created_at_user;
+
+                if (time.getDate() !== oldTime.getDate() || hash !== trueHash) {
+                    userDel([nickname])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Your confirm link is time out",
+                                success: false
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
+                else {
+                    confirmUser([nickname])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Cool! Welcome to",
+                                success: true
+                            })
+                        })
+                        .catch((e) => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
+                            })
+                        })
+                }
             }
         })
         .catch((e) => {

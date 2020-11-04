@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
     Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Card, CardBody, CardImg, CardTitle, Badge,
@@ -121,8 +121,11 @@ function DistanceFrom(props) {
 }
 
 function Filter(props) {
+    const history = useHistory();
+
     const [show, setModal] = useState(false);
     const toggleModal = () => setModal(!show);
+    
     const [isValidInput, setStatusButton] = useState(true);
 
     const tagsHandle = (e) => {
@@ -204,15 +207,6 @@ function Filter(props) {
                         </Row>
 
                         <DistanceFrom set={props.filter.setDistance} defaultValue={props.filter.filter.distance} />
-                        {/* <Row className="mt-2">
-                            <Col xs={12} className="mb-1">
-                                <p className="font-profile-head">Location</p>
-                                <Input type='select' multiple>
-                                    <option value="Moscow">Moscow</option>
-                                    <option value="Podolsk">Podolsk</option>
-                                </Input>
-                            </Col>
-                        </Row> */}
 
                         <Row className="mt-2">
                             <Col xs={12} className="mb-1">
@@ -230,7 +224,12 @@ function Filter(props) {
                         </Row>
 
                         <ModalFooter className="d-flex justify-content-between align-items-center">
-                            <Button color="success" className={isValidInput ? '' : 'disabled-button'} onClick={() => { toggleModal(); props.filter.setFilterStatus('active') }}>Save</Button>
+                        <Button
+                                color="success"
+                                className={isValidInput ? '' : 'disabled-button'}
+                                onClick={() => { toggleModal(); props.filter.setFilterStatus('active'); history.push('/users/page/1') }}>
+                                Save
+                            </Button>
                             <Button color="secondary" onClick={toggleModal}>Cancel</Button>
                         </ModalFooter>
                     </ModalBody>

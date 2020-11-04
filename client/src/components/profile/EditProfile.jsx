@@ -6,7 +6,6 @@ import { Container, Input, Button, FormFeedback, Alert } from 'reactstrap';
 import { isValidInput } from '../../util/check';
 import { request } from '../../util/http';
 import { Loading } from '../Loading';
-import { fetchUpdateLogin } from '../../redux/login/ActionCreators';
 import moment from 'moment';
 import { YMaps, Map, Placemark, ZoomControl, GeolocationControl } from 'react-yandex-maps';
 import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword, setCoords } from '../../redux/editProfile/ActionCreators';
@@ -20,7 +19,6 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchUpdateLogin: (login) => dispatch(fetchUpdateLogin(login)),
     clearForm: () => dispatch(initFormEdit()),
     fetchEditProfile: (data, login) => dispatch(fetchEditProfile(data, login)),
     setLogin: (login) => dispatch(setLogin(login)),
@@ -47,7 +45,7 @@ function InputForm(props) {
             toggleValid('is-valid');
 
             if (name === 'email' || name === 'login') {
-                request(`/api/user/register/check/${name}/${value}`)
+                request(`/api/register/check/${name}/${value}`)
                     .then(res => res.json())
                     .then(result => {
                         if (result.success === true) {
@@ -63,7 +61,7 @@ function InputForm(props) {
                 };
 
                 console.log('her', data);
-                request('/api/user/register/check/pass', data, 'POST')
+                request('/api/register/check/pass', data, 'POST')
                     .then(res => res.json())
                     .then(result => {
                         console.log('h2', result);
@@ -122,10 +120,11 @@ function Geo(props) {
         <div>
             <p className="font-profile-head">Location</p>
             <YMaps
-                
+
                 enterprise
                 query={{
                     apikey: '74b2ed32-1340-405d-be18-ab91a877defe',
+                    lang: "en_US",
                 }}
             >
                 <div>
@@ -140,7 +139,8 @@ function Geo(props) {
                     >
                         <GeolocationControl options={{ float: 'left' }} onClick={myPos} />
                         <ZoomControl options={{ float: 'right' }} />
-                        {props.editPos &&
+                        {
+                            props.editPos &&
                             <Placemark geometry={[props.editPos.x, props.editPos.y]} />
                         }
                         {
@@ -177,16 +177,9 @@ const EditProfile = (props) => {
             newpass: props.edit.newpass
         }
 
-        if (data)
-            props.fetchEditProfile(data, props.login.me.nickname)
-                .then(() => {
-                    let login = (props.edit.nickname === null) ? props.login.me.nickname : props.edit.nickname;
-
-                    props.fetchUpdateLogin(login)
-                        .then(() => {
-                            history.push(`/users/${login}`);
-                        })
-                })
+        if (data) {
+            props.fetchEditProfile(data, props.login.me.nickname);
+        }
     }
 
     const tagsHandle = (e) => {
@@ -206,6 +199,11 @@ const EditProfile = (props) => {
             toggleBtn(false);
         else
             toggleBtn(true);
+    }
+
+    if (props.edit.editProfileStatus !== null) {
+        props.clearForm();
+        history.push(`/users/${props.login.me.nickname}`);
     }
 
     if (props.login.isLoading)
@@ -262,7 +260,7 @@ const EditProfile = (props) => {
                     <option value="animal">Animal</option>
                 </Input>
 
-                <Geo position={props.profile.info.position} set={props.setGeo} editPos={props.edit.coords} checkBtn={checkBtn} />
+                <Geo position={props.login.me.position} set={props.setGeo} editPos={props.edit.coords} checkBtn={checkBtn} />
 
                 <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
                 <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />

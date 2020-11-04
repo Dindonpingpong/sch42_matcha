@@ -75,11 +75,10 @@ function PhotoList(props) {
                     {
                         props.check &&
                         <CardBody>
-                            <div className="d-flex justify-content-between align-items-center">
+                            <div className="d-flex justify-content-center align-items-center">
                                 <Label className="btn btn-sm btn-success">Add
                                     <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1)} />
                                 </Label>
-                                <Button size="sm" color="danger">Delete</Button>
                             </div>
                         </CardBody>
                     }

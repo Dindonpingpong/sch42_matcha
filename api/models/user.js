@@ -17,7 +17,7 @@ const getPassword = (login) => {
     `SELECT nickName, firstName, lastName, email, 
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
     dateBirth, sexPreferences, 
-  sex, rate, about, photos, location, confirm, password 
+  sex, position, rate, about, photos, location, confirm, password 
   FROM Users WHERE nickName=$1`;
 
   return db.any(sql, login);
@@ -43,7 +43,7 @@ const getLogin = (login) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age,
-  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, position,
+  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, 
   (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
 
@@ -89,7 +89,9 @@ const getMessage = (params) => {
   const sql = `SELECT a.nickName, b.nickName, c.message FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
-  WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)`;
+  WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)
+  ORDER BY createdAt DESC
+  LIMIT 10 OFFSET $3`;
 
   return db.any(sql, params);
 }
@@ -167,8 +169,8 @@ const insertViewFailed = (params) => {
 }
 
 const editProfile = (que, params, i) => {
-  const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING id`;
-  console.log(sql);
+  const sql = `UPDATE Users SET ${que} WHERE nickName = $${i} RETURNING nickName`;
+
   return db.one(sql, params);
 }
 
@@ -193,7 +195,7 @@ const getInfoLogin = (params) => {
     `SELECT nickName, firstName, lastName, email, 
     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags,
     dateBirth, sexPreferences, 
-  sex, rate, about, photos, location 
+  sex, position, rate, about, photos, location 
   FROM Users WHERE nickName=$1`;
 
   return db.any(sql, params);
@@ -278,7 +280,7 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     AND location[2] = (SELECT location[2] FROM Users WHERE nickName = $1)
     ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($4 - 6)`;
-      console.log(sql);
+      
   return db.any(sql, params);
 }
 
@@ -369,6 +371,14 @@ const getCities = (params) => {
   return db.any(sql, params);
 }
 
+const getCountMessage = (params) => {
+  const sql = `SELECT COUNT(c.message) FROM Chat c
+  JOIN Users a ON a.id = c.idFrom
+  JOIN Users b ON b.id = c.idTo
+  WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)`;
+  
+  return db.any(sql, params);
+}
 
 exports.sign = sign;
 exports.getPassword = getPassword;
@@ -406,3 +416,4 @@ exports.confirmUser = confirmUser;
 exports.updateGeo = updateGeo;
 exports.getCountires = getCountires;
 exports.getCities = getCities; 
+exports.getCountMessage = getCountMessage;

@@ -57,6 +57,7 @@ export const fetchUpdateLogin = (login) => (dispatch) => {
         .then(res => res.json())
         .then(result => {
             if (result.success === true) {
+                console.log(result);
                 dispatch(loginAdd(result.profile));
             }
             else {

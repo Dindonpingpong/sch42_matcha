@@ -1,8 +1,8 @@
 const router = require('express').Router();
-const { getPassword, getProfile, getViews, getLikes, sendMessage,
-    getMessage, getCards, getStatus, getTimeView, updateViewFailed, insertViewFailed,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, getInfoLogin, insertLocation,
-    getCountCards, getCities, getCountires } = require('../models/user');
+const { getPassword, getProfile, getViews, getLikes,
+    getCards, getStatus, getTimeView, updateViewFailed, insertViewFailed,
+    updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
+    getCountCards, getCities, getCountires, getInfoLogin } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -42,7 +42,33 @@ router.post('/login', async (req, res) => {
                 }
             })
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.get('/login/:nickname', async (req, res) => {
+    try {
+        const nickname = req.params.nickname;
+
+        getInfoLogin([nickname])
+            .then(data => {
+                res.status(200).json({
+                    message: "Your logged",
+                    profile: data[0],
+                    success: true
+                })
+            })
+            .catch( (e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -150,71 +176,6 @@ router.get('/profile/likes/:nickname', async (req, res) => {
     }
 })
 
-router.post('/message', async (req, res) => {
-    try {
-        const { from, to, message } = req.body;
-
-        const params = [
-            from,
-            to,
-            message
-        ];
-
-        sendMessage(params)
-            .then(data => {
-                res.status(200).json({
-                    message: data.id,
-                    success: true
-                })
-            })
-            .catch((e) => {
-                res.status(500).json({
-                    message: e.message,
-                    success: false
-                })
-            })
-
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            success: false
-        })
-    }
-})
-
-router.get('/message/:from/:to', async (req, res) => {
-    try {
-        const { from, to } = req.params;
-
-        getMessage([from, to])
-            .then(data => {
-                if (data.length > 0) {
-                    res.status(200).json({
-                        result: data,
-                        message: "Ok",
-                        success: true
-                    });
-                }
-                else
-                    res.status(200).json({
-                        result: [],
-                        message: "No messages",
-                        success: false
-                    })
-            })
-            .catch((e) => {
-                res.status(500).json({
-                    message: e.message,
-                    success: false
-                })
-            })
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            success: false
-        })
-    }
-})
 
 router.post('/profile/status', async (req, res) => {
     try {
@@ -355,7 +316,6 @@ router.post('/edit/:nickname', async (req, res) => {
     let params = [];
     let i = 1;
 
-    console.log(req.body);
     for (const [key, value] of Object.entries(req.body)) {
         if (value !== null && key !== 'newtags' && key !== 'newpass' && key !== 'oldtags' && key !== 'coords') {
             keys.push(`${key} = $${i++}`);
@@ -371,7 +331,6 @@ router.post('/edit/:nickname', async (req, res) => {
         }
     }
 
-    console.log(params);
     if (params.length === 0) {
         res.status(200).json({
             msg: 'wow',
@@ -385,7 +344,8 @@ router.post('/edit/:nickname', async (req, res) => {
     editProfile(que, params, i)
         .then(data => {
             res.status(200).json({
-                message: data.id,
+                message: "Ok",
+                nickname: data.nickname,
                 success: true
             })
         })
@@ -447,12 +407,22 @@ router.post('/edit/location/:nickname', async (req, res) => {
 
     const { x, y } = req.body.coords;
 
-    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY}&format=json&geocode=${y},${x}`)
+    fetch(`https://geocode-maps.yandex.ru/1.x/?apikey=${API_KEY}&format=json&geocode=${y},${x}&lang=en_RU`)
         .then(res => res.json())
         .then(result => {
-            const tmp = result.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.text.split(',');
+            let country = null,
+                city = null;
 
-            if (tmp.length < 2) {
+            const tmp1 = result.response.GeoObjectCollection.featureMember[0].GeoObject.metaDataProperty.GeocoderMetaData.Address.Components;
+
+            tmp1.forEach(el => {
+                if (el.kind === 'country')
+                    country = el.name;
+                else if (el.kind === 'locality')
+                    city = el.name;
+            })
+
+            if (tmp1.length < 3 || !country || !city) {
                 res.status(200).json({
                     message: "Ooopsy",
                     success: false
@@ -460,8 +430,6 @@ router.post('/edit/location/:nickname', async (req, res) => {
                 return;
             }
 
-            const country = tmp[0];
-            const city = tmp[1];
             const params = [country, city, x, y, login];
 
             insertLocation(params)
@@ -492,26 +460,6 @@ router.post('/edit/location/:nickname', async (req, res) => {
                 success: false
             })
         })
-})
-
-router.get('/login/:nickname', async (req, res) => {
-    try {
-        const nickname = req.params.nickname;
-
-        getInfoLogin([nickname])
-            .then(data => {
-                res.status(200).json({
-                    message: "Your logged",
-                    profile: data[0],
-                    success: true
-                })
-            })
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            success: false
-        })
-    }
 })
 
 router.post('/users/page', async (req, res) => {

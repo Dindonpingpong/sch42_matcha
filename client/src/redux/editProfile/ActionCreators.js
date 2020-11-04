@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { request } from '../../util/http';
+import { fetchUpdateLogin } from '../login/ActionCreators';
 
 export const editProfileStatus = (status) => ({
     type: ActionTypes.EDIT_PROFILE_STATUS_ADD,
@@ -130,24 +131,20 @@ export const initFormEdit = () => (dispatch) => {
 export const fetchEditProfile = (data, login) => (dispatch) => {
     dispatch(editProfileLoading());
 
-    return request(`/api/user/edit/tags/${login}`, data, 'POST')
-        .then(response => response.json())
-        .then((res) => {
-            console.log(res);
-            if (res.success) {
-                request(`api/user/edit/location/${login}`, data, 'POST')
-                    .then(response => response.json())
-                    .then((res) => {
-                        if (res.success) {
-                            request(`/api/user/edit/${login}`, data, 'POST')
-                                .then(response => response.json())
-                                .then(result => dispatch(editProfileStatus(result)))
-                                .catch(error => dispatch(editProfileFailed(error.message)));
-                        }
-                    })
-                    .catch(error => dispatch(editProfileFailed(error.message)));
-            }
+    const p1 = request(`/api/user/edit/tags/${login}`, data, 'POST');
+    const p2 = request(`api/user/edit/location/${login}`, data, 'POST');
+
+    Promise.all([p1, p2])
+        .then(() => {
+            request(`/api/user/edit/${login}`, data, 'POST')
+                .then(response => response.json())
+                .then(result => {
+                    dispatch(fetchUpdateLogin(result.nickname))
+                        .then(() => {
+                            dispatch(editProfileStatus(result.message));
+                        })
+                })
+                .catch(error => dispatch(editProfileFailed(error.message)));
         })
         .catch(error => dispatch(editProfileFailed(error.message)));
 };
-
