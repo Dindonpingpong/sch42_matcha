@@ -158,7 +158,9 @@ const EditProfile = (props) => {
     const history = useHistory();
     useEffect(() => {
         props.clearForm();
-    }, [props.match.params]);
+        if (props.edit.editProfileStatus !== null)
+            history.push(`/users/${props.login.me.nickname}`);
+    }, [props.match.params, props.edit.editProfileStatus]);
 
     const [isActiveBtn, toggleBtn] = useState(true);
 
@@ -178,9 +180,10 @@ const EditProfile = (props) => {
             newpass: props.edit.newpass
         }
 
-        if (data) {
-            props.fetchEditProfile(data, props.login.me.nickname);
-        }
+        // if (data) {
+        props.fetchEditProfile(data, props.login.me.nickname);
+        // }
+
     }
 
     const tagsHandle = (e) => {
@@ -202,9 +205,9 @@ const EditProfile = (props) => {
             toggleBtn(true);
     }
 
-    if (props.edit.editProfileStatus !== null) {
-        history.push(`/users/${props.login.me.nickname}`);
-    }
+    // if (props.edit.editProfileStatus !== null) {
+    //     history.push(`/users/${props.login.me.nickname}`);
+    // }
 
     if (props.login.isLoading) {
         return (

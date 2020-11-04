@@ -12,6 +12,7 @@ import { Loading } from '../Loading';
 import NotFound from '../notFound';
 import { request } from '../../util/http';
 import './Profile.css';
+import moment from 'moment';
 
 const mapStateToProps = (state) => {
     return {
@@ -104,9 +105,7 @@ function ViewsList(props) {
                         <Media heading>{view.nickname}, {view.age}</Media>
                         <p>{view.about}</p>
                         <p className="profile-tabs-item">
-                            {new Intl.DateTimeFormat('en-US',
-                                { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric' })
-                                .format(new Date(Date.parse(view.visitime)))}
+                            {moment(view.visitime).fromNow()}
                         </p>
                         <Link to={`/users/${view.nickname}`} className="btn btn-secondary">Go to profile</Link>
                     </Media>
@@ -125,8 +124,12 @@ function ViewsList(props) {
         );
 }
 
+
+
 function LikesList(props) {
     if (props.mylikes.length > 0) {
+        console.log(moment(props.mylikes[0].time, 'YYYY-MM-DD, h:mm:ss').fromNow());
+        console.log(props.mylikes[0].time);
         const listItems = props.mylikes.map((like, item) =>
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
@@ -137,9 +140,7 @@ function LikesList(props) {
                         <Media heading>{like.nickname}, {like.age}</Media>
                         <p>{like.about}</p>
                         <p className="profile-tabs-item">
-                            {new Intl.DateTimeFormat('en-US',
-                                { year: 'numeric', month: 'short', day: '2-digit', hour: 'numeric', minute: 'numeric', second: 'numeric' })
-                                .format(new Date(Date.parse(like.time)))}
+                            {moment(like.time).fromNow()}
                         </p>
                         <Link to={`/users/${like.nickname}`} className="btn btn-secondary">Go to profile</Link>
                     </Media>

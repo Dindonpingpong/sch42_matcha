@@ -281,7 +281,7 @@ const getCards = (params, sort, sortTags, sqlFilter) => {
     AND count_reports < 3
     ORDER BY ${sort}
 ) t WHERE contact IS NOT NULL ${sqlFilter} ${sortTags} LIMIT 6 OFFSET ($4 - 6)`;
-      
+
   return db.any(sql, params);
 }
 
@@ -377,7 +377,7 @@ const getCountMessage = (params) => {
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)`;
-  
+
   return db.any(sql, params);
 }
 
@@ -447,7 +447,7 @@ exports.userDel = userDel;
 exports.confirmUser = confirmUser;
 exports.updateGeo = updateGeo;
 exports.getCountires = getCountires;
-exports.getCities = getCities; 
+exports.getCities = getCities;
 exports.getCountMessage = getCountMessage;
 exports.insertReport = insertReport;
 exports.updateCountReports = updateCountReports;
