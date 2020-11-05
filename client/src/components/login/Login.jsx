@@ -134,7 +134,7 @@ function Login(props) {
                 }
                 {
                     props.login.errMsg && 
-                    <Info message={props.login.errMsg} isError={true} />
+                    <Info message={props.login.errMsg} isSuccess={false} />
                 }
                 <form >
                     <LoginInput setLogin={props.setLogin} />

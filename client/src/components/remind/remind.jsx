@@ -1,12 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
 import { Button, Col, Container, Input, Row } from 'reactstrap';
-import Alert from 'reactstrap/lib/Alert';
 import { request } from '../../util/http';
+import Info from '../info';
 
 const Remind = () => {
     const [email, setEmail] = useState('');
     const [msg, setMsg] = useState(null);
+    const [isSuccess, setSuccess] = useState(null);
 
     const remind = () => {
         const data = {
@@ -16,8 +17,8 @@ const Remind = () => {
         request('/api/remind', data, 'POST')
             .then(res => res.json())
             .then(res => {
-                setMsg('wow');
-                console.log(res.message);
+                setMsg(res.message);
+                setSuccess(res.success);
             })
     }
 
@@ -26,7 +27,7 @@ const Remind = () => {
             <Container>
                 {
                     msg &&
-                <Alert color='success'>{msg} Check your email</Alert>
+                    <Info message={msg} isSuccess={isSuccess} />
                 }
                 <Row>
                     <Col>

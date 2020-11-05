@@ -1,21 +1,23 @@
-import React
-// { useEffect, useState } 
-from "react";
+import React, { useEffect, useState } from "react";
 import { Alert } from "reactstrap";
 
 const Info = (props) => {
-    // const [isVisible, setClose] = useState(true);
-    const color = props.isError ? 'danger' : 'success';
+    const [isVisible, setClose] = useState(true);
+    const color = props.isSuccess ? 'success' : 'danger';
 
-    // useEffect(() => {
-    //     window.setTimeout(() => {
-    //         setClose(!isVisible);
-    //     }, 5000);
-    // }, []);
+    useEffect(() => {
+        let interval = null;
+
+        if (isVisible) {
+            interval = window.setTimeout(() => {
+                setClose(!isVisible);
+            }, 5000);
+        }
+    }, [isVisible]);
 
     return (
         <div>
-            <Alert isOpen={true} color={color}>{props.message}</Alert>
+            <Alert isOpen={isVisible} color={color}>{props.message}</Alert>
         </div>
     )
 }

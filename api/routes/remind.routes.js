@@ -15,13 +15,13 @@ router.post('/', async (req, res) => {
             const newHash = hash.replace(/\//g, "slash");
             sendMail(email, "Remind", 'You have 10 minutes to restore your account', `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
             res.status(200).json({
-                message: "Ok",
+                message: "You have 10 minutes to restore your account",
                 success: true
             })
         })
-        .catch((e) => {
+        .catch(() => {
             res.status(200).json({
-                message: e.message,
+                message: "Email does not exist",
                 success: false
             })
         })
