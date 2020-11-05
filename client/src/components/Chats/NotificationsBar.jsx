@@ -1,14 +1,11 @@
 import {refreshChatActionCreator} from "../../redux/Chats/constants";
 import {connect} from "react-redux";
-import io from "socket.io-client";
+import {socket} from "../../index"
 import React, {useEffect, useRef, useState} from "react";
 import {Alert, Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from "reactstrap";
 import useSound from 'use-sound';
 import getmsg from "../../sound/msg_get2.mp3";
-export let socket = io('/api/io/chat', {
-    'multiplex': false, transports: ['websocket'], forceNew: true
-})
-//export let socket = io('http://localhost:5000/chat')
+
 
 let NotificationsBarInner = (props) => {
 

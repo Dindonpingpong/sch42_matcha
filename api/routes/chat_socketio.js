@@ -1,6 +1,6 @@
 
 module.exports = function (io) {
-    const chatRoom = io.of('api/io/chat');
+    const chatRoom = io.of('/jane');
     chatRoom.on('connection', (socket) => {
         console.log('new connect!', socket.id
         );

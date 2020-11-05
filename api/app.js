@@ -20,3 +20,14 @@ let server = require('http').Server(app);
 let io = require('socket.io')(server);
 require('./routes/chat_socketio')(io);
 app.listen(PORT, () => console.log('App on ' + PORT));
+/*
+{
+      serveClient: false,
+      // below are engine.IO options
+      origins: '*:*',
+      transports: ['polling'],
+      pingInterval: 10000,
+      pingTimeout: 5000,
+      cookie: false
+    }
+ */

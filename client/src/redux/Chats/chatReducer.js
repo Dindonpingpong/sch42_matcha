@@ -11,8 +11,7 @@ import {
     successSendMessageOuter
 } from "./constants";
 import {request} from "../../util/http";
-import {socket} from "../../components/Chats/NotificationsBar";
-
+import {socket} from "../../index"
 const cloneDeep = require('deep-clone');
 
 let getMessagesByPageNumber = (myNick, partnerNick, pageCount)=>{

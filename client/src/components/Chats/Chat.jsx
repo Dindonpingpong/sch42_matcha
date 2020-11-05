@@ -5,7 +5,7 @@ import { getMessagesOfThisChat, getPrevMsg, sendMessage } from "../../redux/Chat
 import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
 import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
-import { socket } from "./NotificationsBar";
+import { socket } from "../../index";
 import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
 import Container from "reactstrap/es/Container";
