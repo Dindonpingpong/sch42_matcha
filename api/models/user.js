@@ -412,12 +412,19 @@ const updateRate = (params) => {
 }
 
 const getConnectedUsers = (params) => {
-  const sql = `SELECT * FROM 
-  (SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName FROM Connections a
-  WHERE exists (SELECT * from Connections b
-  WHERE a.idFrom = b.idTo and a.idTo = b.idFrom and (idFrom = myId($1) or idTo = myId($1)))) 
-  as res
-  WHERE nickName != $1`;
+  const sql = `SELECT nickName FROM 
+  (SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName, createdAt FROM Connections a
+      WHERE exists 
+      (SELECT * from Connections b
+          WHERE 
+          status = 'like' 
+          AND a.idFrom = b.idTo 
+          AND a.idTo = b.idFrom 
+          AND (idFrom = myId($1) OR idTo = myId($1))
+      )
+  ) as res
+  WHERE nickName != $1
+  ORDER BY createdAt DESC`;
 
   return db.any(sql, params);
 }

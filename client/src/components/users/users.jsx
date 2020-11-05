@@ -352,8 +352,6 @@ function CardsPagination(props) {
 const Users = (props) => {
 
     useEffect(() => {
-        // console.log('nick', props.login.me.nickname);
-        // console.log('page', props.match.params.page);
         const data = {
             nickname: props.login.me.nickname,
             mySex: props.login.me.sex,
@@ -373,11 +371,9 @@ const Users = (props) => {
             props.fetchAllUsers(data);
             props.fetchUsersCard(data);
         }
-    }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
+    }, [props]);
+    // }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
     // props.login.me.nickname
-
-    // console.log('users', props);
-    // console.log(props.match.params.page);
 
     if (props.filter.isLoading || props.filter.info === null) {
         return (

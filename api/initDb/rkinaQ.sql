@@ -42,6 +42,10 @@ SELECT u.nickName
 
 
 INSERT INTO Connections (idFrom, idTo, status) VALUES
+    ('1', '3', 'like'),
+    ('3', '1', 'like');
+
+INSERT INTO Connections (idFrom, idTo, status) VALUES
     ('1', '2', 'like'),
     ('1', '7', 'like'),
     ('9', '1', 'like'),
@@ -60,8 +64,16 @@ SELECT idFrom, idTo, status FROM Connections WHERE
 idTo = 1 AND status = 'like') tmp
 HAVING count(*) > 1;
 
-SELECT * FROM 
-(SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName FROM Connections a
-WHERE exists (SELECT * from Connections b
-WHERE a.idFrom = b.idTo and a.idTo = b.idFrom and (idFrom = myId('rkina') or idTo = myId('rkina')))) as res
-WHERE nickName != 'rkina';
+SELECT nickName FROM 
+(SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName, createdAt FROM Connections a
+    WHERE exists 
+    (SELECT * from Connections b
+        WHERE 
+        status = 'like' 
+        AND a.idFrom = b.idTo 
+        AND a.idTo = b.idFrom 
+        AND (idFrom = myId('rkina') OR idTo = myId('rkina'))
+    )
+) as res
+WHERE nickName != 'rkina'
+ORDER BY createdAt DESC;

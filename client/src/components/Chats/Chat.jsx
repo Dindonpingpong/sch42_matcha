@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
 import { getMessagesOfThisChat, getPrevMsg, sendMessage } from "../../redux/Chats/chatReducer";
-import { Modal, ModalBody, ModalHeader, ModalFooter, Spinner, Alert, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
+import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
 import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
 import { socket } from "./NotificationsBar";
@@ -60,7 +60,7 @@ const ChatMessages = (props) => {
         messagesOfThisChat = props.chat.messages.sort((a, b) => (a.id - b.id)).map((message, i) => {
             let date = new Date(message.createdat).toDateString();
             let time = new Date(message.createdat).toTimeString().split(' ')[0];
- 
+
             switch (message.type) {
                 case 'message': {
                     return <Col xs={8} key={i}
@@ -253,10 +253,10 @@ let ChatInner = (props) => {
                 {currentChat && currentPage ? <ChatMessages chat={currentChat} firstVisIndex={firstVisIndex} myNick={myNick} /> :
                     <div />}
                 <Form className={'message__wrapper'} onSubmit={handleSubmit(onSubmit)}>
-                    <input type={'textarea'} name='message' id="message" cols={30} rows={1}
+                    <Input type={'textarea'} name='message' id="message" cols={30} rows={1}
                         placeholder={'Your message'}
                         ref={register()} />
-                    <input type="file" name="file" onChange={onUploadFile} />
+                    <Input type="file" name="file" onChange={onUploadFile} />
                     {uploadedFile && <ImageThumb image={uploadedFile} />}
                     <Button type={'submit'} className={'button__send'}>Send</Button>
                     <div ref={bottomRef} />

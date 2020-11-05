@@ -37,7 +37,6 @@ function InputForm(props) {
                 onChange={inputChange}
                 onBlur={props.checkBtn}
                 className={isValid}
-                onBlur={props.checkBtn}
             />
             <FormFeedback>{newFeedback || props.feedback}</FormFeedback>
         </div>

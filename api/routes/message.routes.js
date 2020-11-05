@@ -107,8 +107,6 @@ router.get('/users/:nickname', async (req, res) => {
 
         getConnectedUsers([nickname])
             .then(data => {
-                console.log(data);
-
                 res.status(200).json({
                     result: data,
                     message: "Ok",

@@ -1,4 +1,3 @@
-import {getMessagesOfThisChat, sendMessage} from "../../redux/Chats/chatReducer";
 import {refreshChatActionCreator} from "../../redux/Chats/constants";
 import {connect} from "react-redux";
 import io from "socket.io-client";

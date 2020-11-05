@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, Button, FormGroup, Label, Input, Alert } from 'reactstrap';
+import { Row, Col, Button, FormGroup, Label, Input } from 'reactstrap';
 import { NavLink } from 'reactstrap';
 import { useState } from 'react';
 import { fetchLogin, setLogin, setPassword } from '../../redux/login/ActionCreators';
@@ -101,7 +101,7 @@ function Login(props) {
         if (props.login.isLogged) {
             history.push("/users/page/1");
         }
-    }, [props.login.isLogged]);
+    }, [props.login.isLogged, history]);
 
     if (props.login.isLoading) {
         return (
@@ -109,7 +109,7 @@ function Login(props) {
         )
     }
 
-    if (nickname, hash) {
+    if (nickname && hash) {
         const data = {
             nickname: nickname,
             hash: hash

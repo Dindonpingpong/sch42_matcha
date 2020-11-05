@@ -34,7 +34,7 @@ const Header = (props) => {
     useEffect(() => {
         if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
             history.push('/login');
-    }, [path]);
+    }, [path, props.login.isLogged, history]);
 
     return (
         <Navbar color="light" light expand="xs">

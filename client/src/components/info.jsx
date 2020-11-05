@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React
+// { useEffect, useState } 
+from "react";
 import { Alert } from "reactstrap";
 
 const Info = (props) => {
-    const [isVisible, setClose] = useState(true);
+    // const [isVisible, setClose] = useState(true);
     const color = props.isError ? 'danger' : 'success';
 
     // useEffect(() => {
@@ -13,7 +15,7 @@ const Info = (props) => {
 
     return (
         <div>
-            <Alert isOpen={isVisible} color={color}>{props.message}</Alert>
+            <Alert isOpen={true} color={color}>{props.message}</Alert>
         </div>
     )
 }
