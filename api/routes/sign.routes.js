@@ -191,9 +191,9 @@ router.post('/confirm', async (req, res) => {
                                 success: false
                             })
                         })
-                        .catch((e) => {
+                        .catch(() => {
                             res.status(200).json({
-                                message: e.message,
+                                message: "Oppsy! Try again",
                                 success: false
                             })
                         })
@@ -206,18 +206,18 @@ router.post('/confirm', async (req, res) => {
                                 success: true
                             })
                         })
-                        .catch((e) => {
+                        .catch(() => {
                             res.status(200).json({
-                                message: e.message,
+                                message: "Oppsy! Try again",
                                 success: false
                             })
                         })
                 }
             }
         })
-        .catch((e) => {
+        .catch(() => {
             res.status(200).json({
-                message: e.message,
+                message: "Oppsy! Try again",
                 success: false
             })
         })

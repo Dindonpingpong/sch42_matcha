@@ -479,25 +479,25 @@ router.post('/users/page', async (req, res) => {
         // const page = (req.body.page * 6);
         // const sort = req.body.sort;
 
-        const { nickname, mySex, mySexpref, page, sort, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
+        const { nickname, mySex, mySexpref, page, sortType, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
         let sqlSort = '',
             sqlFilter = '',
             sqlSortTags = '',
             limit = page * 6,
             params = [nickname, mySex, mySexpref, limit, tags];
 
-        if (sort === 'ageAsc' || sort === 'ageDesc')
-            sqlSort = (sort === 'ageAsc') ? 'age ASC, count DESC, rate DESC' : 'age DESC, count DESC, rate DESC';
-        else if (sort === 'rateAsc' || sort === 'rateDesc')
-            sqlSort = (sort === 'rateAsc') ? 'rate ASC, age ASC, count DESC' : 'rate DESC, age ASC, count DESC';
-        else if (sort === 'tagsAsc' || sort === 'tagsDesc') {
-            sqlSort = (sort === 'tagsAsc') ? 'rate DESC, age ASC' : 'rate DESC, age ASC';
-            sqlSortTags = (sort === 'tagsAsc')
+        if (sortType === 'ageAsc' || sortType === 'ageDesc')
+            sqlSort = (sortType === 'ageAsc') ? 'age ASC, count DESC, rate DESC' : 'age DESC, count DESC, rate DESC';
+        else if (sortType === 'rateAsc' || sortType === 'rateDesc')
+            sqlSort = (sortType === 'rateAsc') ? 'rate ASC, age ASC, count DESC' : 'rate DESC, age ASC, count DESC';
+        else if (sortType === 'tagsAsc' || sortType === 'tagsDesc') {
+            sqlSort = (sortType === 'tagsAsc') ? 'rate DESC, age ASC' : 'rate DESC, age ASC';
+            sqlSortTags = (sortType === 'tagsAsc')
                 ? 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact, t.distance, t.count_reports ORDER BY COUNT(t.tags) ASC, t.tags ASC'
                 : 'GROUP BY t.nickName, t.firstName, t.lastName, t.age, t.rate, t.city, t.photos, t.sex, t.sexPreferences, t.tags, t.count, t.contact, t.distance, t.count_reports ORDER BY COUNT(t.tags) DESC';
         }
-        if (sort === 'locationAsc' || sort === 'locationDesc')
-            sqlSort = (sort === 'locationAsc') ? 'distance ASC, age ASC, rate DESC, count DESC' : 'distance DESC, age ASC, rate DESC, count DESC';
+        if (sortType === 'locationAsc' || sortType === 'locationDesc')
+            sqlSort = (sortType === 'locationAsc') ? 'distance ASC, age ASC, rate DESC, count DESC' : 'distance DESC, age ASC, rate DESC, count DESC';
 
         // тут проверку на A > B?
         sqlFilter = (sex === 'both')
@@ -523,14 +523,55 @@ router.post('/users/page', async (req, res) => {
                     })
             })
             .catch((e) => {
-                // console.log(e.message);
                 res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        // console.log(e.message);
+        res.status(200).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/users/count/pages', async (req, res) => {
+    try {
+        const { nickname, mySex, mySexpref, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
+        let sqlFilter = '',
+            params = [nickname, mySex, mySexpref, tags];
+
+        // тут проверку на A > B?
+        sqlFilter = (sex === 'both')
+            ? "AND (sex = 'female' OR sex = 'male') "
+            : `AND sex = '${sex}' `;
+        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance} `;
+        if (tags.length > 0)
+            sqlFilter += `AND tags && $4`;
+
+        getCountCards(params, sqlFilter)
+            .then(data => {
+                if (data.length > 0) {
+                    res.status(200).json({
+                        result: data.length,
+                        message: "Ok",
+                        success: true
+                    });
+                }
+                else
+                    res.status(200).json({
+                        message: "No users",
+                        success: false
+                    })
+            })
+            .catch((e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
         res.status(200).json({
             message: e.message,
             success: false

@@ -125,7 +125,7 @@ function Filter(props) {
 
     const [show, setModal] = useState(false);
     const toggleModal = () => setModal(!show);
-    
+
     const [isValidInput, setStatusButton] = useState(true);
 
     const tagsHandle = (e) => {
@@ -224,7 +224,7 @@ function Filter(props) {
                         </Row>
 
                         <ModalFooter className="justify-content-between">
-                        <Button
+                            <Button
                                 color="success"
                                 className={isValidInput ? '' : 'disabled-button'}
                                 onClick={() => { toggleModal(); props.filter.setFilterStatus('active'); history.push('/users/page/1') }}>
@@ -350,30 +350,36 @@ function CardsPagination(props) {
 }
 
 const Users = (props) => {
+    const { fetchAllUsers, fetchUsersCard } = props;
+    const { page } = props.match.params;
+    const { sortType, filterStatus, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = props.filter;
+    const { nickname } = props.login.me;
+    const mySex = props.login.me.sex,
+        mySexpref = props.login.me.sexpreferences;
 
+    console.log(sortType);
     useEffect(() => {
         const data = {
-            nickname: props.login.me.nickname,
-            mySex: props.login.me.sex,
-            mySexpref: props.login.me.sexpreferences,
-            page: props.match.params.page,
-            sort: props.filter.sortType,
-            ageFrom: props.filter.ageFrom,
-            ageTo: props.filter.ageTo,
-            rateFrom: props.filter.rateFrom,
-            rateTo: props.filter.rateTo,
-            sex: props.filter.sex,
-            tags: props.filter.tags,
-            distance: props.filter.distance
+            mySex,
+            mySexpref,
+            sortType,
+            ageFrom,
+            ageTo,
+            rateFrom,
+            rateTo,
+            sex,
+            tags,
+            distance,
+            nickname,
+            page
         }
 
-        if (data.page > 0) {
-            props.fetchAllUsers(data);
-            props.fetchUsersCard(data);
+        if (page > 0) {
+            fetchAllUsers(data);
+            fetchUsersCard(data);
         }
-    // }, [props]);
-    }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
-    // props.login.me.nickname
+    }, [filterStatus, fetchAllUsers, fetchUsersCard, mySex, mySexpref,
+        sortType, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance, nickname, page]);
 
     if (props.filter.isLoading || props.filter.info === null) {
         return (

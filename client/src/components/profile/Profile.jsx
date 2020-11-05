@@ -241,18 +241,61 @@ function AsideButton(props) {
 }
 
 const Profile = (props) => {
-    useEffect(() => {
-        props.fetchProfile(props.match.params.nickname);
-        props.fetchView(props.match.params.nickname);
-        props.fetchLike(props.match.params.nickname);
-        if (props.login.me.nickname !== props.match.params.nickname) {
-            props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
-            props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
-        }
-    // }, [props]);
-    }, [props.match.params.nickname, props.profile.status, props.login.me.nickname]);
+    // const dispatch = useDispatch();
 
-    // console.log(props.profile);
+    // useEffect(() => {
+    //     dispatch(fetchProfile(props.match.params.nickname));
+    //     dispatch(fetchView(props.match.params.nickname));
+    //     dispatch(fetchLike(props.match.params.nickname));
+    //     if (props.login.me.nickname !== props.match.params.nickname) {
+    //         dispatch(fetchStatus(props.login.me.nickname, props.match.params.nickname));
+    //         dispatch(fetchUpdateView(props.login.me.nickname, props.match.params.nickname));
+    //     }
+    // }, [dispatch, props.match.params.nickname, props.login.me.nickname, props.profile.status]);
+
+    // const {match, profile, login } = props;
+    // console.log('rr', match, profile, login);
+    // console.log('match', props.match.params.nickname);
+    // console.log('match2', match.params.nickname);
+    // console.log('login', props.login.me.nickname);
+    // console.log('status', props.profile.status);
+
+    const { login } = props.login.me;
+    const { nickname } = props.match.params;
+    const { status } = props.profile;
+    const { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView } = props;
+
+    useEffect(() => {
+        fetchProfile(nickname);
+        fetchView(nickname);
+        fetchLike(nickname);
+        if (login !== nickname) {
+            fetchStatus(login, nickname);
+            fetchUpdateView(login, nickname);
+        }
+    }, [nickname, login, status, fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView]);
+
+    // useEffect(() => {
+    //     fetchProfile(props.match.params.nickname);
+    //     fetchView(props.match.params.nickname);
+    //     fetchLike(props.match.params.nickname);
+    //     if (props.login.me.nickname !== props.match.params.nickname) {
+    //         fetchStatus(props.login.me.nickname, props.match.params.nickname);
+    //         fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
+    //     }
+    // }, [props.match.params.nickname, props.login.me.nickname, props.profile.status, fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView]);
+
+    // useEffect(() => {
+    //     props.fetchProfile(props.match.params.nickname);
+    //     props.fetchView(props.match.params.nickname);
+    //     props.fetchLike(props.match.params.nickname);
+    //     if (props.login.me.nickname !== props.match.params.nickname) {
+    //         props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
+    //         props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
+    //     }
+    // // }, [props]);
+    // }, [props.match.params.nickname, props.profile.status]);
+
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {

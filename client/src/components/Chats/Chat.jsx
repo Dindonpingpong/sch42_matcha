@@ -173,6 +173,7 @@ let ChatInner = (props) => {
     }
 
     const onSubmit = (data) => {
+        console.log(data);
         if (currentChat) {
             reset();
             if (uploadedFile !== "") {

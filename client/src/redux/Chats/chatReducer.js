@@ -35,6 +35,7 @@ export const getMessagesOfThisChat = (myNick, partnerNick) => (dispatch) => {
     }
 return getCount()
         .then(result => {
+            console.log(result);
             let nicks = Array(myNick, partnerNick)
             if (result.success === true) {
                 dispatch(getChatMessagesActionCreator({

@@ -155,11 +155,18 @@ function Geo(props) {
 
 const EditProfile = (props) => {
     const history = useHistory();
+
+    const { clearForm } = props;
+    const { editProfileStatus } = props.edit;
+    const { nickname } = props.login.me;
+    const { params } = props.match;
+
     useEffect(() => {
-        // props.clearForm(); убрать из-за варнинга, но мб не надо убирать
-        if (props.edit.editProfileStatus !== null)
-            history.push(`/users/${props.login.me.nickname}`);
-    }, [props.match.params, props.edit.editProfileStatus, history, props.login.me.nickname]);
+        if (editProfileStatus !== null) {
+            clearForm();
+            history.push(`/users/${nickname}`);
+        }
+    }, [params, editProfileStatus, history, nickname, clearForm]);
 
     const [isActiveBtn, toggleBtn] = useState(true);
 

@@ -22,7 +22,6 @@ router.post('/message', async (req, res) => {
                 })
             })
             .catch((e) => {
-                console.log('1',e.message);
                 res.status(200).json({
                     message: e.message,
                     success: false
@@ -30,7 +29,6 @@ router.post('/message', async (req, res) => {
             })
 
     } catch (e) {
-        console.log('g',e.message);
         res.status(200).json({
             message: e.message,
             success: false
@@ -45,6 +43,7 @@ router.get('/message/:from/:to/:page', async (req, res) => {
 
         getMessage([from, to, offset])
             .then(data => {
+                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
