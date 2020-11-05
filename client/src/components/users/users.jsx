@@ -371,8 +371,8 @@ const Users = (props) => {
             props.fetchAllUsers(data);
             props.fetchUsersCard(data);
         }
-    }, [props]);
-    // }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
+    // }, [props]);
+    }, [props.match.params.page, props.filter.sortType, props.filter.filterStatus]);
     // props.login.me.nickname
 
     if (props.filter.isLoading || props.filter.info === null) {
