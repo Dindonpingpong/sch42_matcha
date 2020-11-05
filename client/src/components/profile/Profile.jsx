@@ -249,8 +249,8 @@ const Profile = (props) => {
             props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
             props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
         }
-    }, [props]);
-    // }, [props.match.params.nickname, props.profile.status, props.login.me.nickname]); ??????
+    // }, [props]);
+    }, [props.match.params.nickname, props.profile.status, props.login.me.nickname]);
 
     // console.log(props.profile);
 
