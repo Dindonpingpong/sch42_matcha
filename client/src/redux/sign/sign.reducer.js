@@ -8,7 +8,7 @@ const initialState = {
     lastName: null,
     nickName: null,
     email: null,
-    sex: null,
+    sex: 'female',
     password: null,
     repassword: null,
     dateBirth: null

@@ -31,40 +31,37 @@
 -- AS 'SELECT position FROM Users WHERE nickName = 'test6'' 
 -- LANGUAGE SQL;
 
-
-
-
-
 -- INSERT INTO Users (nickName, firstName, lastName, email, dateBirth, sex, password, location, position, confirm) VALUES
 --     ('rkina123', 'Dima', 'Ng', 'd_nfdsag@mail.ru', '1998-07-03', 'male', ''male'b'rkina'0$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
 --     ('rkina12341', 'Dima', 'Ng', 'd_nfdsag@mail.ru', '1998-07-03', 'male', ''male'b'rkina'0$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE)
 
-SELECT * FROM (
-     SELECT nickName, firstName, lastName, date_part('year', age(dateBirth::date)) AS age, rate, location[2] AS city, position <@> myPosition('rkina') as distance, photos[2], sex, sexpreferences, count_reports,
-     (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = Users.id) AS tags,
-     (SELECT COUNT(u) - COUNT(DISTINCT u) FROM 
-     (SELECT UNNEST (array_cat( 
-     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = (SELECT id FROM Users WHERE nickName = 'rkina')),
-     (SELECT array_agg(idTag) FROM User_Tags WHERE idUser = id))) AS u) t) count,
-     CASE
-     WHEN (sex = 'female' AND sexpreferences = 'heterosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-         AND ('male' = 'male' AND 'heterosexual' = 'heterosexual')
-         THEN true
-     WHEN (sex = 'male' AND sexpreferences = 'heterosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-         AND ('male' = 'female' AND 'heterosexual' = 'heterosexual')
-         THEN true
-     WHEN (sex = 'male' AND sexpreferences = 'homosexual' OR sex = 'male' AND sexpreferences = 'bisexual')
-         AND ('male' = 'male' AND 'heterosexual' = 'homosexual')
-         THEN true
-     WHEN (sex = 'female' AND sexpreferences = 'homosexual' OR sex = 'female' AND sexpreferences = 'bisexual')
-         AND ('male' = 'female' AND 'heterosexual' = 'homosexual')
-         THEN true
-     ELSE NULL
-     END AS contact
-     FROM Users
-     WHERE nickName != 'rkina'
-     AND id != (coalesce((SELECT idTo FROM Connections WHERE idFrom = (SELECT id FROM Users WHERE nickName = 'rkina') 
-     AND status = 'ignore'), 0))
-     AND count_reports < 3
-     ORDER BY distance ASC, age ASC,  count DESC,  rate DESC
- ) t WHERE contact IS NOT NULL AND (sex = 'female' OR sex = 'male') AND age > 18 AND age < 120 AND rate > 0 AND rate < 1000 AND distance <= 450;
+SELECT u.nickName 
+    FROM Users u JOIN Connections c ON u.id = c.idTo
+    WHERE 
+    c.idFrom = (SELECT id FROM Users WHERE nickName='rkina');
+
+
+INSERT INTO Connections (idFrom, idTo, status) VALUES
+    ('1', '2', 'like'),
+    ('1', '7', 'like'),
+    ('9', '1', 'like'),
+    ('2', '1', 'like');
+
+SELECT u.nickName, c.status 
+    FROM Users u JOIN Connections c ON u.id = c.idTo
+    WHERE 
+    c.idFrom = (SELECT id FROM Users WHERE nickName='rkina');
+
+SELECT COUNT(*) from 
+(SELECT idTo as idFrom, idFrom as idTo,  status FROM Connections WHERE
+idFrom = 1 AND status = 'like'
+UNION ALL
+SELECT idFrom, idTo, status FROM Connections WHERE
+idTo = 1 AND status = 'like') tmp
+HAVING count(*) > 1;
+
+SELECT * FROM 
+(SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName FROM Connections a
+WHERE exists (SELECT * from Connections b
+WHERE a.idFrom = b.idTo and a.idTo = b.idFrom and (idFrom = myId('rkina') or idTo = myId('rkina')))) as res
+WHERE nickName != 'rkina';

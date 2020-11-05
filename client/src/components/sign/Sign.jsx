@@ -253,10 +253,12 @@ const Sign = (props) => {
                         />
                         <Col>
                             <p className="font-profile-head">Sex</p>
-                            <Input type='select' onChange={e => {
-                                props.setSex(e.target.value);
-                                checkBtn();
-                            }}>
+                            <Input type='select'
+                                defaultValue={props.sign.sex}
+                                onChange={e => {
+                                    props.setSex(e.target.value);
+                                    checkBtn();
+                                }}>
                                 <option value="female">Female</option>
                                 <option value="male">Male</option>
                             </Input>

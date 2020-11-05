@@ -10,6 +10,7 @@ import EditProfile from './profile/EditProfile';
 import Footer from './Footer';
 import Remind from './remind/remind';
 import Restore from './restore/restore';
+import Chat from "./Chats/Chat";
 
 export function Main() {
 
@@ -26,6 +27,7 @@ export function Main() {
                     <Route path='/edit' component={EditProfile} />
                     <Route exact={true} path='/remind' component={Remind} />
                     <Route path='/remind/:email/:hash' component={Restore} />
+                    <Route path='/chats' component={Chat} />
                     <Route component={NotFound} />
                 </Switch>
             </Router>

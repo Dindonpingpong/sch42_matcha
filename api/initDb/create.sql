@@ -67,7 +67,7 @@ CREATE TABLE Chat (
     idFrom int,
     idTo int,
     message text,
-    type text,
+    type text DEFAULT 'message',
     createdAt timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (idFrom) REFERENCES Users (id),

@@ -13,10 +13,12 @@
   "license": "ISC",
   "dependencies": {
     "config": "^3.3.2",
+    "cors": "^2.8.5",
     "create-react-app": "^3.4.1",
     "express": "^4.17.1",
     "node-fetch": "^2.6.1",
-    "redux": "^4.0.5"
+    "redux": "^4.0.5",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "bcrypt": "^5.0.0",

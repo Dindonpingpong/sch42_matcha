@@ -115,7 +115,7 @@ function Login(props) {
             hash: hash
         };
 
-        request('/api/remind/confirm', data, "POST")
+        request('/api/register/confirm', data, "POST")
             .then(res => res.json())
             .then((result) => {
                 setMsg(result.msg)

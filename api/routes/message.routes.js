@@ -1,5 +1,8 @@
 const router = require('express').Router();
-const { getMessage, getCountMessage, sendMessage, } = require('../models/user');
+const { getMessage, getCountMessage, sendMessage, getConnectedUsers } = require('../models/user');
+const multer = require('multer');
+let destFolder = "uploadChatFiles";
+const upload = multer({ dest: destFolder });
 
 router.post('/message', async (req, res) => {
     try {
@@ -19,14 +22,16 @@ router.post('/message', async (req, res) => {
                 })
             })
             .catch((e) => {
-                res.status(500).json({
+                console.log('1',e.message);
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
 
     } catch (e) {
-        res.status(500).json({
+        console.log('g',e.message);
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -79,7 +84,7 @@ router.get('/messages/:from/:to', async (req, res) => {
                 res.status(200).json({
                     result: pages,
                     message: "Ok",
-                    success: false
+                    success: true
                 })
             })
             .catch((e) => {
@@ -90,6 +95,112 @@ router.get('/messages/:from/:to', async (req, res) => {
             })
     } catch (e) {
         res.status(200).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.get('/users/:nickname', async (req, res) => {
+    try {
+        const nickname = req.params.nickname;
+
+        getConnectedUsers([nickname])
+            .then(data => {
+                console.log(data);
+
+                res.status(200).json({
+                    result: data,
+                    message: "Ok",
+                    success: true
+                })
+            })
+            .catch((e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    } catch (e) {
+        res.status(200).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/chatimage/:from/:to', upload.single('photo'), async (req, res) => {
+    try {
+        let { mimetype, path, filename } = req.file;
+        const { from, to } = req.params;
+        var img = fs.readFileSync(path);
+        var encode_image = img.toString('base64');
+        var finalImg = new Buffer.from(encode_image, 'base64');
+        fs.writeFile((destFolder + '/' + req.file.originalname), finalImg, function (err) { });
+        fs.unlinkSync(path)
+        const params = [
+            from,
+            to,
+            req.file.originalname,
+            'photo'
+        ];
+        sendMessage(params)
+            .then(data => {
+                console.log('DATAAA', data)
+                res.json({
+                    message: data,
+                    success: true
+                })
+            })
+            .catch((e) => {
+                res.status(500).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+
+    } catch (e) {
+        res.status(501).json({
+            message: e.message,
+            success: false
+        })
+    }
+
+})
+
+router.post('/getchatimage', async (req, res) => {
+    try {
+        console.log('loop')
+        let image = req.body.img;
+        let path = `${destFolder}/${image}`;
+        var img2 = fs.readFileSync(path);
+        var encode_image = img2.toString('base64');
+        res.status(200).json({
+                img: encode_image,
+                success: true
+            })
+    } catch (e) {
+        res.status(500).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/getsound', async (req, res) => {
+    try {
+        let name = req.body.name;
+        let path = `../sound/${name}`;
+        res.sendFile(path, { root: '.' });
+        //res.status(200).json({success:true})
+        /*
+                let image = req.body.img;
+                let path = `${destFolder}/${image}`;
+                var img2 = fs.readFileSync(path);
+                var encode_image = img2.toString('base64');
+                res.status(200).json({img:encode_image,success:true})*/
+    } catch (e) {
+        res.status(500).json({
             message: e.message,
             success: false
         })

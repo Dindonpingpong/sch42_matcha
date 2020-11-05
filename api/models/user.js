@@ -80,13 +80,13 @@ const sendMessage = (params) => {
       (SELECT id FROM Users WHERE nickName = $2),
       $3
   )
-  RETURNING id`;
+  RETURNING $2 AS idto, $1 AS idfrom, id, message, createdat, type`;
 
   return db.one(sql, params);
 }
 
 const getMessage = (params) => {
-  const sql = `SELECT a.nickName, b.nickName, c.message FROM Chat c
+  const sql = `SELECT a.nickName, b.nickName, c.message, c.createdat, c.id, c.type FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)
@@ -411,6 +411,17 @@ const updateRate = (params) => {
   return db.one(sql, params);
 }
 
+const getConnectedUsers = (params) => {
+  const sql = `SELECT * FROM 
+  (SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName FROM Connections a
+  WHERE exists (SELECT * from Connections b
+  WHERE a.idFrom = b.idTo and a.idTo = b.idFrom and (idFrom = myId($1) or idTo = myId($1)))) 
+  as res
+  WHERE nickName != $1`;
+
+  return db.any(sql, params);
+}
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -451,3 +462,4 @@ exports.getCountMessage = getCountMessage;
 exports.insertReport = insertReport;
 exports.updateCountReports = updateCountReports;
 exports.updateRate = updateRate;
+exports.getConnectedUsers = getConnectedUsers;
