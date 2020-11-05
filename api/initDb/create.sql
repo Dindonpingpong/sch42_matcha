@@ -1,3 +1,4 @@
+create extension cube;
 CREATE extension earthdistance;
 DROP TABLE IF EXISTS Users CASCADE;
 DROP TABLE IF EXISTS Connections CASCADE;

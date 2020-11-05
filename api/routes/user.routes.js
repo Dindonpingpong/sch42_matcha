@@ -509,7 +509,6 @@ router.post('/users/page', async (req, res) => {
 
         getCards(params, sqlSort, sqlSortTags, sqlFilter)
             .then(data => {
-                // console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
