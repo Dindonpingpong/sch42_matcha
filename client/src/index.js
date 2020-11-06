@@ -7,7 +7,7 @@ import 'bootstrap/dist/js/bootstrap.bundle';
 import 'font-awesome/css/font-awesome.css';
 import './index.css'
 import io from "socket.io-client";
-export let socket = io('/jane', {
+export let socket = io('http://localhost:3001/jane', {
   'multiplex': false, transports: ['websocket'], forceNew: true
 })
 //export let socket = io('http://localhost:5000/jane')

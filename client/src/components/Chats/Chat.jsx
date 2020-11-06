@@ -152,6 +152,9 @@ let ChatInner = (props) => {
     const { register, handleSubmit, reset } = useForm();
     let [currentPage, setCurrentPage] = useState(null);
     let [firstVisIndex, setFirstVisIndex] = useState(null);
+
+    const [message, setMessage] = useState(null);
+
     let chats = props.chats;
     let currentChat;
     let myNick = 'rkina';
@@ -207,12 +210,12 @@ let ChatInner = (props) => {
                         alert(e.message);
                     })
             }
-            if (data.message) {
-                console.log('curMsg');
+            if (message) {
+                console.log('curMsg', message);
                 let newMessage = {
                     from: myNick,
                     to: partnerNick,
-                    message: data.message
+                    message: message
                 };
                 playButton.current.click();
                 console.log('message is:', newMessage)
@@ -220,6 +223,19 @@ let ChatInner = (props) => {
                 firstVisIndex = currentChat.messages.length
                 setFirstVisIndex(firstVisIndex);
             }
+            // if (data.message) {
+            //     console.log('curMsg');
+            //     let newMessage = {
+            //         from: myNick,
+            //         to: partnerNick,
+            //         message: data.message
+            //     };
+            //     playButton.current.click();
+            //     console.log('message is:', newMessage)
+            //     props.sendMessageDisp(newMessage);
+            //     firstVisIndex = currentChat.messages.length
+            //     setFirstVisIndex(firstVisIndex);
+            // }
 
         }
 
@@ -256,7 +272,7 @@ let ChatInner = (props) => {
                 <Form className={'message__wrapper'} onSubmit={handleSubmit(onSubmit)}>
                     <Input type={'textarea'} name='message' id="message" cols={30} rows={1}
                         placeholder={'Your message'}
-                        ref={register()} />
+                        ref={register} onChange={(e) => setMessage(e.target.value)} />
                     <Input type="file" name="file" onChange={onUploadFile} />
                     {uploadedFile && <ImageThumb image={uploadedFile} />}
                     <Button type={'submit'} className={'button__send'}>Send</Button>
