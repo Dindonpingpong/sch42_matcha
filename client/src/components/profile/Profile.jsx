@@ -51,8 +51,8 @@ function PhotoList(props) {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             const type = e.target.files[0].type;
-            if (!type.match("image/png") && !type.match("image/jpeg")) {
-                alert('feedback about photo format');
+            if (!type.match("image/png") && !type.match("image/jpeg") && !type.match("image/jpg")) {
+                alert('Wrong format!');
                 return;
             }
             let formData = new FormData();

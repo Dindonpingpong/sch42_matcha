@@ -91,16 +91,8 @@ export const fetchSendMessage = (me, you, message) => (dispatch) => {
     return request('/api/chat/message/', data, 'POST')
         .then(response => response.json())
         .then(result => {
-            if (result.success) {
+            if (result.success)
                 socket.emit('new_message', result.data);
-                console.log(result.data);
-
-                // dispatch(pushChat(result.data));
-                // socket.on("chat_message", (data) => {
-                //     console.log('whag', data);
-                //     dispatch(pushChat(data));
-                // })
-            }
             else
                 dispatch(chatFailed(result.message));
         })

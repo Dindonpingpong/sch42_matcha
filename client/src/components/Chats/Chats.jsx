@@ -74,13 +74,13 @@ const ChatMessages = (props) => {
             props.pushChatMessage(data);
         });
     }, []);
-    
+
     if (props.chat) {
         messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) => {
             let date = new Date(message.createdat).toDateString();
             let time = new Date(message.createdat).toTimeString().split(' ')[0];
 
-            
+
             switch (message.type) {
                 case 'message': {
                     return <Col xs={8} key={item}
@@ -140,7 +140,7 @@ function ListUsers(props) {
                 tag="button"
                 value={name.nickname}
                 onClick={e => { props.set(e.target.value) }}
-                // onClick={e => { props.set(e.target.value); console.log(e.target.value); }}
+            // onClick={e => { props.set(e.target.value); console.log(e.target.value); }}
             >
                 {name.nickname}
             </ListGroupItem>
@@ -155,32 +155,39 @@ function ListUsers(props) {
 
 function CurrentChat(props) {
     console.log('2 chat', props);
-    const upRef = useRef();
     const bottomRef = useRef();
+    const upRef = useRef();
     const [play] = useSound(sendmsg);
     const playButton = useRef();
     const playSound = () => { play() };
-    const [uploadedFile, setFile] = useState("");
+    let [uploadedFile, setFile] = useState("");
     const { register, handleSubmit, reset } = useForm();
 
-    const [currentPage, setCurrentPage] = useState(1);
-    let [firstVisIndex, setFirstVisIndex] = useState(null);
+    let [currentPage, setCurrentPage] = useState(1);
+    let [firstVisIndex, setFirstVisIndex] = useState(props.props.chat.chats.length - 1);
+
+    // if (props.props.chat && currentPage > 1) {
+    //     currentPage = currentChat.countPages ? currentChat.countPages : 1;
+    //     firstVisIndex = currentChat.messages.length - 1;
+    //     setCurrentPage(currentPage);
+    //     setFirstVisIndex(setFirstVisIndex);
+    // }
 
     const getPrevMessages = () => {
-        if (props.props.chat && currentPage - 1 >= 1) {
-            currentPage--;
+        if (props.props.chat && currentPage + 1 <= props.props.chat.countPages) {
+            console.log('currentPage', currentPage);
+            console.log('firstVisIndex', firstVisIndex);
+            currentPage++;
             setCurrentPage(currentPage);
             firstVisIndex = 0;
             setFirstVisIndex(firstVisIndex)
         }
     }
 
-    const test = props.props.chat.chats.length;
-
     const nicknameFrom = props.props.login.me.nickname;
     const nicknameTo = props.props.chat.nicknameTo;
 
-    const {fetchCountPages, fetchChatMessages} = props.props;
+    const { fetchCountPages, fetchChatMessages } = props.props;
 
     useEffect(() => {
         if (nicknameTo) {
@@ -210,15 +217,14 @@ function CurrentChat(props) {
                     .then(data => {
                         let newPhotoData = {
                             idfrom: props.nicks[1],
-                            idto: props.nicks[0],
                             message: data.message.message,
                             createdat: data.message.createdat,
                             type: "photo",
                             id: data.message.id
                         };
-                        console.log(newPhotoData);
+                        console.log('RERERE', newPhotoData);
                         playButton.current.click();
-                        socket.emit('new_message', newPhotoData)
+                        socket.emit('new_message', newPhotoData);
                         uploadedFile = "";
                         setFile(uploadedFile)
                     })
@@ -240,12 +246,12 @@ function CurrentChat(props) {
             <div ref={upRef} />
             <button type='button' onClick={playSound} ref={playButton} style={{ display: 'none' }} />
             {
-                currentPage <= 1
+                (currentPage >= props.props.chat.countPages)
                     ? <div />
                     : <Button type='button' onClick={getPrevMessages}>get previous messages</Button>
             }
             {
-                props.props.chat && currentPage
+                (props.props.chat && currentPage)
                     ? <ChatMessages pushChatMessage={props.props.pushChatMessage} chat={props.props.chat} firstVisIndex={firstVisIndex} me={props.nicks[1]} />
                     : <div />
             }
