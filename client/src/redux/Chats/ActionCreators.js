@@ -1,6 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { request } from '../../util/http';
-import { socket } from "../../index"
+import { socket } from "../../index";
 
 export const chatLoading = () => ({
     type: ActionTypes.CHAT_LOADING
@@ -31,13 +31,22 @@ export const nameAdd = (data) => ({
     nicknameTo: data
 });
 
+export const pushChat = (data) => ({
+    type: ActionTypes.CHAT_MESSAGES_PUSH,
+    message: data
+});
+
 export const setNameTo = (data) => (dispatch) => {
     dispatch(nameAdd(data));
 }
 
+export const pushChatMessage = (data) => (dispatch) => {
+    dispatch(pushChat(data));
+}
+
 export const fetchNames = (nickname) => (dispatch) => {
     dispatch(chatLoading());
-    
+
     console.log(nickname);
 
     return request('/api/chat/users/' + nickname)
@@ -82,8 +91,16 @@ export const fetchSendMessage = (me, you, message) => (dispatch) => {
     return request('/api/chat/message/', data, 'POST')
         .then(response => response.json())
         .then(result => {
-            if (result.success)
+            if (result.success) {
                 socket.emit('new_message', result.data);
+                console.log(result.data);
+
+                // dispatch(pushChat(result.data));
+                // socket.on("chat_message", (data) => {
+                //     console.log('whag', data);
+                //     dispatch(pushChat(data));
+                // })
+            }
             else
                 dispatch(chatFailed(result.message));
         })

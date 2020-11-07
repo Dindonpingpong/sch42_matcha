@@ -80,13 +80,13 @@ const sendMessage = (params) => {
       (SELECT id FROM Users WHERE nickName = $2),
       $3
   )
-  RETURNING $2 AS idto, $1 AS idfrom, id, message, createdat, type`;
+  RETURNING $1 AS nick, message, createdat, type`;
 
   return db.one(sql, params);
 }
 
 const getMessage = (params) => {
-  const sql = `SELECT a.nickName AS nick, b.nickName, c.message, c.createdat, c.id, c.type FROM Chat c
+  const sql = `SELECT a.nickName AS nick, c.message, c.createdat, c.type FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)

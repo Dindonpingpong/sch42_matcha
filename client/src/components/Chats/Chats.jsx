@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
-import { fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo } from "../../redux/Chats/ActionCreators";
+import { fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo, pushChatMessage } from "../../redux/Chats/ActionCreators";
 import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
 // import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
@@ -26,7 +26,8 @@ const mapDispatchToProps = (dispatch) => ({
     fetchCountPages: (nicknameFrom, nicknameTo) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
     sendMessage: (nicknameFrom, nicknameTo, message) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message)),
     fetchChatMessages: (nicknameTo, nicknameFrom, page) => dispatch(fetchChatMessages(nicknameTo, nicknameFrom, page)),
-    setNameTo: (name) => dispatch(setNameTo(name))
+    setNameTo: (name) => dispatch(setNameTo(name)),
+    pushChatMessage: (msg) => dispatch(pushChatMessage(msg))
 });
 
 const ImageThumb = ({ image }) => {
@@ -68,6 +69,12 @@ const ChatMessages = (props) => {
     }
     useEffect(scrollToBottom, [props.chat.chats]);
 
+    useEffect(() => {
+        socket.on("chat_message", (data) => {
+            props.pushChatMessage(data);
+        });
+    }, []);
+    
     if (props.chat) {
         messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) => {
             let date = new Date(message.createdat).toDateString();
@@ -126,7 +133,7 @@ function ListUsers(props) {
     // console.log('1 ListUsers', props);
     let listItems;
 
-    if (props.names) {
+    if (props.names.length > 0) {
         listItems = props.names.map((name, item) =>
             <ListGroupItem
                 key={item}
@@ -169,8 +176,6 @@ function CurrentChat(props) {
     }
 
     const test = props.props.chat.chats.length;
-    console.log(test);
-
 
     const nicknameFrom = props.props.login.me.nickname;
     const nicknameTo = props.props.chat.nicknameTo;
@@ -190,7 +195,6 @@ function CurrentChat(props) {
     }
 
     const onSubmit = (data) => {
-        // console.log(data);
         if (props.props.chat) {
             reset();
             if (uploadedFile !== "") {
@@ -242,7 +246,7 @@ function CurrentChat(props) {
             }
             {
                 props.props.chat && currentPage
-                    ? <ChatMessages chat={props.props.chat} firstVisIndex={firstVisIndex} me={props.nicks[1]} />
+                    ? <ChatMessages pushChatMessage={props.props.pushChatMessage} chat={props.props.chat} firstVisIndex={firstVisIndex} me={props.nicks[1]} />
                     : <div />
             }
             <Form className='message__wrapper' onSubmit={handleSubmit(onSubmit)}>

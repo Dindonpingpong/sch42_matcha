@@ -17,7 +17,7 @@ router.post('/message', async (req, res) => {
         sendMessage(params)
             .then(data => {
                 res.status(200).json({
-                    data: data.id,
+                    data: data,
                     success: true
                 })
             })
