@@ -3,3 +3,4 @@ export const CHAT_FAILED = 'CHAT_FAILED';
 export const CHAT_NAMES = 'CHAT_NAMES';
 export const CHAT_COUNT_PAGES = 'CHAT_COUNT_PAGES';
 export const CHAT_MESSAGES = 'CHAT_MESSAGES';
+export const CHAT_NAME_TO_ADD = 'CHAT_NAME_TO_ADD';

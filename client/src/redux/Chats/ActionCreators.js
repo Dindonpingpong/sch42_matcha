@@ -26,6 +26,15 @@ export const setChatMessage = (data) => ({
     payload: data
 });
 
+export const nameAdd = (data) => ({
+    type: ActionTypes.CHAT_NAME_TO_ADD,
+    nicknameTo: data
+});
+
+export const setNameTo = (data) => (dispatch) => {
+    dispatch(nameAdd(data));
+}
+
 export const fetchNames = (nickname) => (dispatch) => {
     dispatch(chatLoading());
 

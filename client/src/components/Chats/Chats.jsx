@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
-import { getMessagesOfThisChat, getPrevMsg, sendMessage } from "../../redux/Chats/chat.reducer";
+import { fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo } from "../../redux/Chats/ActionCreators";
 import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
-import NotificationsBar from "./NotificationsBar";
+// import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
 import { socket } from "../../index";
 import sendmsg from "../../sound/msg_send.mp3"
@@ -13,10 +13,6 @@ import Row from "reactstrap/es/Row";
 import Col from "reactstrap/es/Col";
 import Media from "reactstrap/es/Media";
 
-import {
-    setNameTo
-} from '../../redux/chats/ActionCreators';
-
 const mapStateToProps = (state) => {
     return {
         login: state.login,
@@ -25,14 +21,12 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-    sendMessageDisp: (nicknameFrom, nicknameTo, message) => dispatch(sendMessage(nicknameFrom, nicknameTo, message)),
-    getMessagesOfThisChatDisp: (nicknameFrom, nicknameTo) => dispatch(getMessagesOfThisChat(nicknameFrom, nicknameTo)),
-    addPrevMsg: (nicks, pageNumber) => dispatch(getPrevMsg(nicks, pageNumber)),
-    /* добавить */
+    fetchNames: (name) => dispatch(fetchNames(name)),
+    fetchCountPages: (nicknameFrom, nicknameTo ) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
+    sendMessage: (nicknameFrom, nicknameTo, message) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message)),
+    fetchChatMessages: (nicknameTo, nicknameFrom, page) => dispatch(fetchChatMessages(nicknameTo, nicknameFrom, page)),
     setNameTo: (name) => dispatch(setNameTo(name))
 });
-
-
 
 const ImageThumb = ({ image }) => {
     return <img src={URL.createObjectURL(image)} alt={image.name} />;
@@ -126,12 +120,6 @@ const ChatMessages = (props) => {
     )
 }
 
-
-
-
-
-
-
 function ListUsers(props) {
     let listItems;
 
@@ -159,11 +147,11 @@ function CurrentChat(props) {
     const bottomRef = useRef();
     const [play] = useSound(sendmsg);
     const playButton = useRef();
-    const playSound = () => { play };
+    const playSound = () => { play() };
     const [uploadedFile, setFile] = useState("");
     const { register, handleSubmit, reset } = useForm();
 
-    const [currentPage, setCurrentPage] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
     const [firstVisIndex, setFirstVisIndex] = useState(null);
 
     const getPrevMessages = () => {
@@ -172,9 +160,18 @@ function CurrentChat(props) {
             setCurrentPage(currentPage);
             firstVisIndex = 0;
             setFirstVisIndex(firstVisIndex)
-            props.props.addPrevMsg(props.nicks, currentPage)
         }
     }
+
+    const nicknameFrom = props.props.login.me.nickname;
+    const nicknameTo = props.props.chats.nicknameTo;
+
+    useEffect(() => {
+        if (nicknameTo) {
+            fetchCountPages(nicknameFrom, nicknameTo);
+            fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
+        }
+    }, [nicknameTo, nicknameFrom, currentPage]);
 
     const onUploadFile = (e) => {
         uploadedFile = e.target.files[0];
@@ -216,7 +213,7 @@ function CurrentChat(props) {
             }
             if (data.message) {
                 playButton.current.click();
-                props.props.sendMessageDisp(props.nicks[1], props.nicks[0], data.message);
+                props.props.sendMessage(props.nicks[1], props.nicks[0], data.message);
                 firstVisIndex = props.props.chats.messages.length
                 setFirstVisIndex(firstVisIndex);
             }
@@ -259,8 +256,8 @@ const Chats = (props) => {
     const nicknameTo = props.chats.nicknameTo;
 
     useEffect(() => {
-        getMessagesOfThisChatDisp(nicknameFrom, nicknameTo);
-    }, [nicknameTo, nicknameFrom]);
+        fetchNames(nicknameFrom);
+    }, [nicknameFrom]);
 
     return (
         <Container>
