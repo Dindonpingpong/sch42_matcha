@@ -160,7 +160,7 @@ function CurrentChat(props) {
     const [play] = useSound(sendmsg);
     const playButton = useRef();
     const playSound = () => { play() };
-    let [uploadedFile, setFile] = useState("");
+    const [uploadedFile, setFile] = useState("");
     const { register, handleSubmit, reset } = useForm();
 
     let [currentPage, setCurrentPage] = useState(1);
@@ -197,13 +197,13 @@ function CurrentChat(props) {
     }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages]);
 
     const onUploadFile = (e) => {
-        uploadedFile = e.target.files[0];
-        setFile(uploadedFile);
+        setFile(e.target.files[0]);
     }
 
     const onSubmit = (data) => {
         if (props.props.chat) {
             reset();
+            
             if (uploadedFile !== "") {
                 let type = uploadedFile.type;
                 if (type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/gif' && type !== 'image/jpg') {
@@ -212,9 +212,11 @@ function CurrentChat(props) {
                 }
                 let formData = new FormData();
                 formData.append('photo', uploadedFile);
-                request(`/api/user/chatimage/${props.nicks[1]}/${props.nicks[0]}`, formData, 'POST', 'image')
+                console.log(props.nicks[1], props.nicks[0]);
+                request(`/api/chat/image/${props.nicks[1]}/${props.nicks[0]}`, formData, 'POST', 'image')
                     .then(res => res.json())
                     .then(data => {
+                        console.log(data);
                         let newPhotoData = {
                             idfrom: props.nicks[1],
                             message: data.message.message,
@@ -225,8 +227,7 @@ function CurrentChat(props) {
                         console.log('RERERE', newPhotoData);
                         playButton.current.click();
                         socket.emit('new_message', newPhotoData);
-                        uploadedFile = "";
-                        setFile(uploadedFile)
+                        setFile("");
                     })
                     .catch(e => {
                         alert(e.message);
@@ -260,7 +261,10 @@ function CurrentChat(props) {
                     placeholder='Your message'
                     ref={register()}
                 />
-                <input type="file" name="file" onChange={onUploadFile} />
+
+                <label className="btn btn-sm btn-success">Add
+                    <input className="" type="file" onChange={onUploadFile} />
+                </label>
                 {
                     uploadedFile &&
                     <ImageThumb image={uploadedFile} />

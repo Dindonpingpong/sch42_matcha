@@ -125,7 +125,7 @@ router.get('/users/:nickname', async (req, res) => {
     }
 })
 
-router.post('/chatimage/:from/:to', upload.single('photo'), async (req, res) => {
+router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
     try {
         let { mimetype, path, filename } = req.file;
         const { from, to } = req.params;
@@ -142,12 +142,14 @@ router.post('/chatimage/:from/:to', upload.single('photo'), async (req, res) => 
         ];
         sendMessage(params)
             .then(data => {
+                console.log(data);
                 res.json({
                     message: data,
                     success: true
                 })
             })
             .catch((e) => {
+                console.log(e.message);
                 res.status(500).json({
                     message: e.message,
                     success: false
@@ -155,6 +157,7 @@ router.post('/chatimage/:from/:to', upload.single('photo'), async (req, res) => 
             })
 
     } catch (e) {
+        console.log(e.message);
         res.status(501).json({
             message: e.message,
             success: false
