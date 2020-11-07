@@ -86,7 +86,7 @@ const sendMessage = (params) => {
 }
 
 const getMessage = (params) => {
-  const sql = `SELECT a.nickName, b.nickName, c.message, c.createdat, c.id, c.type FROM Chat c
+  const sql = `SELECT a.nickName AS nick, b.nickName, c.message, c.createdat, c.id, c.type FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)
@@ -372,7 +372,7 @@ const getCities = (params) => {
 }
 
 const getCountMessage = (params) => {
-  const sql = `SELECT COUNT(c.message) FROM Chat c
+  const sql = `SELECT COUNT(c.id) FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)`;

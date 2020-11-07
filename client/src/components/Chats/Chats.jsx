@@ -12,17 +12,18 @@ import Container from "reactstrap/es/Container";
 import Row from "reactstrap/es/Row";
 import Col from "reactstrap/es/Col";
 import Media from "reactstrap/es/Media";
+import './chatStyle.css'
 
 const mapStateToProps = (state) => {
     return {
         login: state.login,
-        chats: state.chats
+        chat: state.chat
     };
 }
 
 const mapDispatchToProps = (dispatch) => ({
     fetchNames: (name) => dispatch(fetchNames(name)),
-    fetchCountPages: (nicknameFrom, nicknameTo ) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
+    fetchCountPages: (nicknameFrom, nicknameTo) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
     sendMessage: (nicknameFrom, nicknameTo, message) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message)),
     fetchChatMessages: (nicknameTo, nicknameFrom, page) => dispatch(fetchChatMessages(nicknameTo, nicknameFrom, page)),
     setNameTo: (name) => dispatch(setNameTo(name))
@@ -65,47 +66,48 @@ const ChatMessages = (props) => {
         if (messagesEndRef && messagesEndRef.current)
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-    useEffect(scrollToBottom, [props.chat.messages]);
+    useEffect(scrollToBottom, [props.chat.chats]);
 
     if (props.chat) {
-        messagesOfThisChat = props.chat.messages.sort((a, b) => (a.id - b.id)).map((message, i) => {
+        messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) => {
             let date = new Date(message.createdat).toDateString();
             let time = new Date(message.createdat).toTimeString().split(' ')[0];
 
+            
             switch (message.type) {
                 case 'message': {
-                    return <Col xs={8} key={i}
-                        className={`chat__message ${props.myNick === message.nickname ? 'chat__message-right' : 'chat__message-left'}`}>
+                    return <Col xs={8} key={item}
+                        className={`chat__message ${props.me !== message.nick ? 'chat__message-right' : 'chat__message-left'}`}>
 
                         <div className={'chat__user__info'}>
                             <img src={"chat__avatar"} alt="" width={'50px'} height={'50px'} />
                             <div className={'chat__info__container'}>
-                                <p className={'chat__user__nick'}>{`${message.nickname}`}</p>
+                                <p className={'chat__user__nick'}>{`${message.nick}`}</p>
                                 <p className={'chat__msg__date'}>{`at ${time} (${date})`}</p>
                             </div>
                         </div>
                         <p className={'chat__message__text'}>{`${message.message}`}</p>
 
-                        <div style={getStyle(i, props.firstVisIndex)}
-                            ref={i === props.firstVisIndex ? messagesEndRef : null}>
+                        <div style={getStyle(item, props.firstVisIndex)}
+                            ref={item === props.firstVisIndex ? messagesEndRef : null}>
                         </div>
 
                     </Col>
                 }
                 case 'photo': {
-                    return <Col xs={8} key={i}
-                        className={`chat__message ${props.myNick === message.nickname ? 'chat__message-right' : 'chat__message-left'}`}>
+                    return <Col xs={8} key={item}
+                        className={`chat__message ${props.me !== message.nick ? 'chat__message-right' : 'chat__message-left'}`}>
 
                         <div className={'chat__user__info'}>
                             <img src="chat__avatar" alt="" width={'50px'} height={'50px'} />
                             <div className={'chat__info__container'}>
-                                <p className={'chat__user__nick'}>{`${message.nickname}`}</p>
+                                <p className={'chat__user__nick'}>{`${message.nick}`}</p>
                                 <p className={'chat__msg__date'}>{`at ${time} (${date})`}</p>
                             </div>
                         </div>
                         <ChatImage src={message.message} />
-                        <div style={getStyle(i, props.firstVisIndex)}
-                            ref={i === props.firstVisIndex ? messagesEndRef : null}>
+                        <div style={getStyle(item, props.firstVisIndex)}
+                            ref={item === props.firstVisIndex ? messagesEndRef : null}>
                         </div>
 
                     </Col>
@@ -121,6 +123,7 @@ const ChatMessages = (props) => {
 }
 
 function ListUsers(props) {
+    // console.log('1 ListUsers', props);
     let listItems;
 
     if (props.names) {
@@ -130,6 +133,7 @@ function ListUsers(props) {
                 tag="button"
                 value={name.nickname}
                 onClick={e => { props.set(e.target.value) }}
+                // onClick={e => { props.set(e.target.value); console.log(e.target.value); }}
             >
                 {name.nickname}
             </ListGroupItem>
@@ -143,6 +147,7 @@ function ListUsers(props) {
 }
 
 function CurrentChat(props) {
+    console.log('2 chat', props);
     const upRef = useRef();
     const bottomRef = useRef();
     const [play] = useSound(sendmsg);
@@ -152,10 +157,10 @@ function CurrentChat(props) {
     const { register, handleSubmit, reset } = useForm();
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [firstVisIndex, setFirstVisIndex] = useState(null);
+    let [firstVisIndex, setFirstVisIndex] = useState(null);
 
     const getPrevMessages = () => {
-        if (props.chats && currentPage - 1 >= 1) {
+        if (props.props.chat && currentPage - 1 >= 1) {
             currentPage--;
             setCurrentPage(currentPage);
             firstVisIndex = 0;
@@ -163,15 +168,21 @@ function CurrentChat(props) {
         }
     }
 
+    const test = props.props.chat.chats.length;
+    console.log(test);
+
+
     const nicknameFrom = props.props.login.me.nickname;
-    const nicknameTo = props.props.chats.nicknameTo;
+    const nicknameTo = props.props.chat.nicknameTo;
+
+    const {fetchCountPages, fetchChatMessages} = props.props;
 
     useEffect(() => {
         if (nicknameTo) {
             fetchCountPages(nicknameFrom, nicknameTo);
             fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
         }
-    }, [nicknameTo, nicknameFrom, currentPage]);
+    }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages]);
 
     const onUploadFile = (e) => {
         uploadedFile = e.target.files[0];
@@ -180,7 +191,7 @@ function CurrentChat(props) {
 
     const onSubmit = (data) => {
         // console.log(data);
-        if (props.chats) {
+        if (props.props.chat) {
             reset();
             if (uploadedFile !== "") {
                 let type = uploadedFile.type;
@@ -214,7 +225,7 @@ function CurrentChat(props) {
             if (data.message) {
                 playButton.current.click();
                 props.props.sendMessage(props.nicks[1], props.nicks[0], data.message);
-                firstVisIndex = props.props.chats.messages.length
+                firstVisIndex = props.props.chat.chats.length
                 setFirstVisIndex(firstVisIndex);
             }
         }
@@ -230,16 +241,16 @@ function CurrentChat(props) {
                     : <Button type='button' onClick={getPrevMessages}>get previous messages</Button>
             }
             {
-                props.chats && currentPage
-                    ? <ChatMessages chat={props.props.chats} firstVisIndex={firstVisIndex} me={props.props.nicks[1]} />
+                props.props.chat && currentPage
+                    ? <ChatMessages chat={props.props.chat} firstVisIndex={firstVisIndex} me={props.nicks[1]} />
                     : <div />
             }
             <Form className='message__wrapper' onSubmit={handleSubmit(onSubmit)}>
-                <Input type='textarea' name='message' id="message" cols={30} rows={1}
+                <input type='textarea' name='message' id="message" cols={30} rows={1}
                     placeholder='Your message'
-                    ref={register}
+                    ref={register()}
                 />
-                <Input type="file" name="file" onChange={onUploadFile} />
+                <input type="file" name="file" onChange={onUploadFile} />
                 {
                     uploadedFile &&
                     <ImageThumb image={uploadedFile} />
@@ -252,20 +263,21 @@ function CurrentChat(props) {
 }
 
 const Chats = (props) => {
+    const { fetchNames } = props;
     const nicknameFrom = props.login.me.nickname;
-    const nicknameTo = props.chats.nicknameTo;
 
     useEffect(() => {
         fetchNames(nicknameFrom);
-    }, [nicknameFrom]);
+    }, [fetchNames, nicknameFrom]);
 
+    console.log('Chat', props);
     return (
         <Container>
             <Row>
                 <Col xs={2} className='chat__list'>
-                    <ListUsers names={props.chats.names} set={props.chats.setNameTo} />
+                    <ListUsers names={props.chat.names} set={props.setNameTo} />
                 </Col>
-                <CurrentChat props={props} nicks={[nicknameTo, nicknameFrom]} />
+                <CurrentChat props={props} nicks={[props.chat.nicknameTo, nicknameFrom]} />
             </Row>
         </Container>
     );

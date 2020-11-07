@@ -18,7 +18,7 @@ export const ConfigureStore = () => {
             sign: SignReducer,
             edit: EditProfileReducer,
             filter: FilterReducer,
-            chats: chatsReducer
+            chat: chatsReducer
         }),
         persistedState,
         applyMiddleware(thunk, logger)

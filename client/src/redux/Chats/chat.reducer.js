@@ -28,7 +28,7 @@ export const chatsReducer = (state = initialState, action) => {
             return { ...state, isLoading: false, chats: action.payload };
 
         case ActionTypes.CHAT_NAME_TO_ADD:
-            return { ...state, isLoading: false, nicknameTo: action.payload };
+            return { ...state, isLoading: false, nicknameTo: action.nicknameTo };
 
         default:
             return state;

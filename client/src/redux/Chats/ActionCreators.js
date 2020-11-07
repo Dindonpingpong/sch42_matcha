@@ -37,19 +37,22 @@ export const setNameTo = (data) => (dispatch) => {
 
 export const fetchNames = (nickname) => (dispatch) => {
     dispatch(chatLoading());
+    
+    console.log(nickname);
 
     return request('/api/chat/users/' + nickname)
         .then(response => response.json())
-        .then(result => dispatch(setChatNames(result)))
+        .then(result => dispatch(setChatNames(result.data)))
         .catch(error => dispatch(chatFailed(error.message)));
 };
 
 export const fetchCountPages = (me, you) => (dispatch) => {
     dispatch(chatLoading());
+    console.log('api', me);
 
     return request(`/api/chat/messages/${me}/${you}`)
         .then(response => response.json())
-        .then(result => dispatch(setCountPages(result)))
+        .then(result => dispatch(setCountPages(result.data)))
         .catch(error => dispatch(chatFailed(error.message)));
 };
 

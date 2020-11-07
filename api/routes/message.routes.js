@@ -58,14 +58,12 @@ router.get('/message/:from/:to/:page', async (req, res) => {
                     })
             })
             .catch((e) => {
-                console.log(e.message);
                 res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        console.log(e.message);
         res.status(200).json({
             message: e.message,
             success: false
@@ -82,7 +80,7 @@ router.get('/messages/:from/:to', async (req, res) => {
                 const pages = Math.ceil(data[0].count / 10);
 
                 res.status(200).json({
-                    result: pages,
+                    data: pages,
                     message: "Ok",
                     success: true
                 })
@@ -108,7 +106,7 @@ router.get('/users/:nickname', async (req, res) => {
         getConnectedUsers([nickname])
             .then(data => {
                 res.status(200).json({
-                    result: data,
+                    data: data,
                     message: "Ok",
                     success: true
                 })
@@ -144,7 +142,6 @@ router.post('/chatimage/:from/:to', upload.single('photo'), async (req, res) => 
         ];
         sendMessage(params)
             .then(data => {
-                console.log('DATAAA', data)
                 res.json({
                     message: data,
                     success: true
@@ -168,7 +165,6 @@ router.post('/chatimage/:from/:to', upload.single('photo'), async (req, res) => 
 
 router.post('/getchatimage', async (req, res) => {
     try {
-        console.log('loop')
         let image = req.body.img;
         let path = `${destFolder}/${image}`;
         var img2 = fs.readFileSync(path);
