@@ -166,13 +166,6 @@ function CurrentChat(props) {
     let [currentPage, setCurrentPage] = useState(1);
     let [firstVisIndex, setFirstVisIndex] = useState(props.props.chat.chats.length - 1);
 
-    // if (props.props.chat && currentPage > 1) {
-    //     currentPage = currentChat.countPages ? currentChat.countPages : 1;
-    //     firstVisIndex = currentChat.messages.length - 1;
-    //     setCurrentPage(currentPage);
-    //     setFirstVisIndex(setFirstVisIndex);
-    // }
-
     const getPrevMessages = () => {
         if (props.props.chat && currentPage + 1 <= props.props.chat.countPages) {
             console.log('currentPage', currentPage);
