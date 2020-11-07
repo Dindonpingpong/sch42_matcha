@@ -10,7 +10,7 @@ import EditProfile from './profile/EditProfile';
 import Footer from './Footer';
 import Remind from './remind/remind';
 import Restore from './restore/restore';
-import Chat from "./Chats/Chat";
+import Chat from "./Chats/ChatCopy";
 
 export function Main() {
 

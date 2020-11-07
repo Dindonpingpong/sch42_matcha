@@ -1,0 +1,7 @@
+That's because Chrome added support for source maps.
+
+Go to the developer tools (F12 in the browser), then select the three dots in the upper right corner, and go to Settings.
+
+Then, look for Sources, and disable the options: "Enable javascript source maps" "Enable CSS source maps"
+
+If you do that, that would get rid of the warnings. It has nothing to do with your code. Check the developer tools in other pages and you will see the same warning.

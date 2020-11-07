@@ -1,4 +1,4 @@
-import {refreshChatActionCreator} from "../../redux/Chats/constants";
+import {refreshChatActionCreator} from "../../redux/Chats/ActionCreators";
 import {connect} from "react-redux";
 import {socket} from "../../index"
 import React, {useEffect, useRef, useState} from "react";

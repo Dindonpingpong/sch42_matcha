@@ -260,7 +260,7 @@ const Profile = (props) => {
     // console.log('login', props.login.me.nickname);
     // console.log('status', props.profile.status);
 
-    const { login } = props.login.me;
+    const login = props.login.me.nickname;
     const { nickname } = props.match.params;
     const { status } = props.profile;
     const { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView } = props;

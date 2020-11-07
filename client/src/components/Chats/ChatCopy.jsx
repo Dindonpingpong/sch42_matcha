@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
-import { getMessagesOfThisChat, getPrevMsg, sendMessage } from "../../redux/Chats/chatReducer";
+import { getMessagesOfThisChat, getPrevMsg, sendMessage } from "../../redux/Chats/chat.reducer";
 import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
 import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
@@ -13,6 +13,19 @@ import Row from "reactstrap/es/Row";
 import Col from "reactstrap/es/Col";
 import Media from "reactstrap/es/Media";
 
+const mapStateToProps = (state) => {
+    return {
+        login: state.login,
+        chats: state.chats
+    };
+}
+
+const mapDispatchToProps = (dispatch) => ({
+    sendMessageDisp: (data) => dispatch(sendMessage(data)),
+    getMessagesOfThisChatDisp: (idUserTo, idUserFrom) => dispatch(getMessagesOfThisChat(idUserTo, idUserFrom)),
+    addPrevMsg: (nicks, pageNumber) => dispatch(getPrevMsg(nicks, pageNumber))
+});
+
 const ImageThumb = ({ image }) => {
     return <img src={URL.createObjectURL(image)} alt={image.name} />;
 };
@@ -20,10 +33,12 @@ const ImageThumb = ({ image }) => {
 const ChatImage = (props) => {
     let [imgSrc, setImgSrc] = useState(<Spinner className={'chat__image'} />);
     useEffect(() => {
-        request(`/api/user/getchatimage`, { img: props.src }, 'POST').then((res => res.json())).then((resp => {
-            let imgSrcUpl = 'data:image/jpeg;base64,' + resp.img;
-            setImgSrc(<Media className={'chat__image'} src={imgSrcUpl} alt="" />);
-        })).catch((err) => console.log(err))
+        request(`/api/user/getchatimage`, { img: props.src }, 'POST')
+            .then((res => res.json()))
+            .then((resp => {
+                let imgSrcUpl = 'data:image/jpeg;base64,' + resp.img;
+                setImgSrc(<Media className={'chat__image'} src={imgSrcUpl} alt="" />);
+            })).catch((err) => console.log(err))
     }, [])
     return (
         imgSrc
@@ -145,11 +160,10 @@ let ChatInner = (props) => {
     const upRef = useRef();
     const [play] = useSound(sendmsg);
     const playButton = useRef();
-    const playSound = () => {
-        play()
-    }
+    const playSound = () => { play };
     let [uploadedFile, setFile] = useState("");
     const { register, handleSubmit, reset } = useForm();
+
     let [currentPage, setCurrentPage] = useState(null);
     let [firstVisIndex, setFirstVisIndex] = useState(null);
 
@@ -210,12 +224,12 @@ let ChatInner = (props) => {
                         alert(e.message);
                     })
             }
-            if (message) {
-                console.log('curMsg', message);
+            if (data.message) {
+                console.log('curMsg');
                 let newMessage = {
                     from: myNick,
                     to: partnerNick,
-                    message: message
+                    message: data.message
                 };
                 playButton.current.click();
                 console.log('message is:', newMessage)
@@ -223,19 +237,6 @@ let ChatInner = (props) => {
                 firstVisIndex = currentChat.messages.length
                 setFirstVisIndex(firstVisIndex);
             }
-            // if (data.message) {
-            //     console.log('curMsg');
-            //     let newMessage = {
-            //         from: myNick,
-            //         to: partnerNick,
-            //         message: data.message
-            //     };
-            //     playButton.current.click();
-            //     console.log('message is:', newMessage)
-            //     props.sendMessageDisp(newMessage);
-            //     firstVisIndex = currentChat.messages.length
-            //     setFirstVisIndex(firstVisIndex);
-            // }
 
         }
 
@@ -282,18 +283,6 @@ let ChatInner = (props) => {
         </Row>
     </Container>
     )
-}
-
-let mapStateToProps = (state) => {
-    return state;
-}
-
-let mapDispatchToProps = (dispatch) => {
-    return {
-        sendMessageDisp: (myId, partnerId, message) => dispatch(sendMessage(myId, partnerId, message)),
-        getMessagesOfThisChatDisp: (idUserTo, idUserFrom) => dispatch(getMessagesOfThisChat(idUserTo, idUserFrom)),
-        addPrevMsg: (nicks, pageNumber) => dispatch(getPrevMsg(nicks, pageNumber))
-    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ChatInner);
