@@ -30,6 +30,9 @@ export const chatsReducer = (state = initialState, action) => {
         case ActionTypes.CHAT_MESSAGES_PUSH:
             return { ...state, isLoading: false, chats: state.chats.concat(action.message) };
 
+        case ActionTypes.CHAT_MESSAGES_SHIFT:
+            return { ...state, isLoading: false, chats: action.message.concat(state.chats) };
+
         case ActionTypes.CHAT_NAME_TO_ADD:
             return { ...state, isLoading: false, nicknameTo: action.nicknameTo };
 

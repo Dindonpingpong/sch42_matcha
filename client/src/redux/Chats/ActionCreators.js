@@ -36,6 +36,11 @@ export const pushChat = (data) => ({
     message: data
 });
 
+export const shiftChat = (data) => ({
+    type: ActionTypes.CHAT_MESSAGES_SHIFT,
+    message: data
+});
+
 export const setNameTo = (data) => (dispatch) => {
     dispatch(nameAdd(data));
 }
@@ -71,8 +76,12 @@ export const fetchChatMessages = (me, you, page) => (dispatch) => {
     return request(`/api/chat/message/${me}/${you}/${page}`)
         .then(response => response.json())
         .then(result => {
-            if (result.success)
-                dispatch(setChatMessage(result.result));
+            if (result.success) {
+                if (page > 1)
+                    dispatch(shiftChat(result.result));
+                else
+                    dispatch(setChatMessage(result.result));
+            }
             else
                 dispatch(chatFailed(result.message));
         })
