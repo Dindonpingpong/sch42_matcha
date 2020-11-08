@@ -186,18 +186,10 @@ function CurrentChat(props) {
                 console.log(props.nicks[1], props.nicks[0]);
                 request(`/api/chat/image/${props.nicks[1]}/${props.nicks[0]}`, formData, 'POST', 'image')
                     .then(res => res.json())
-                    .then(data => {
-                        console.log(data);
-                        let newPhotoData = {
-                            idfrom: props.nicks[1],
-                            message: data.message.message,
-                            createdat: data.message.createdat,
-                            type: "photo",
-                            id: data.message.id
-                        };
-                        console.log('RERERE', newPhotoData);
+                    .then(result => {
                         playButton.current.click();
-                        socket.emit('new_message', newPhotoData);
+                        console.log('res', result);
+                        socket.emit('new_message', result.data);
                         setFile("");
                     })
                     .catch(e => {

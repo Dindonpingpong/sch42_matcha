@@ -80,7 +80,20 @@ const sendMessage = (params) => {
       (SELECT id FROM Users WHERE nickName = $2),
       $3
   )
-  RETURNING $1 AS nick, id, message, createdat, type`;
+  RETURNING $1 AS nick, message, createdat, type, id`;
+
+  return db.one(sql, params);
+}
+
+const sendFileMessage = (params) => {
+  const sql = `INSERT INTO Chat (idFrom, idTo, type, path) VALUES
+  ( 
+      (SELECT id FROM Users WHERE nickName = $1),
+      (SELECT id FROM Users WHERE nickName = $2),
+      $3,
+      $4
+  )
+  RETURNING $1 AS nick, message, createdat, type, path, id`;
 
   return db.one(sql, params);
 }
@@ -130,11 +143,16 @@ const putImage = (position, type, src, login) => {
   return db.one(sql, params);
 };
 
-const getImage = (login, position) => {
-  const params = [position, login];
-
+const getImage = (params) => {
   const sql =
     `SELECT photos[$1][1] FROM Users WHERE nickName = $2`
+
+  return db.any(sql, params);
+}
+
+const getChatImage = (params) => {
+  const sql =
+    `select photo[1] as mimetype from chat where photo[2] = $1`
 
   return db.any(sql, params);
 }
@@ -441,6 +459,7 @@ exports.getProfile = getProfile;
 exports.getViews = getViews;
 exports.getLikes = getLikes;
 exports.sendMessage = sendMessage;
+exports.sendFileMessage = sendFileMessage;
 exports.getMessage = getMessage;
 exports.getCards = getCards;
 exports.getStatus = getStatus;
@@ -448,6 +467,7 @@ exports.updateStatus = updateStatus;
 exports.insertStatus = insertStatus;
 exports.putImage = putImage;
 exports.getImage = getImage;
+exports.getChatImage = getChatImage;
 exports.getTimeView = getTimeView;
 exports.updateViewFailed = updateViewFailed;
 exports.insertViewFailed = insertViewFailed;

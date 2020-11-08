@@ -13,7 +13,7 @@ router.post('/:nickname/:position', upload.single('photo'), async (req, res) => 
         putImage(position, mimetype, newPath, nickname)
             .then(data => {
                 res.status(200).json({
-                    message: data.id,
+                    message: data,
                     success: true
                 })
             })
@@ -34,23 +34,23 @@ router.post('/:nickname/:position', upload.single('photo'), async (req, res) => 
 router.get('/:nickname/:position/:path', async (req, res) => {
     try {
         const { nickname, position, path } = req.params;
-        var img = fs.readFileSync('uploads/' + path);
-        var encode_image = img.toString('base64');
-        var finalImg = new Buffer.from(encode_image, 'base64');
+        const img = fs.readFileSync('uploads/' + path);
+        const encode_image = img.toString('base64');
+        const finalImg = new Buffer.from(encode_image, 'base64');
 
-        getImage(nickname, position)
+        getImage([position, nickname])
             .then(data => {
                 res.contentType(data[0].photos)
                 res.send(finalImg);
             })
             .catch(e => {
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })

@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const { getMessage, getCountMessage, sendMessage, getConnectedUsers } = require('../models/user');
+const { getMessage, getCountMessage, sendMessage, getConnectedUsers, sendFileMessage } = require('../models/user');
 const multer = require('multer');
-let destFolder = "uploadChatFiles";
+const destFolder = "uploadChatFiles";
 const upload = multer({ dest: destFolder });
+const fs = require('fs');
 
 router.post('/message', async (req, res) => {
     try {
@@ -127,38 +128,32 @@ router.get('/users/:nickname', async (req, res) => {
 
 router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
     try {
-        let { mimetype, path, filename } = req.file;
+        console.log(req.file);
+        let { mimetype, path } = req.file;
         const { from, to } = req.params;
-        var img = fs.readFileSync(path);
-        var encode_image = img.toString('base64');
-        var finalImg = new Buffer.from(encode_image, 'base64');
-        fs.writeFile((destFolder + '/' + req.file.originalname), finalImg, function (err) { });
-        fs.unlinkSync(path)
-        const params = [
-            from,
-            to,
-            req.file.originalname,
-            'photo'
-        ];
-        sendMessage(params)
+        const img = fs.readFileSync(path);
+        const encode_image = img.toString('base64');
+        const finalImg = new Buffer.from(encode_image, 'base64');
+        const newPath = `${from}_${to}_${new Date().getTime()}`;
+
+        fs.writeFile((`${destFolder}/${newPath}`), finalImg, function(err) {});
+        fs.unlinkSync(path);
+
+        sendFileMessage([ from, to, mimetype, newPath])
             .then(data => {
-                console.log(data);
                 res.json({
                     message: data,
                     success: true
                 })
             })
             .catch((e) => {
-                console.log(e.message);
-                res.status(500).json({
+                res.status(200).json({
                     message: e.message,
                     success: false
                 })
             })
-
     } catch (e) {
-        console.log(e.message);
-        res.status(501).json({
+        res.status(200).json({
             message: e.message,
             success: false
         })
@@ -166,15 +161,17 @@ router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
 
 })
 
-router.post('/getchatimage', async (req, res) => {
+router.get('/image/:path', async (req, res) => {
     try {
-        let image = req.body.img;
-        let path = `${destFolder}/${image}`;
-        var img2 = fs.readFileSync(path);
-        var encode_image = img2.toString('base64');
-        res.status(200).json({
-                img: encode_image,
-                success: true
+        const { path } = req.params;
+        const img = fs.readFileSync(`${destFolder}/${path}`);
+        const encode_image = img.toString('base64');
+        const finalImg = new Buffer.from(encode_image, 'base64');
+
+        getChatImage([path])
+            .then((data) => {
+                res.contentType(data[0].photos)
+                res.send(finalImg);
             })
     } catch (e) {
         res.status(500).json({
