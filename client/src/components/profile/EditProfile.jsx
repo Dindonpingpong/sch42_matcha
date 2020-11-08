@@ -285,7 +285,7 @@ const EditProfile = (props) => {
                     <InputForm name='currentPass' login={props.login.me.nickname} type='password' label='Current password' placeholder="Current password" feedback='Too weak password. 8 symbols is required' checkBtn={checkBtn} />
                     <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />
 
-                    <div className="d-flex justify-content-between align-items-center">
+                    <div className="justify-content-between">
                         {/* <Button href="#" as="input" type="button" value="Save" className="btn-success">Save</Button> */}
                         <Button href="#" className="btn-success" disabled={isActiveBtn} value="Save" onClick={handleSubmit} >Save</Button>
                         {/* ml-auto d-block */}

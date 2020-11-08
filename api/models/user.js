@@ -412,8 +412,11 @@ const updateRate = (params) => {
 }
 
 const getConnectedUsers = (params) => {
-  const sql = `SELECT nickName FROM 
-  (SELECT (SELECT nickname FROM Users WHERE id = a.idFrom) as nickName, createdAt FROM Connections a
+  const sql = `SELECT nickName, path FROM 
+  (SELECT
+    (SELECT nickname FROM Users WHERE id = a.idFrom) AS nickName,
+    (SELECT photos[1][2] FROM Users WHERE id = a.idFrom) AS path,
+    createdAt FROM Connections a
       WHERE exists 
       (SELECT * from Connections b
           WHERE 

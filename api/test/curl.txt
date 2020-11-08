@@ -25,6 +25,7 @@ curl -X POST -H 'Content-Type: application/json' -d '{"from":"mgrass","to":"rkin
 
 get message
 curl "http://localhost:5000/api/user/message/rkina/mgrass"
+curl "http://localhost:5000/api/chat/users/test9"
 
 get cards
 curl "http://localhost:5000/api/user/cards/rkina/1"

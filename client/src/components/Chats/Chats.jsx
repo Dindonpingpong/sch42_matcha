@@ -2,17 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
 import { initChat, initMessages, fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo, pushChatMessage } from "../../redux/Chats/ActionCreators";
-import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
+import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button, Img } from 'reactstrap';
 // import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
 import { socket } from "../../index";
 import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
-import Container from "reactstrap/es/Container";
-import Row from "reactstrap/es/Row";
-import Col from "reactstrap/es/Col";
-import Media from "reactstrap/es/Media";
-import './chatStyle.css'
+import moment from 'moment';
+import './Chats.css'
 
 const mapStateToProps = (state) => {
     return {
@@ -55,9 +52,9 @@ const ChatImage = (props) => {
 function getStyle(index, firstIndex) {
     if (firstIndex === 0) {
         if (index === 0)
-            return ({ borderTop: '1px solid green' });
+            return ({ borderTop: '3px dashed grey' });
         if (index === 10)
-            return ({ borderBottom: '1px solid green' });
+            return ({ borderBottom: '3px dashed grey' });
     }
 }
 
@@ -78,85 +75,63 @@ const ChatMessages = (props) => {
     }, []);
 
     if (props.chat) {
-        messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) => {
-            let date = new Date(message.createdat).toDateString();
-            let time = new Date(message.createdat).toTimeString().split(' ')[0];
+        messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) =>
+            <Col xs="8" key={item}
+                className={`chat__message ${props.me !== message.nick ? 'chat__message-right' : 'chat__message-left'}`}>
 
+                <div className='chat__user__info'>
+                    <div className='chat__info__container'>
+                        <p className='chat__user__nick'>{`${message.nick}`}</p>
+                        <p className='chat__msg__date'>{moment(message.createdat).format('lll')}</p>
+                    </div>
+                </div>
 
-            switch (message.type) {
-                case 'message': {
-                    return <Col xs={8} key={item}
-                        className={`chat__message ${props.me !== message.nick ? 'chat__message-right' : 'chat__message-left'}`}>
-
-                        <div className={'chat__user__info'}>
-                            <img src={"chat__avatar"} alt="" width={'50px'} height={'50px'} />
-                            <div className={'chat__info__container'}>
-                                <p className={'chat__user__nick'}>{`${message.nick}`}</p>
-                                <p className={'chat__msg__date'}>{`at ${time} (${date})`}</p>
-                            </div>
-                        </div>
-                        <p className={'chat__message__text'}>{`${message.message}`}</p>
-
-                        <div style={getStyle(item, props.firstVisIndex)}
-                            ref={item === props.firstVisIndex ? messagesEndRef : null}>
-                        </div>
-
-                    </Col>
+                {
+                    (message.type === 'message')
+                        ? <p className='chat__message__text'>{`${message.message}`}</p>
+                        : <ChatImage src={message.message} />
                 }
-                case 'photo': {
-                    return <Col xs={8} key={item}
-                        className={`chat__message ${props.me !== message.nick ? 'chat__message-right' : 'chat__message-left'}`}>
 
-                        <div className={'chat__user__info'}>
-                            <img src="chat__avatar" alt="" width={'50px'} height={'50px'} />
-                            <div className={'chat__info__container'}>
-                                <p className={'chat__user__nick'}>{`${message.nick}`}</p>
-                                <p className={'chat__msg__date'}>{`at ${time} (${date})`}</p>
-                            </div>
-                        </div>
-                        <ChatImage src={message.message} />
-                        <div style={getStyle(item, props.firstVisIndex)}
-                            ref={item === props.firstVisIndex ? messagesEndRef : null}>
-                        </div>
-
-                    </Col>
-                }
-            }
-        })
+                <div style={getStyle(item, props.firstVisIndex)}
+                    ref={item === props.firstVisIndex ? messagesEndRef : null}>
+                </div>
+            </Col>
+        )
     }
     return (
-        <div className={'chat__window'}>
+        <div className='chat__window'>
             {messagesOfThisChat}
         </div>
-    )
+    );
 }
 
 function ListUsers(props) {
-    // console.log('1 ListUsers', props);
     let listItems;
 
     if (props.names.length > 0) {
         listItems = props.names.map((name, item) =>
             <ListGroupItem
+                className={name.nickname === props.click ? 'active-item' : ''}
                 key={item}
                 tag="button"
                 value={name.nickname}
                 onClick={e => { props.set(e.target.value) }}
-            // onClick={e => { props.set(e.target.value); console.log(e.target.value); }}
             >
+                <img className="chat__list-avatar" src={`/api/image/${name.nickname}/1/${name.path}`} alt={"Photo profile"} />
                 {name.nickname}
-            </ListGroupItem>
+            </ListGroupItem >
         );
     }
     return (
-        <ListGroup>
-            {listItems}
-        </ListGroup>
+        <Col xs="2" className='chat__list'>
+            <ListGroup>
+                {listItems}
+            </ListGroup>
+        </Col>
     );
 }
 
 function CurrentChat(props) {
-    console.log('2 chat', props);
     const bottomRef = useRef();
     const upRef = useRef();
     const [play] = useSound(sendmsg);
@@ -238,35 +213,42 @@ function CurrentChat(props) {
     }
 
     return (
-        <Col className={'current__chat'}>
+        <Col xs="10" className='current__chat'>
             <div ref={upRef} />
-            <button type='button' onClick={playSound} ref={playButton} style={{ display: 'none' }} />
+            <button className="current__chat-hidden" type='button' onClick={playSound} ref={playButton} />
             {
                 (currentPage >= props.props.chat.countPages)
                     ? <div />
-                    : <Button type='button' onClick={getPrevMessages}>get previous messages</Button>
+                    : <Button className='current__chat-prev' type='button' onClick={getPrevMessages}>Get previous messages</Button>
             }
             {
                 (props.props.chat && currentPage)
                     ? <ChatMessages pushChatMessage={props.props.pushChatMessage} chat={props.props.chat} firstVisIndex={firstVisIndex} me={props.nicks[1]} />
                     : <div />
             }
-            <Form className='message__wrapper' onSubmit={handleSubmit(onSubmit)}>
-                <input type='textarea' name='message' id="message" cols={30} rows={1}
-                    placeholder='Your message'
-                    ref={register()}
-                />
+            {
+                props.nicks[0] &&
+                <Form className='message__wrapper' onSubmit={handleSubmit(onSubmit)}>
+                    <input className='message__wrapper-msg' type='textarea' name='message' id="message" cols={30} rows={1}
+                        placeholder='Your message'
+                        ref={register()}
+                    />
 
-                <label className="btn btn-sm btn-success">Add
-                    <input className="" type="file" onChange={onUploadFile} />
-                </label>
-                {
-                    uploadedFile &&
-                    <ImageThumb image={uploadedFile} />
-                }
-                <Button type='submit' className='button__send'>Send</Button>
-                <div ref={bottomRef} />
-            </Form>
+                    <div className='message__wrapper-btn'>
+                        <label className="btn btn-dark">
+                            +
+                        <input className="current__chat-hidden" type="file" onChange={onUploadFile} />
+                        </label>
+                        {
+                            uploadedFile &&
+                            <ImageThumb image={uploadedFile} />
+                        }
+                        <Button type='submit' className='button__send'>Send</Button>
+                    </div>
+                    <div ref={bottomRef} />
+                </Form>
+            }
+
         </Col>
     );
 }
@@ -280,16 +262,15 @@ const Chats = (props) => {
         fetchNames(nicknameFrom);
     }, [fetchNames, nicknameFrom, initChat]);
 
-    console.log('Chat', props);
     return (
-        <Container>
-            <Row>
-                <Col xs={2} className='chat__list'>
-                    <ListUsers names={props.chat.names} set={props.setNameTo} />
-                </Col>
-                <CurrentChat props={props} nicks={[props.chat.nicknameTo, nicknameFrom]} />
-            </Row>
-        </Container>
+        <section className="chats text-break">
+            <Container>
+                <Row>
+                    <ListUsers names={props.chat.names} click={props.chat.nicknameTo} set={props.setNameTo} />
+                    <CurrentChat props={props} nicks={[props.chat.nicknameTo, nicknameFrom]} />
+                </Row>
+            </Container>
+        </section>
     );
 }
 

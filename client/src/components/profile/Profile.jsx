@@ -11,8 +11,8 @@ import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus, fet
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
 import { request } from '../../util/http';
-import './Profile.css';
 import moment from 'moment';
+import './Profile.css';
 
 const mapStateToProps = (state) => {
     return {
@@ -77,7 +77,7 @@ function PhotoList(props) {
                     {
                         props.check &&
                         <CardBody>
-                            <div className="d-flex justify-content-center align-items-center">
+                            <div className="justify-content-center">
                                 <Label className="btn btn-sm btn-success">Add
                                     <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1)} />
                                 </Label>
