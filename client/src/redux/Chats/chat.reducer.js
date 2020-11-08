@@ -19,22 +19,28 @@ export const chatsReducer = (state = initialState, action) => {
             return { ...state, isLoading: false, errProfile: action.payload };
 
         case ActionTypes.CHAT_NAMES:
-            return { ...state, isLoading: false, names: action.payload };
+            return { ...state, isLoading: false, errProfile: null, names: action.payload };
 
         case ActionTypes.CHAT_COUNT_PAGES:
-            return { ...state, isLoading: false, countPages: action.payload };
+            return { ...state, isLoading: false, errProfile: null, countPages: action.payload };
 
         case ActionTypes.CHAT_MESSAGES:
-            return { ...state, isLoading: false, chats: action.payload };
+            return { ...state, isLoading: false, errProfile: null, chats: action.payload };
 
         case ActionTypes.CHAT_MESSAGES_PUSH:
-            return { ...state, isLoading: false, chats: state.chats.concat(action.message) };
+            return { ...state, isLoading: false, errProfile: null, chats: state.chats.concat(action.message) };
 
         case ActionTypes.CHAT_MESSAGES_SHIFT:
-            return { ...state, isLoading: false, chats: action.message.concat(state.chats) };
+            return { ...state, isLoading: false, errProfile: null, chats: action.message.concat(state.chats) };
 
         case ActionTypes.CHAT_NAME_TO_ADD:
-            return { ...state, isLoading: false, nicknameTo: action.nicknameTo };
+            return { ...state, isLoading: false, errProfile: null, nicknameTo: action.nicknameTo };
+
+        case ActionTypes.CHAT_CLEAR:
+            return { ...initialState };
+
+        case ActionTypes.CHAT_MESSAGES_CLEAR:
+            return { ...state, isLoading: false, errProfile: null, chats: [], countPages: null };
 
         default:
             return state;

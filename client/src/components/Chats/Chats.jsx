@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
-import { fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo, pushChatMessage } from "../../redux/Chats/ActionCreators";
+import { initChat, initMessages, fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo, pushChatMessage } from "../../redux/Chats/ActionCreators";
 import { Spinner, ListGroup, ListGroupItem, Input, Form, Button } from 'reactstrap';
 // import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
@@ -22,6 +22,8 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+    initChat: () => dispatch(initChat()),
+    initMessages: () => dispatch(initMessages()),
     fetchNames: (name) => dispatch(fetchNames(name)),
     fetchCountPages: (nicknameFrom, nicknameTo) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
     sendMessage: (nicknameFrom, nicknameTo, message) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message)),
@@ -163,24 +165,25 @@ function CurrentChat(props) {
     const [uploadedFile, setFile] = useState("");
     const { register, handleSubmit, reset } = useForm();
 
-    let [currentPage, setCurrentPage] = useState(1);
-    let [firstVisIndex, setFirstVisIndex] = useState(props.props.chat.chats.length - 1);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [firstVisIndex, setFirstVisIndex] = useState(props.props.chat.chats.length - 1);
 
     const getPrevMessages = () => {
         if (props.props.chat && currentPage + 1 <= props.props.chat.countPages) {
-            console.log('currentPage', currentPage);
-            console.log('firstVisIndex', firstVisIndex);
-            currentPage++;
-            setCurrentPage(currentPage);
-            firstVisIndex = 0;
-            setFirstVisIndex(firstVisIndex)
+            setCurrentPage(currentPage + 1);
+            setFirstVisIndex(0);
         }
     }
 
     const nicknameFrom = props.props.login.me.nickname;
     const nicknameTo = props.props.chat.nicknameTo;
+    const { fetchCountPages, fetchChatMessages, initMessages } = props.props;
 
-    const { fetchCountPages, fetchChatMessages } = props.props;
+    useEffect(() => {
+        initMessages();
+        setCurrentPage(1);
+        setFirstVisIndex(props.props.chat.chats.length - 1);
+    }, [initMessages, nicknameTo]);
 
     useEffect(() => {
         if (nicknameTo) {
@@ -196,7 +199,7 @@ function CurrentChat(props) {
     const onSubmit = (data) => {
         if (props.props.chat) {
             reset();
-            
+
             if (uploadedFile !== "") {
                 let type = uploadedFile.type;
                 if (type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/gif' && type !== 'image/jpg') {
@@ -229,8 +232,7 @@ function CurrentChat(props) {
             if (data.message) {
                 playButton.current.click();
                 props.props.sendMessage(props.nicks[1], props.nicks[0], data.message);
-                firstVisIndex = props.props.chat.chats.length
-                setFirstVisIndex(firstVisIndex);
+                setFirstVisIndex(props.props.chat.chats.length);
             }
         }
     }
@@ -270,12 +272,13 @@ function CurrentChat(props) {
 }
 
 const Chats = (props) => {
-    const { fetchNames } = props;
+    const { fetchNames, initChat } = props;
     const nicknameFrom = props.login.me.nickname;
 
     useEffect(() => {
+        initChat();
         fetchNames(nicknameFrom);
-    }, [fetchNames, nicknameFrom]);
+    }, [fetchNames, nicknameFrom, initChat]);
 
     console.log('Chat', props);
     return (

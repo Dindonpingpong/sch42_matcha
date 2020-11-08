@@ -13,6 +13,7 @@ import { logOut } from '../redux/login/ActionCreators';
 import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 import { initFilter } from '../redux/filter/ActionCreators';
+import { initChat } from '../redux/Chats/ActionCreators';
 
 const mapStateToProps = (state) => {
     return {
@@ -22,7 +23,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     logOut: () => dispatch(logOut()),
-    clearFilter: () => dispatch(initFilter())
+    clearFilter: () => dispatch(initFilter()),
+    clearChat: () => dispatch(initChat())
 });
 
 const Header = (props) => {
@@ -73,6 +75,7 @@ const Header = (props) => {
                         <NavItem>
                             <NavLink href='/login' onClick={() => {
                                 props.clearFilter();
+                                props.clearChat();
                                 props.logOut();
                             }}>
                                 {name}

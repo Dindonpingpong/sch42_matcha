@@ -41,13 +41,29 @@ export const shiftChat = (data) => ({
     message: data
 });
 
+export const chatClear = () => ({
+    type: ActionTypes.CHAT_CLEAR
+});
+
+export const chatMessagesClear = () => ({
+    type: ActionTypes.CHAT_MESSAGES_CLEAR
+});
+
 export const setNameTo = (data) => (dispatch) => {
     dispatch(nameAdd(data));
-}
+};
 
 export const pushChatMessage = (data) => (dispatch) => {
     dispatch(pushChat(data));
-}
+};
+
+export const initChat = () => (dispatch) => {
+    dispatch(chatClear());
+};
+
+export const initMessages = () => (dispatch) => {
+    dispatch(chatMessagesClear());
+};
 
 export const fetchNames = (nickname) => (dispatch) => {
     dispatch(chatLoading());
