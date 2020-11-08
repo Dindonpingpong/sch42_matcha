@@ -409,10 +409,12 @@ const Users = (props) => {
     }
     else
         return (
-            <Container>
-                <Filter filter={props} />
-                <h2>Not</h2>
-            </Container>
+            <section className="users">
+                <Container>
+                    <Filter filter={props} />
+                    <h2>Not</h2>
+                </Container>
+            </section>
         );
 }
 

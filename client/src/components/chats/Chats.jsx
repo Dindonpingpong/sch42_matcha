@@ -5,9 +5,7 @@ import {
     initChat, initMessages, fetchNames, fetchCountPages, fetchChatMessages,
     fetchSendMessage, fetchSendFile, setNameTo, pushChatMessage
 } from "../../redux/chats/ActionCreators";
-import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button } from 'reactstrap';
-// import NotificationsBar from "./NotificationsBar";
-import { request } from "../../util/http";
+import { ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button } from 'reactstrap';
 import { socket } from "../../index";
 import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
@@ -43,15 +41,6 @@ const ImageThumb = ({ image }) => {
     );
 };
 
-function getStyle(index, firstIndex) {
-    if (firstIndex === 0) {
-        if (index === 0)
-            return ({ borderTop: '3px dashed grey' });
-        if (index === 10)
-            return ({ borderBottom: '3px dashed grey' });
-    }
-}
-
 const ChatMessages = (props) => {
     let messagesOfThisChat = [];
     const messagesEndRef = useRef(null);
@@ -60,13 +49,16 @@ const ChatMessages = (props) => {
         if (messagesEndRef && messagesEndRef.current)
             messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
+
     useEffect(scrollToBottom, [props.chat.chats]);
+
+    const { pushChatMessage } = props;
 
     useEffect(() => {
         socket.on("chat_message", (data) => {
-            props.pushChatMessage(data);
+            pushChatMessage(data);
         });
-    }, []);
+    }, [pushChatMessage]);
 
     if (props.chat) {
         messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) =>
@@ -85,13 +77,11 @@ const ChatMessages = (props) => {
                 }
                 {
                     (message.type !== 'message') &&
-                    <Media className={'chat__image'}
+                    <Media className='chat__image'
                         src={`/api/chat/image/${message.pathfile}`}
                         alt="Chat file" />
                 }
-                <div style={getStyle(item, props.firstVisIndex)}
-                    ref={item === props.firstVisIndex ? messagesEndRef : null}>
-                </div>
+                <div ref={item === props.firstVisIndex ? messagesEndRef : null}></div>
             </Col>
         )
     }
@@ -160,7 +150,7 @@ function CurrentChat(props) {
     useEffect(() => {
         initMessages();
         setCurrentPage(1);
-        setFirstVisIndex(props.props.chat.chats.length - 1);
+        setFirstVisIndex(2);
     }, [initMessages, nicknameTo]);
 
     const onUploadFile = (e) => {
@@ -187,8 +177,8 @@ function CurrentChat(props) {
             else if (data.message && !uploadedFile) {
                 playButton.current.click();
                 props.props.sendMessage(props.nicks[1], props.nicks[0], data.message, props.props.login.me.photos[0][1]);
-                setFirstVisIndex(props.props.chat.chats.length);
             }
+            setFirstVisIndex(props.props.chat.chats.length);
         }
     }
 
@@ -203,7 +193,9 @@ function CurrentChat(props) {
             }
             {
                 (props.props.chat && currentPage)
-                    ? <ChatMessages pushChatMessage={props.props.pushChatMessage} chat={props.props.chat} firstVisIndex={firstVisIndex} me={props.nicks[1]} />
+                    ? <ChatMessages pushChatMessage={props.props.pushChatMessage} chat={props.props.chat}
+                        firstVisIndex={firstVisIndex}
+                        me={props.nicks[1]} />
                     : <div />
             }
             {

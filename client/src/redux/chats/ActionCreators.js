@@ -68,8 +68,6 @@ export const initMessages = () => (dispatch) => {
 export const fetchNames = (nickname) => (dispatch) => {
     dispatch(chatLoading());
 
-    console.log(nickname);
-
     return request('/api/chat/users/' + nickname)
         .then(response => response.json())
         .then(result => dispatch(setChatNames(result.data)))
@@ -77,8 +75,7 @@ export const fetchNames = (nickname) => (dispatch) => {
 };
 
 export const fetchCountPages = (me, you) => (dispatch) => {
-    dispatch(chatLoading());
-    console.log('api', me);
+    // dispatch(chatLoading());
 
     return request(`/api/chat/messages/${me}/${you}`)
         .then(response => response.json())
@@ -87,7 +84,7 @@ export const fetchCountPages = (me, you) => (dispatch) => {
 };
 
 export const fetchChatMessages = (me, you, page) => (dispatch) => {
-    dispatch(chatLoading());
+    // dispatch(chatLoading());
 
     return request(`/api/chat/message/${me}/${you}/${page}`)
         .then(response => response.json())
@@ -105,7 +102,7 @@ export const fetchChatMessages = (me, you, page) => (dispatch) => {
 };
 
 export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
-    dispatch(chatLoading());
+    // dispatch(chatLoading());
 
     const data = {
         from: me,
@@ -126,7 +123,7 @@ export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
 };
 
 export const fetchSendFile = (me, you, formData) => (dispatch) => {
-    dispatch(chatLoading());
+    // dispatch(chatLoading());
 
     request(`/api/chat/image/${me}/${you}`, formData, 'POST', 'image')
         .then(response => response.json())
