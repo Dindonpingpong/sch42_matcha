@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
-import { initChat, initMessages, fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo, pushChatMessage } from "../../redux/Chats/ActionCreators";
+import {
+    initChat, initMessages, fetchNames, fetchCountPages, fetchChatMessages,
+    fetchSendMessage, fetchSendFile, setNameTo, pushChatMessage
+} from "../../redux/chats/ActionCreators";
 import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button } from 'reactstrap';
 // import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
@@ -27,6 +30,7 @@ const mapDispatchToProps = (dispatch) => ({
     fetchCountPages: (nicknameFrom, nicknameTo) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
     sendMessage: (nicknameFrom, nicknameTo, message, path) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message, path)),
     fetchChatMessages: (nicknameTo, nicknameFrom, page) => dispatch(fetchChatMessages(nicknameTo, nicknameFrom, page)),
+    fetchSendFile: (nicknameTo, nicknameFrom, data) => dispatch(fetchSendFile(nicknameTo, nicknameFrom, data)),
     setNameTo: (name) => dispatch(setNameTo(name)),
     pushChatMessage: (msg) => dispatch(pushChatMessage(msg))
 });
@@ -38,22 +42,6 @@ const ImageThumb = ({ image }) => {
         </div>
     );
 };
-
-const ChatImage = (props) => {
-    let [imgSrc, setImgSrc] = useState(<Spinner className='chat__image' />);
-    useEffect(() => {
-        request(`/api/chat/getchatimage`, { img: props.src }, 'POST')
-            .then((res => res.json()))
-            .then((resp => {
-                let imgSrcUpl = 'data:image/jpeg;base64,' + resp.img;
-                setImgSrc(<Media className={'chat__image'} src={imgSrcUpl} alt="" />);
-            }))
-            .catch((err) => console.log(err))
-    }, []);
-    return (
-        imgSrc
-    );
-}
 
 function getStyle(index, firstIndex) {
     if (firstIndex === 0) {
@@ -91,13 +79,16 @@ const ChatMessages = (props) => {
                         <p className='chat__msg__date'>{moment(message.createdat).format('lll')}</p>
                     </div>
                 </div>
-
                 {
-                    (message.type === 'message')
-                        ? <p className='chat__message__text'>{`${message.message}`}</p>
-                        : <ChatImage src={message.message} />
+                    (message.message) &&
+                    <p className='chat__message__text'>{`${message.message}`}</p>
                 }
-
+                {
+                    (message.type !== 'message') &&
+                    <Media className={'chat__image'}
+                        src={`/api/chat/image/${message.pathfile}`}
+                        alt="Chat file" />
+                }
                 <div style={getStyle(item, props.firstVisIndex)}
                     ref={item === props.firstVisIndex ? messagesEndRef : null}>
                 </div>
@@ -142,7 +133,7 @@ function CurrentChat(props) {
     const [play] = useSound(sendmsg);
     const playButton = useRef();
     const playSound = () => { play() };
-    const [uploadedFile, setFile] = useState("");
+    const [uploadedFile, setFile] = useState(null);
     const { register, handleSubmit, reset } = useForm();
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -159,12 +150,8 @@ function CurrentChat(props) {
     const nicknameTo = props.props.chat.nicknameTo;
     const { fetchCountPages, fetchChatMessages, initMessages } = props.props;
 
-  
-
     useEffect(() => {
-        console.log('here', nicknameTo);
         if (nicknameTo) {
-            console.log('here2', nicknameTo);
             fetchCountPages(nicknameFrom, nicknameTo);
             fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
         }
@@ -184,7 +171,7 @@ function CurrentChat(props) {
         if (props.props.chat) {
             reset();
 
-            if (uploadedFile !== "") {
+            if (uploadedFile) {
                 let type = uploadedFile.type;
                 if (type !== 'image/jpeg' && type !== 'image/png' && type !== 'image/gif' && type !== 'image/jpg') {
                     alert('Wrong format!');
@@ -192,30 +179,13 @@ function CurrentChat(props) {
                 }
                 let formData = new FormData();
                 formData.append('photo', uploadedFile);
-                console.log(props.nicks[1], props.nicks[0]);
-                request(`/api/chat/image/${props.nicks[1]}/${props.nicks[0]}`, formData, 'POST', 'image')
-                    .then(res => res.json())
-                    .then(data => {
-                        console.log(data);
-                        let newPhotoData = {
-                            idfrom: props.nicks[1],
-                            message: data.message.message,
-                            createdat: data.message.createdat,
-                            type: "photo",
-                            id: data.message.id
-                        };
-                        console.log('RERERE', newPhotoData);
-                        playButton.current.click();
-                        socket.emit('new_message', newPhotoData);
-                        setFile("");
-                    })
-                    .catch(e => {
-                        alert(e.message);
-                    })
+                formData.append('message', data.message);
+                formData.append('avatar', props.props.login.me.photos[0][1]);
+                props.props.fetchSendFile(props.nicks[1], props.nicks[0], formData);
+                setFile(null);
             }
-            if (data.message) {
+            else if (data.message && !uploadedFile) {
                 playButton.current.click();
-                console.log('here', props.props.login.me.photos[0][1]);
                 props.props.sendMessage(props.nicks[1], props.nicks[0], data.message, props.props.login.me.photos[0][1]);
                 setFirstVisIndex(props.props.chat.chats.length);
             }

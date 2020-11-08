@@ -124,3 +124,17 @@ export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
         })
         .catch(error => dispatch(chatFailed(error.message)));
 };
+
+export const fetchSendFile = (me, you, formData) => (dispatch) => {
+    dispatch(chatLoading());
+
+    request(`/api/chat/image/${me}/${you}`, formData, 'POST', 'image')
+        .then(response => response.json())
+        .then(result => {
+            if (result.success)
+                socket.emit('new_message', result.data);
+            else
+                dispatch(chatFailed(result.message));
+        })
+        .catch(error => dispatch(chatFailed(error.message)));
+};

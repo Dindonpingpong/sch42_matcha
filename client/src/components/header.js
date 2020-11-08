@@ -13,7 +13,7 @@ import { logOut } from '../redux/login/ActionCreators';
 import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 import { initFilter } from '../redux/filter/ActionCreators';
-import { initChat } from '../redux/Chats/ActionCreators';
+import { initChat } from '../redux/chats/ActionCreators';
 
 const mapStateToProps = (state) => {
     return {

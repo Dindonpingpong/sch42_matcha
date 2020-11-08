@@ -4,7 +4,7 @@ import { EditProfileReducer } from './editProfile/editProfile.reducer';
 import { LoginReducer } from './login/login.reducer';
 import { SignReducer } from './sign/sign.reducer';
 import { FilterReducer } from './filter/filter.reducer';
-import { chatsReducer } from "./Chats/chat.reducer";
+import { chatsReducer } from "./chats/chat.reducer";
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 

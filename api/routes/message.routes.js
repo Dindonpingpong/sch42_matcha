@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getMessage, getCountMessage, sendMessage, getConnectedUsers, sendFileMessage } = require('../models/user');
+const { getMessage, getCountMessage, sendMessage, getConnectedUsers, sendFileMessage, getChatImage } = require('../models/user');
 const multer = require('multer');
 const destFolder = "uploadChatFiles";
 const upload = multer({ dest: destFolder });
@@ -56,7 +56,7 @@ router.get('/message/:from/:to/:page', async (req, res) => {
                     res.status(200).json({
                         result: [],
                         message: "No messages",
-                        success: false
+                        success: true
                     })
             })
             .catch((e) => {
@@ -129,8 +129,8 @@ router.get('/users/:nickname', async (req, res) => {
 
 router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
     try {
-        console.log(req.file);
         let { mimetype, path } = req.file;
+        const { message, avatar } = req.body;
         const { from, to } = req.params;
         const img = fs.readFileSync(path);
         const encode_image = img.toString('base64');
@@ -140,10 +140,11 @@ router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
         fs.writeFile((`${destFolder}/${newPath}`), finalImg, function(err) {});
         fs.unlinkSync(path);
 
-        sendFileMessage([ from, to, mimetype, newPath])
+        sendFileMessage([ from, to, message, mimetype, newPath])
             .then(data => {
+                data.path = avatar;
                 res.json({
-                    message: data,
+                    data: data,
                     success: true
                 })
             })
@@ -171,7 +172,7 @@ router.get('/image/:path', async (req, res) => {
 
         getChatImage([path])
             .then((data) => {
-                res.contentType(data[0].photos)
+                res.contentType(data[0].type)
                 res.send(finalImg);
             })
     } catch (e) {

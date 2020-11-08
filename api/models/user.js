@@ -86,20 +86,21 @@ const sendMessage = (params) => {
 }
 
 const sendFileMessage = (params) => {
-  const sql = `INSERT INTO Chat (idFrom, idTo, type, path) VALUES
+  const sql = `INSERT INTO Chat (idFrom, idTo, message, type, path) VALUES
   ( 
       (SELECT id FROM Users WHERE nickName = $1),
       (SELECT id FROM Users WHERE nickName = $2),
       $3,
-      $4
+      $4,
+      $5
   )
-  RETURNING $1 AS nick, message, createdat, type, path, id`;
+  RETURNING $1 AS nick, message, createdat, type, path as pathFile, id`;
 
   return db.one(sql, params);
 }
 
 const getMessage = (params) => {
-  const sql = `SELECT a.nickName AS nick, a.photos[1][2] AS path, c.message, c.createdat, c.type, c.id FROM Chat c
+  const sql = `SELECT a.nickName AS nick, a.photos[1][2] AS path, c.message, c.createdat, c.type, c.id, c.path AS pathFile FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)
@@ -152,7 +153,7 @@ const getImage = (params) => {
 
 const getChatImage = (params) => {
   const sql =
-    `select photo[1] as mimetype from chat where photo[2] = $1`
+    `select type from chat where path = $1`
 
   return db.any(sql, params);
 }
