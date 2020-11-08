@@ -10,6 +10,7 @@
 .chat__list .list-group-item {
   background: #e5e8eb;
   border: none;
+  padding: 0.75rem 0.5rem;
 }
 
 .chat__list .list-group-item:hover {
@@ -22,8 +23,11 @@
   color: #fff;
 }
 
-.chat__list .chat__list-avatar {
+.chat__avatar{
   width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 
 .current__chat {
@@ -70,7 +74,6 @@
 
 .chat__message-right {
   align-self: flex-end;
-  text-align: right;
 }
 
 .chat__message-right .chat__user__info {
@@ -122,7 +125,6 @@
   text-align: inherit;
   font-size: 2vh;
   margin: 0;
-  padding: 5px 10px 0 10px;
 }
 
 .current__chat-hidden {
@@ -164,6 +166,21 @@
   border-radius: 0 0.25rem 0.25rem 0;
 }
 
+.image-prev-wrap {
+  margin: 10px auto 0;
+  position: relative;
+  width: 300px;
+  height: 300px;
+}
+
+.image-prev {
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+}
 /* .current__chat ::-webkit-scrollbar {
   width: 5px;
   height: 5px;

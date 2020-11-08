@@ -7,7 +7,7 @@ const fs = require('fs');
 
 router.post('/message', async (req, res) => {
     try {
-        const { from, to, message } = req.body;
+        const { from, to, message, path } = req.body;
 
         const params = [
             from,
@@ -17,6 +17,7 @@ router.post('/message', async (req, res) => {
 
         sendMessage(params)
             .then(data => {
+                data.path = path
                 res.status(200).json({
                     data: data,
                     success: true

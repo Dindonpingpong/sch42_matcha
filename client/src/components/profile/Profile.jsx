@@ -8,6 +8,7 @@ import {
 import { Link } from 'react-router-dom';
 import classnames from 'classnames';
 import { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateStatus, fetchUpdateView, fetchReport } from '../../redux/profile/ActionCreators';
+import { fetchUpdateLogin } from '../../redux/login/ActionCreators';
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
 import { request } from '../../util/http';
@@ -23,6 +24,7 @@ const mapStateToProps = (state) => {
 }
 
 const mapDispatchToProps = (dispatch) => ({
+    fetchUpdateLogin: (nickname) => dispatch(fetchUpdateLogin(nickname)),
     fetchProfile: (nickname) => dispatch(fetchProfile(nickname)),
     fetchView: (nickname) => dispatch(fetchView(nickname)),
     fetchLike: (nickname) => dispatch(fetchLike(nickname)),
@@ -60,7 +62,10 @@ function PhotoList(props) {
             request(`/api/image/${props.me}/${item}`, formData, 'POST', 'image')
                 .then(data => {
                     if (data)
+                    {
                         props.fetchProfile(props.me);
+                        props.fetchUpdateLogin(props.me);
+                    }
                 })
                 .catch(e => {
                     alert(e.message);
@@ -77,7 +82,7 @@ function PhotoList(props) {
                     {
                         props.check &&
                         <CardBody>
-                            <div className="justify-content-center">
+                            <div className="d-flex justify-content-center">
                                 <Label className="btn btn-sm btn-success">Add
                                     <Input className="profile-input" type="file" onChange={e => putPhoto(e, item + 1)} />
                                 </Label>
@@ -376,7 +381,7 @@ const Profile = (props) => {
                     }
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} />
+                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} fetchUpdateLogin={props.fetchUpdateLogin}/>
 
                     <Row className="profile-tabs">
                         <Col>

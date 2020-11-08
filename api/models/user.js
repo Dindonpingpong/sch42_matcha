@@ -99,7 +99,7 @@ const sendFileMessage = (params) => {
 }
 
 const getMessage = (params) => {
-  const sql = `SELECT a.nickName AS nick, c.message, c.createdat, c.type, c.id FROM Chat c
+  const sql = `SELECT a.nickName AS nick, a.photos[1][2] AS path, c.message, c.createdat, c.type, c.id FROM Chat c
   JOIN Users a ON a.id = c.idFrom
   JOIN Users b ON b.id = c.idTo
   WHERE (a.nickName = $1 AND b.nickName = $2) OR (a.nickName = $2 AND b.nickName = $1)

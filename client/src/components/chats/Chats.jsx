@@ -2,12 +2,14 @@ import React, { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { connect } from "react-redux";
 import { initChat, initMessages, fetchNames, fetchCountPages, fetchChatMessages, fetchSendMessage, setNameTo, pushChatMessage } from "../../redux/Chats/ActionCreators";
-import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button, Img } from 'reactstrap';
+import { Spinner, ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button } from 'reactstrap';
 // import NotificationsBar from "./NotificationsBar";
 import { request } from "../../util/http";
 import { socket } from "../../index";
 import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
+import { Loading } from '../Loading';
+import NotFound from '../notFound';
 import moment from 'moment';
 import './Chats.css'
 
@@ -23,14 +25,18 @@ const mapDispatchToProps = (dispatch) => ({
     initMessages: () => dispatch(initMessages()),
     fetchNames: (name) => dispatch(fetchNames(name)),
     fetchCountPages: (nicknameFrom, nicknameTo) => dispatch(fetchCountPages(nicknameFrom, nicknameTo)),
-    sendMessage: (nicknameFrom, nicknameTo, message) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message)),
+    sendMessage: (nicknameFrom, nicknameTo, message, path) => dispatch(fetchSendMessage(nicknameFrom, nicknameTo, message, path)),
     fetchChatMessages: (nicknameTo, nicknameFrom, page) => dispatch(fetchChatMessages(nicknameTo, nicknameFrom, page)),
     setNameTo: (name) => dispatch(setNameTo(name)),
     pushChatMessage: (msg) => dispatch(pushChatMessage(msg))
 });
 
 const ImageThumb = ({ image }) => {
-    return <img src={URL.createObjectURL(image)} alt={image.name} />;
+    return (
+        <div className='image-prev-wrap'>
+            <img className='image-prev' src={URL.createObjectURL(image)} alt={image.name} />
+        </div>
+    );
 };
 
 const ChatImage = (props) => {
@@ -76,10 +82,10 @@ const ChatMessages = (props) => {
 
     if (props.chat) {
         messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) =>
-            <Col xs="8" key={item}
+            <Col md="8" key={item}
                 className={`chat__message ${props.me !== message.nick ? 'chat__message-right' : 'chat__message-left'}`}>
-
                 <div className='chat__user__info'>
+                    <img className="chat__avatar" src={`/api/image/${message.nick}/1/${message.path}`} alt={"Ava"} />
                     <div className='chat__info__container'>
                         <p className='chat__user__nick'>{`${message.nick}`}</p>
                         <p className='chat__msg__date'>{moment(message.createdat).format('lll')}</p>
@@ -117,7 +123,6 @@ function ListUsers(props) {
                 value={name.nickname}
                 onClick={e => { props.set(e.target.value) }}
             >
-                <img className="chat__list-avatar" src={`/api/image/${name.nickname}/1/${name.path}`} alt={"Photo profile"} />
                 {name.nickname}
             </ListGroupItem >
         );
@@ -154,18 +159,22 @@ function CurrentChat(props) {
     const nicknameTo = props.props.chat.nicknameTo;
     const { fetchCountPages, fetchChatMessages, initMessages } = props.props;
 
+  
+
+    useEffect(() => {
+        console.log('here', nicknameTo);
+        if (nicknameTo) {
+            console.log('here2', nicknameTo);
+            fetchCountPages(nicknameFrom, nicknameTo);
+            fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
+        }
+    }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages]);
+
     useEffect(() => {
         initMessages();
         setCurrentPage(1);
         setFirstVisIndex(props.props.chat.chats.length - 1);
     }, [initMessages, nicknameTo]);
-
-    useEffect(() => {
-        if (nicknameTo) {
-            fetchCountPages(nicknameFrom, nicknameTo);
-            fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
-        }
-    }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages]);
 
     const onUploadFile = (e) => {
         setFile(e.target.files[0]);
@@ -186,10 +195,18 @@ function CurrentChat(props) {
                 console.log(props.nicks[1], props.nicks[0]);
                 request(`/api/chat/image/${props.nicks[1]}/${props.nicks[0]}`, formData, 'POST', 'image')
                     .then(res => res.json())
-                    .then(result => {
+                    .then(data => {
+                        console.log(data);
+                        let newPhotoData = {
+                            idfrom: props.nicks[1],
+                            message: data.message.message,
+                            createdat: data.message.createdat,
+                            type: "photo",
+                            id: data.message.id
+                        };
+                        console.log('RERERE', newPhotoData);
                         playButton.current.click();
-                        console.log('res', result);
-                        socket.emit('new_message', result.data);
+                        socket.emit('new_message', newPhotoData);
                         setFile("");
                     })
                     .catch(e => {
@@ -198,7 +215,8 @@ function CurrentChat(props) {
             }
             if (data.message) {
                 playButton.current.click();
-                props.props.sendMessage(props.nicks[1], props.nicks[0], data.message);
+                console.log('here', props.props.login.me.photos[0][1]);
+                props.props.sendMessage(props.nicks[1], props.nicks[0], data.message, props.props.login.me.photos[0][1]);
                 setFirstVisIndex(props.props.chat.chats.length);
             }
         }
@@ -230,13 +248,15 @@ function CurrentChat(props) {
                         <label className="btn btn-dark">
                             +
                         <input className="current__chat-hidden" type="file" onChange={onUploadFile} />
+
                         </label>
-                        {
-                            uploadedFile &&
-                            <ImageThumb image={uploadedFile} />
-                        }
+
                         <Button type='submit' className='button__send'>Send</Button>
                     </div>
+                    {
+                        uploadedFile &&
+                        <ImageThumb image={uploadedFile} />
+                    }
                     <div ref={bottomRef} />
                 </Form>
             }
@@ -250,20 +270,40 @@ const Chats = (props) => {
     const nicknameFrom = props.login.me.nickname;
 
     useEffect(() => {
-        initChat();
         fetchNames(nicknameFrom);
     }, [fetchNames, nicknameFrom, initChat]);
 
-    return (
-        <section className="chats text-break">
+    if (props.chat.isLoading) {
+        return (
+            <Loading />
+        );
+    }
+    else if (props.chat.errProfile) {
+        return (
             <Container>
                 <Row>
-                    <ListUsers names={props.chat.names} click={props.chat.nicknameTo} set={props.setNameTo} />
-                    <CurrentChat props={props} nicks={[props.chat.nicknameTo, nicknameFrom]} />
+                    {/* <h4>{props.profile.errProfile}</h4> */}
+                    <h4>Error</h4>
                 </Row>
             </Container>
-        </section>
-    );
+        );
+    }
+    else if (props.chat.names != null) {
+        return (
+            <section className="chats text-break">
+                <Container>
+                    <Row>
+                        <ListUsers names={props.chat.names} click={props.chat.nicknameTo} set={props.setNameTo} />
+                        <CurrentChat props={props} nicks={[props.chat.nicknameTo, nicknameFrom]} />
+                    </Row>
+                </Container>
+            </section>
+        );
+    }
+    else
+        return (
+            <NotFound />
+        );
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Chats);

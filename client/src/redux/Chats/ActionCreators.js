@@ -104,13 +104,14 @@ export const fetchChatMessages = (me, you, page) => (dispatch) => {
         .catch(error => dispatch(chatFailed(error.message)));
 };
 
-export const fetchSendMessage = (me, you, message) => (dispatch) => {
+export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
     dispatch(chatLoading());
 
     const data = {
         from: me,
         to: you,
-        message: message
+        message: message,
+        path: path
     };
 
     return request('/api/chat/message/', data, 'POST')
