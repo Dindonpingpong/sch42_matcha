@@ -44,7 +44,7 @@ function LoginInput(props) {
                 <Label className="font-profile-head">Login
                 <Input
                         type="text"
-                        name="login"
+                        name="Login"
                         onChange={loginChange}
                         placeholder="rkina7"
                         required
