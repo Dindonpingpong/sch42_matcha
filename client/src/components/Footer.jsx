@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { Container } from 'reactstrap';
+import { socketChat } from "../util/socket";
+import { pushChatMessage } from "../redux/chats/ActionCreators";
+import { connect } from "react-redux";
 
-function Footer(props) {
+const mapDispatchToProps = (dispatch) => ({
+    pushChatMessage: (msg) => dispatch(pushChatMessage(msg))
+});
+
+function Footer() {
+    useEffect(() => {
+        socketChat.on("chat_message", (data) => {
+            pushChatMessage(data);
+        });
+    }, []);
+
     return (
         <div className="footer bg-light">
             <Container>
@@ -11,4 +24,4 @@ function Footer(props) {
     )
 }
 
-export default Footer;
+export default connect(mapDispatchToProps)(Footer);

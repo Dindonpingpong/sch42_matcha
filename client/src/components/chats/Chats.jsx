@@ -6,13 +6,14 @@ import {
     fetchSendMessage, fetchSendFile, setNameTo, pushChatMessage
 } from "../../redux/chats/ActionCreators";
 import { ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button } from 'reactstrap';
-import { socket } from "../../index";
+import { socketChat } from "../../util/socket";
 import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
 import moment from 'moment';
 import './Chats.css'
+
 
 const mapStateToProps = (state) => {
     return {
@@ -55,7 +56,7 @@ const ChatMessages = (props) => {
     const { pushChatMessage } = props;
 
     useEffect(() => {
-        socket.on("chat_message", (data) => {
+        socketChat.on("chat_message", (data) => {
             pushChatMessage(data);
         });
     }, [pushChatMessage]);
