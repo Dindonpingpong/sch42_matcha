@@ -240,10 +240,10 @@ const EditProfile = (props) => {
 
                 <Container>
                     {/* <ModalBody className="text-center"> */}
-                    <InputForm name='login' me={props.login.me.nickname} label='Username' feedback='Invalid login' set={props.setLogin} checkBtn={checkBtn} />
+                    <InputForm name='Login' me={props.login.me.nickname} label='Username' feedback='Invalid login' set={props.setLogin} checkBtn={checkBtn} />
                     <InputForm name='firstName' me={props.login.me.firstname} label='First name' feedback='Only symbols are required' set={props.setFirstName} checkBtn={checkBtn} />
                     <InputForm name='lastName' me={props.login.me.lastname} label='Last name' feedback='Only symbols are required' set={props.setLastName} checkBtn={checkBtn} />
-                    <InputForm name='email' me={props.login.me.email} label='Email' set={props.setEmail} checkBtn={checkBtn} />
+                    <InputForm name='Email' me={props.login.me.email} label='Email' set={props.setEmail} feedback='Invalid email' checkBtn={checkBtn} />
                     <InputForm name='bio' me={props.login.me.about} label='Biography' set={props.setAbout} checkBtn={checkBtn} />
                     <InputForm name='birthDate' me={moment(props.login.me.datebirth).format('YYYY-MM-DD')} type='date' label='Date Birth' feedback='Too young' set={props.setDate} checkBtn={checkBtn} />
 

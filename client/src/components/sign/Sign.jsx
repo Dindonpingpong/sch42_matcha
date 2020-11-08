@@ -93,12 +93,6 @@ function InputFormWithFetch(props) {
         }
     };
 
-    if (props.isLoading) {
-        return (
-            <Loading />
-        )
-    }
-
     return (
         <Col>
             <FormGroup>
@@ -226,66 +220,66 @@ const Sign = (props) => {
             <Loading />
         )
     }
-
-    if (props.errMsg) {
+    else if (props.errMsg) {
         return (
             <Alert color='info'>{props.errMsg}</Alert>
         )
     }
+    else {
+        return (
+            <section className="login">
+                <Container>
+                    <Row>
+                        <Col md={10} className="m-auto">
+                            <Card className="mb-4 shadow-sm">
+                                <CardBody>
+                                    <Row>
+                                        <InputForm
+                                            set={props.setLastName} onBlur={checkBtn} labelName='Last name'
+                                            name='lastName' placeholder='Ng' type='text' feedback='Only symbols are required'
+                                        />
 
-    return (
-        <section className="login">
-            <Container>
-                <Row>
-                    <Col md={10} className="m-auto">
-                        <Card className="mb-4 shadow-sm">
-                            <CardBody>
-                                <Row>
-                                    <InputForm
-                                        set={props.setLastName} onBlur={checkBtn} labelName='Last name'
-                                        name='lastName' placeholder='Ng' type='text' feedback='Only symbols are required'
-                                    />
-
-                                    <InputForm
-                                        set={props.setFirstName} onBlur={checkBtn} labelName='First name'
-                                        name='firstName' placeholder='Duong' type='text' feedback='Only symbols are required'
-                                    />
-                                </Row>
-                                <Row>
-                                    <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='Login' placeholder='rkina7' />
-                                    <InputFormWithFetch set={props.setEmail} onBlur={checkBtn} labelName='Email' placeholder='rkina@mail.ru' />
-                                </Row>
-                                <Row>
-                                    <InputForm
-                                        set={props.setDate} onBlur={checkBtn} labelName='Date birth'
-                                        name='birthDate' type='date' feedback='You too young for this'
-                                    />
+                                        <InputForm
+                                            set={props.setFirstName} onBlur={checkBtn} labelName='First name'
+                                            name='firstName' placeholder='Duong' type='text' feedback='Only symbols are required'
+                                        />
+                                    </Row>
+                                    <Row>
+                                        <InputFormWithFetch set={props.setLogin} onBlur={checkBtn} labelName='Login' placeholder='rkina7' />
+                                        <InputFormWithFetch set={props.setEmail} onBlur={checkBtn} labelName='Email' placeholder='rkina@mail.ru' />
+                                    </Row>
+                                    <Row>
+                                        <InputForm
+                                            set={props.setDate} onBlur={checkBtn} labelName='Date birth'
+                                            name='birthDate' type='date' feedback='You too young for this'
+                                        />
+                                        <Col>
+                                            <p className="font-profile-head">Sex</p>
+                                            <Input type='select'
+                                                defaultValue={props.sign.sex}
+                                                onChange={e => {
+                                                    props.setSex(e.target.value);
+                                                    checkBtn();
+                                                }}>
+                                                <option value="female">Female</option>
+                                                <option value="male">Male</option>
+                                            </Input>
+                                        </Col>
+                                    </Row>
+                                    <Password setPass={props.setPassword} onBlur={checkBtn} />
+                                    <Button color="secondary" type="submit" disabled={isActiveBtn} onClick={handleSubmit} onBlur={checkBtn} block>Sign Up</Button>
                                     <Col>
-                                        <p className="font-profile-head">Sex</p>
-                                        <Input type='select'
-                                            defaultValue={props.sign.sex}
-                                            onChange={e => {
-                                                props.setSex(e.target.value);
-                                                checkBtn();
-                                            }}>
-                                            <option value="female">Female</option>
-                                            <option value="male">Male</option>
-                                        </Input>
+                                        <div className="dropdown-divider"></div>
+                                        <NavLink href='/login' >Back</NavLink>
                                     </Col>
-                                </Row>
-                                <Password setPass={props.setPassword} onBlur={checkBtn} />
-                                <Button color="secondary" type="submit" disabled={isActiveBtn} onClick={handleSubmit} onBlur={checkBtn} block>Sign Up</Button>
-                                <Col>
-                                    <div className="dropdown-divider"></div>
-                                    <NavLink href='/login' >Back</NavLink>
-                                </Col>
-                            </CardBody>
-                        </Card>
-                    </Col>
-                </Row>
-            </Container>
-        </section>
-    )
+                                </CardBody>
+                            </Card>
+                        </Col>
+                    </Row>
+                </Container>
+            </section>
+        )
+    }
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Sign));
