@@ -93,12 +93,6 @@ function InputFormWithFetch(props) {
         }
     };
 
-    // if (props.isLoading) {
-    //     return (
-    //         <Loading />
-    //     )
-    // }
-
     return (
         <Col>
             <FormGroup>
