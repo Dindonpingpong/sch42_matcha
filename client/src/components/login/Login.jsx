@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Row, Col, Button, FormGroup, Label, Input } from 'reactstrap';
+import { Card, CardBody, Container, Row, Col, Button, FormGroup, Label, Input } from 'reactstrap';
 import { NavLink } from 'reactstrap';
 import { useState } from 'react';
 import { fetchLogin, setLogin, setPassword } from '../../redux/login/ActionCreators';
@@ -10,7 +10,7 @@ import { useHistory } from "react-router-dom";
 import { Loading } from '../Loading';
 import { request } from '../../util/http';
 import Info from '../info';
-
+import './Login.css';
 
 const mapStateToProps = (state) => {
     return {
@@ -41,15 +41,16 @@ function LoginInput(props) {
     return (
         <Col>
             <FormGroup>
-                <Label>Login</Label>
+                <Label className="font-profile-head">Login
                 <Input
-                    type="text"
-                    name="login"
-                    onChange={loginChange}
-                    placeholder="rkina7"
-                    required
-                    className={isValid}
-                />
+                        type="text"
+                        name="login"
+                        onChange={loginChange}
+                        placeholder="rkina7"
+                        required
+                        className={isValid}
+                    />
+                </Label>
             </FormGroup>
         </Col>
     )
@@ -72,15 +73,16 @@ function Password(props) {
     return (
         <Col>
             <FormGroup>
-                <Label>Password</Label>
+                <Label className="font-profile-head">Password
                 <Input
-                    type="password"
-                    name='password'
-                    onChange={passChange}
-                    placeholder="Str0ngPa55%"
-                    required
-                    className={isValid}
-                />
+                        type="password"
+                        name='password'
+                        onChange={passChange}
+                        placeholder="Str0ngPa55%"
+                        required
+                        className={isValid}
+                    />
+                </Label>
             </FormGroup>
         </Col>
     )
@@ -126,30 +128,38 @@ function Login(props) {
     }
 
     return (
-        <Row>
-            <Col md={6} className="m-auto">
-                {
-                    msg &&
-                    <Info message={msg} />
-                }
-                {
-                    props.login.errMsg && 
-                    <Info message={props.login.errMsg} isSuccess={false} />
-                }
-                <form >
-                    <LoginInput setLogin={props.setLogin} />
-                    <Password setPass={props.setPassword} />
-                    <Col>
-                        <Button color="primary" onClick={Sign} >Sign in</Button>
+        <section className="login">
+            <Container>
+                <Row>
+                    <Col md={6} className="m-auto">
+                        <Card className="mb-4 shadow-sm">
+                            <CardBody>
+                                {
+                                    msg &&
+                                    <Info message={msg} />
+                                }
+                                {
+                                    props.login.errMsg &&
+                                    <Info message={props.login.errMsg} isSuccess={false} />
+                                }
+                                <form >
+                                    <LoginInput setLogin={props.setLogin} />
+                                    <Password setPass={props.setPassword} />
+                                    <Col>
+                                        <Button className="login-btn" color="secondary" onClick={Sign} >Sign in</Button>
+                                    </Col>
+                                </form>
+                                <Col>
+                                    <div className="dropdown-divider"></div>
+                                    <NavLink href='/register' >Newbee? Sign up</NavLink>
+                                    <NavLink href='/remind' >Forgot password? Remind</NavLink>
+                                </Col>
+                            </CardBody>
+                        </Card>
                     </Col>
-                </form>
-                <Col>
-                    <div className="dropdown-divider"></div>
-                    <NavLink href='/register' >Newbee? Sign up</NavLink>
-                    <NavLink href='/remind' >Forgot pass? Remind</NavLink>
-                </Col>
-            </Col>
-        </Row>
+                </Row>
+            </Container>
+        </section>
     )
 }
 

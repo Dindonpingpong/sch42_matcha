@@ -1,0 +1,39 @@
+.login {
+  padding: 10vh 0;
+  text-align: center;
+}
+
+.login .font-profile-head,
+.login .login-btn {
+  width: 100%;
+}
+
+.login .font-profile-head {
+  margin-top: 0;
+}
+
+.login .font-profile-head input {
+  margin-top: 10px;
+}
+
+.login .login-btn {
+  margin-top: 20px;
+}
+
+.login .card {
+  border: none;
+}
+
+.login .card-body {
+  background: #f8f9fa;
+}
+
+.login .dropdown-divider {
+  margin: 1.5rem 0 0.5rem;
+}
+
+.login .invalid-feedback {
+  margin-top: 0.25rem;
+  font-weight: normal;
+  font-size: 0.8rem;
+}

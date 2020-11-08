@@ -1,8 +1,9 @@
 import React from 'react';
 import { useState } from 'react';
-import { Button, Col, Container, Input, Row } from 'reactstrap';
+import { Button, Col, Container, Input, Row, Card, CardBody, Label, NavLink } from 'reactstrap';
 import { request } from '../../util/http';
 import Info from '../info';
+import '../login/Login.css';
 
 const Remind = () => {
     const [email, setEmail] = useState('');
@@ -23,24 +24,35 @@ const Remind = () => {
     }
 
     return (
-        <section className="page-state">
+        <section className="login">
             <Container>
-                {
-                    msg &&
-                    <Info message={msg} isSuccess={isSuccess} />
-                }
                 <Row>
-                    <Col>
-                        <Input onChange={(e) => setEmail(e.target.value)} />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <Button className='mt-6' onClick={remind} color='primary'>Recovery</Button>
+                    <Col md={6} className="m-auto">
+                        <Card className="mb-4 shadow-sm">
+                            <CardBody>
+                                {
+                                    msg &&
+                                    <Info message={msg} isSuccess={isSuccess} />
+                                }
+                                <Col>
+                                    <Label className="font-profile-head">
+                                        Enter your email address to receive a secured link
+                                    <Input onChange={(e) => setEmail(e.target.value)} />
+                                    </Label>
+                                </Col>
+                                <Col>
+                                    <Button className="login-btn" onClick={remind} color='secondary'>Recovery</Button>
+                                </Col>
+                                <Col>
+                                    <div className="dropdown-divider"></div>
+                                    <NavLink href='/login' >Back</NavLink>
+                                </Col>
+                            </CardBody>
+                        </Card>
                     </Col>
                 </Row>
             </Container>
-        </section>
+        </section >
     )
 }
 
