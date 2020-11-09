@@ -6,7 +6,7 @@ import {
     fetchSendMessage, fetchSendFile, setNameTo, pushChatMessage
 } from "../../redux/chats/ActionCreators";
 import { ListGroup, ListGroupItem, Container, Row, Col, Media, Form, Button } from 'reactstrap';
-import { socketChat } from "../../util/socket";
+import { socket } from "../../util/socket";
 import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
 import { Loading } from '../Loading';
@@ -54,12 +54,18 @@ const ChatMessages = (props) => {
     useEffect(scrollToBottom, [props.chat.chats]);
 
     const { pushChatMessage } = props;
-
+    const me = props.me;
+    console.log(me);
     useEffect(() => {
-        socketChat.on("chat_message", (data) => {
-            pushChatMessage(data);
+        socket.on(`new_message_${me}`, (data) => {
+            if (data.nick === me)
+                pushChatMessage(data);
         });
-    }, [pushChatMessage]);
+
+        return function unsubscribe() {
+            socket.off(`new_message_${me}`);
+        }
+    }, []);
 
     if (props.chat) {
         messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) =>

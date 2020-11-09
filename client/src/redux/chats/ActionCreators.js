@@ -1,6 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { request } from '../../util/http';
-import { socketChat } from "../../util/socket";
+import { socket } from "../../util/socket";
 
 export const chatLoading = () => ({
     type: ActionTypes.CHAT_LOADING
@@ -115,7 +115,7 @@ export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                socketChat.emit('new_message', result.data);
+                socket.emit('send_message', result.data);
             }
             else
                 dispatch(chatFailed(result.message));
@@ -130,7 +130,7 @@ export const fetchSendFile = (me, you, formData) => (dispatch) => {
         .then(response => response.json())
         .then(result => {
             if (result.success)
-                socketChat.emit('new_message', result.data);
+                socket.emit('send_message', result.data);
             else
                 dispatch(chatFailed(result.message));
         })

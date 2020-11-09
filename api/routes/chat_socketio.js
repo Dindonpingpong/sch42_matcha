@@ -1,19 +1,32 @@
 
+const { setStatus } = require('../models/user');
+
 module.exports = function (io) {
-    const chatSpace = io.of('/chat');
-    const notifSpace = io.of('/notification');
+    const mySpace = io.of('/socks');
+    let users = new Object();
+    
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
 
-    chatSpace.on('connection', (socket) => {
-        console.log('new connect!', socket.id);
+    mySpace.on('connection', (socket) => {
 
-        socket.on('new_message', function (data) {
-            chatSpace.emit(`chat_message`, data);
+        socket.on('log_in', (nickname) => {
+            users[nickname] = socket.id;
+            setStatus(["Online", nickname]);
         });
-        
+
+        socket.on('send_message', (data) => {
+            mySpace.emit(`new_message_${data.nick}`, data);
+            mySpace.emit(`new_message_${data.nickTo}`, data);
+        });
+
+        socket.on('disconnect', () => {
+            const nickname = getKeyByValue(users, socket.id);
+
+            if (users && nickname)
+                setStatus(["Offline", nickname]);
+        })
     })
 
-    notifSpace.on('connection', (socket) => {
-        console.log('connect to notif', socket.id);
-
-    })
 }

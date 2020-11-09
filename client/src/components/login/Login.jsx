@@ -9,6 +9,7 @@ import { isValidInput, isValidPassword } from '../../util/check';
 import { useHistory } from "react-router-dom";
 import { Loading } from '../Loading';
 import { request } from '../../util/http';
+import { socket } from "../../util/socket";
 import Info from '../info';
 import './Login.css';
 
@@ -101,9 +102,10 @@ function Login(props) {
 
     useEffect(() => {
         if (props.login.isLogged) {
+            socket.emit('log_in', props.login.nickname)
             history.push("/users/page/1");
         }
-    }, [props.login.isLogged, history]);
+    }, [props.login.isLogged, history, props.login.nickname]);
 
     if (props.login.isLoading) {
         return (

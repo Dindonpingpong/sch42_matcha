@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { getPassword, getProfile, getViews, getLikes,
     getCards, getStatus, getTimeView, updateViewFailed, insertViewFailed,
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
-    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports } = require('../models/user');
+    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, setStatus } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -676,6 +676,32 @@ router.post('/profile/report', async (req, res) => {
         const p2 = updateCountReports([you]);
 
         Promise.all([p1, p2])
+            .then(() => {
+                res.status(200).json({
+                    message: "Ok",
+                    success: true
+                });
+            })
+            .catch((e) => {
+                res.status(200).json({
+                    message: e.message,
+                    success: false
+                })
+            })
+    }
+    catch (e) {
+        res.status(200).json({
+            message: e.message,
+            success: false
+        })
+    }
+})
+
+router.post('/status', async (req, res) => {
+    try {
+        const { status, nickname } = req.body;
+
+        setStatus([status, nickname])
             .then(() => {
                 res.status(200).json({
                     message: "Ok",

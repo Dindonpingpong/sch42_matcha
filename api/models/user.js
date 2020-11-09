@@ -80,7 +80,7 @@ const sendMessage = (params) => {
       (SELECT id FROM Users WHERE nickName = $2),
       $3
   )
-  RETURNING $1 AS nick, message, createdat, type, id`;
+  RETURNING $1 AS nick, $2 AS nickTo, message, createdat, type, id`;
 
   return db.one(sql, params);
 }
@@ -94,7 +94,7 @@ const sendFileMessage = (params) => {
       $4,
       $5
   )
-  RETURNING $1 AS nick, message, createdat, type, path as pathFile, id`;
+  RETURNING $1 AS nick, $2 AS nickTo, message, createdat, type, path as pathFile, id`;
 
   return db.one(sql, params);
 }
@@ -451,6 +451,17 @@ const getConnectedUsers = (params) => {
   return db.any(sql, params);
 }
 
+const setStatus = (params) => {
+  const sql = `UPDATE Users 
+  SET status = $1, 
+  lastVisit = CURRENT_TIMESTAMP 
+  WHERE nickName =$2
+  RETURNING nickName`;
+
+  return db.one(sql, params);
+}
+
+
 exports.sign = sign;
 exports.getPassword = getPassword;
 exports.getOnlyPass = getOnlyPass;
@@ -494,3 +505,4 @@ exports.insertReport = insertReport;
 exports.updateCountReports = updateCountReports;
 exports.updateRate = updateRate;
 exports.getConnectedUsers = getConnectedUsers;
+exports.setStatus = setStatus;
