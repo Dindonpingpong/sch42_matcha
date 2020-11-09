@@ -4,7 +4,8 @@ text-break переносит не вмещенный текст
 
 /* profile */
 
-.profile, .profile-edit {
+.profile,
+.profile-edit {
   padding: 20px 0;
 }
 
@@ -74,9 +75,17 @@ h2 {
   object-fit: cover;
 }
 
-.aside-button {
+.profile .aside-button {
   margin-bottom: 20px;
+  margin-right: 0;
   justify-content: flex-end;
+  position: relative;
+}
+
+.aside-button .logged-status {
+  position: absolute;
+  left: 15px;
+  opacity: 0.5;
 }
 
 .aside-button button {
@@ -84,7 +93,7 @@ h2 {
 }
 
 .dropdown-menu {
-  transform: translate3d(-115px, 40px, 0px) !important; 
+  transform: translate3d(-115px, 40px, 0px) !important;
 }
 
 .dropdown-menu button,
@@ -97,11 +106,10 @@ h2 {
   opacity: 50%;
 }
 
-.profile .tab-content
-{
-    height: 400px;
-    /* max-height: 400px; */
-    overflow-x: hidden;
+.profile .tab-content {
+  height: 400px;
+  /* max-height: 400px; */
+  overflow-x: hidden;
 }
 
 .alert-info {
@@ -137,9 +145,9 @@ h2 {
 }
 
 .profile-tabs-item {
-  opacity: .5;
+  opacity: 0.5;
 }
 
-.modal-content .modal-body > *{
+.modal-content .modal-body > * {
   margin-top: 15px;
 }
