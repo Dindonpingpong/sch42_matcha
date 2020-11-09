@@ -61,8 +61,7 @@ function PhotoList(props) {
             formData.append('photo', file);
             request(`/api/image/${props.me}/${item}`, formData, 'POST', 'image')
                 .then(data => {
-                    if (data)
-                    {
+                    if (data) {
                         props.fetchProfile(props.me);
                         props.fetchUpdateLogin(props.me);
                     }
@@ -133,8 +132,6 @@ function ViewsList(props) {
 
 function LikesList(props) {
     if (props.mylikes.length > 0) {
-        console.log(moment(props.mylikes[0].time, 'YYYY-MM-DD, h:mm:ss').fromNow());
-        console.log(props.mylikes[0].time);
         const listItems = props.mylikes.map((like, item) =>
             <Col xs="12" className="mt-4" key={item}>
                 <Media>
@@ -215,10 +212,17 @@ function AsideButton(props) {
             props.fetchUpdateStatus(props.me, props.you, props.status, e.target.value);
         }
     }
-
+    console.log('st', props.loggedStatus);
     if (props.check) {
         return (
             <Row className="aside-button">
+                <span className="logged-status">
+                    {
+                        props.loggedStatus === 'Online'
+                            ? 'Online'
+                            : moment(props.lastVisit).fromNow()
+                    }
+                </span>
                 <Link to="/edit" className="btn btn-secondary ml-auto d-block">
                     Edit profile
                 </Link>
@@ -228,6 +232,13 @@ function AsideButton(props) {
     else {
         return (
             <Row className="aside-button" >
+                <span className="logged-status">
+                    {
+                        props.loggedStatus === 'Online'
+                            ? 'Online'
+                            : moment(props.lastVisit).fromNow()
+                    }
+                </span>
                 <Button color="danger"
                     value={props.status === 'like' ? 'unlike' : 'like'}
                     onClick={changeStatus}>
@@ -246,26 +257,8 @@ function AsideButton(props) {
 }
 
 const Profile = (props) => {
-    // const dispatch = useDispatch();
-
-    // useEffect(() => {
-    //     dispatch(fetchProfile(props.match.params.nickname));
-    //     dispatch(fetchView(props.match.params.nickname));
-    //     dispatch(fetchLike(props.match.params.nickname));
-    //     if (props.login.me.nickname !== props.match.params.nickname) {
-    //         dispatch(fetchStatus(props.login.me.nickname, props.match.params.nickname));
-    //         dispatch(fetchUpdateView(props.login.me.nickname, props.match.params.nickname));
-    //     }
-    // }, [dispatch, props.match.params.nickname, props.login.me.nickname, props.profile.status]);
-
-    // const {match, profile, login } = props;
-    // console.log('rr', match, profile, login);
-    // console.log('match', props.match.params.nickname);
-    // console.log('match2', match.params.nickname);
-    // console.log('login', props.login.me.nickname);
-    // console.log('status', props.profile.status);
-
     const login = props.login.me.nickname;
+    // const logged = props.profile.info.loggedstatus;
     const { nickname } = props.match.params;
     const { status } = props.profile;
     const { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView } = props;
@@ -279,28 +272,6 @@ const Profile = (props) => {
             fetchUpdateView(login, nickname);
         }
     }, [nickname, login, status, fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView]);
-
-    // useEffect(() => {
-    //     fetchProfile(props.match.params.nickname);
-    //     fetchView(props.match.params.nickname);
-    //     fetchLike(props.match.params.nickname);
-    //     if (props.login.me.nickname !== props.match.params.nickname) {
-    //         fetchStatus(props.login.me.nickname, props.match.params.nickname);
-    //         fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
-    //     }
-    // }, [props.match.params.nickname, props.login.me.nickname, props.profile.status, fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView]);
-
-    // useEffect(() => {
-    //     props.fetchProfile(props.match.params.nickname);
-    //     props.fetchView(props.match.params.nickname);
-    //     props.fetchLike(props.match.params.nickname);
-    //     if (props.login.me.nickname !== props.match.params.nickname) {
-    //         props.fetchStatus(props.login.me.nickname, props.match.params.nickname);
-    //         props.fetchUpdateView(props.login.me.nickname, props.match.params.nickname);
-    //     }
-    // // }, [props]);
-    // }, [props.match.params.nickname, props.profile.status]);
-
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
@@ -344,6 +315,8 @@ const Profile = (props) => {
                         status={props.profile.status}
                         me={props.login.me.nickname}
                         you={props.match.params.nickname}
+                        loggedStatus={props.profile.info.loggedstatus}
+                        lastVisit={props.profile.info.lastvisit}
                         fetchUpdateStatus={props.fetchUpdateStatus}
                         fetchReport={props.fetchReport}
                     />
@@ -381,7 +354,7 @@ const Profile = (props) => {
                     }
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} fetchUpdateLogin={props.fetchUpdateLogin}/>
+                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} fetchUpdateLogin={props.fetchUpdateLogin} />
 
                     <Row className="profile-tabs">
                         <Col>
