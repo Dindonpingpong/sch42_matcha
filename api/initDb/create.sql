@@ -36,7 +36,7 @@ CREATE TABLE  Users (
     -- photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/svg','photo.svg'],['image/svg','photo.svg']],
     photos text[3][3] DEFAULT ARRAY[['image/jpg','1.jpg'],['image/jpg','1.jpg'],['image/jpg','1.jpg']],
     location text[2],
-    status text DEFAULT 'Offline',
+    loggedStatus text DEFAULT 'Offline',
     lastVisit timestamp DEFAULT CURRENT_TIMESTAMP,
     created_at_user timestamp DEFAULT CURRENT_TIMESTAMP,
     count_reports int DEFAULT 0,

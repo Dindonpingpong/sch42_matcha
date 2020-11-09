@@ -162,6 +162,7 @@ router.get('/profile/likes/:nickname', async (req, res) => {
 
         getLikes(nickname)
             .then(data => {
+                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
@@ -676,32 +677,6 @@ router.post('/profile/report', async (req, res) => {
         const p2 = updateCountReports([you]);
 
         Promise.all([p1, p2])
-            .then(() => {
-                res.status(200).json({
-                    message: "Ok",
-                    success: true
-                });
-            })
-            .catch((e) => {
-                res.status(200).json({
-                    message: e.message,
-                    success: false
-                })
-            })
-    }
-    catch (e) {
-        res.status(200).json({
-            message: e.message,
-            success: false
-        })
-    }
-})
-
-router.post('/status', async (req, res) => {
-    try {
-        const { status, nickname } = req.body;
-
-        setStatus([status, nickname])
             .then(() => {
                 res.status(200).json({
                     message: "Ok",

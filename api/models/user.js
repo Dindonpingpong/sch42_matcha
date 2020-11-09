@@ -453,7 +453,7 @@ const getConnectedUsers = (params) => {
 
 const setStatus = (params) => {
   const sql = `UPDATE Users 
-  SET status = $1, 
+  SET loggedStatus = $1, 
   lastVisit = CURRENT_TIMESTAMP 
   WHERE nickName =$2
   RETURNING nickName`;
