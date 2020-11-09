@@ -10,20 +10,23 @@ module.exports = function (io) {
     }
 
     mySpace.on('connection', (socket) => {
+        console.log(users);
 
         socket.on('log_in', (nickname) => {
             users[nickname] = socket.id;
             setStatus(["Online", nickname]);
+            console.log(users);
         });
 
         socket.on('send_message', (data) => {
-            mySpace.emit(`new_message_${data.nick}`, data);
-            mySpace.emit(`new_message_${data.nickTo}`, data);
+            mySpace.emit(`new_message_${data.nick}_${data.nickto}`, data);
+            mySpace.emit(`new_message_${data.nickto}_${data.nick}`, data);
+            console.log(users);
         });
 
         socket.on('disconnect', () => {
+            console.log(users);
             const nickname = getKeyByValue(users, socket.id);
-
             if (users && nickname)
                 setStatus(["Offline", nickname]);
         })

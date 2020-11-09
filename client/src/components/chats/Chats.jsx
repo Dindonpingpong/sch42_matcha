@@ -14,7 +14,6 @@ import NotFound from '../notFound';
 import moment from 'moment';
 import './Chats.css'
 
-
 const mapStateToProps = (state) => {
     return {
         login: state.login,
@@ -55,15 +54,15 @@ const ChatMessages = (props) => {
 
     const { pushChatMessage } = props;
     const me = props.me;
-    console.log(me);
+    const you = props.you;
+
     useEffect(() => {
-        socket.on(`new_message_${me}`, (data) => {
-            if (data.nick === me)
-                pushChatMessage(data);
-        });
+        // socket.on(`new_message_${me}_${you}`, (data) => {
+        //     pushChatMessage(data);
+        // });
 
         return function unsubscribe() {
-            socket.off(`new_message_${me}`);
+            socket.off(`new_message_${me}_${you}`);
         }
     }, []);
 
@@ -149,6 +148,9 @@ function CurrentChat(props) {
 
     useEffect(() => {
         if (nicknameTo) {
+            socket.on(`new_message_${nicknameFrom}_${nicknameTo}`, (data) => {
+                props.props.pushChatMessage(data);
+            });
             fetchCountPages(nicknameFrom, nicknameTo);
             fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
         }
@@ -202,7 +204,8 @@ function CurrentChat(props) {
                 (props.props.chat && currentPage)
                     ? <ChatMessages pushChatMessage={props.props.pushChatMessage} chat={props.props.chat}
                         firstVisIndex={firstVisIndex}
-                        me={props.nicks[1]} />
+                        me={props.nicks[1]}
+                        you={props.nicks[0]} />
                     : <div />
             }
             {

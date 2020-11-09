@@ -14,6 +14,7 @@ import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 import { initFilter } from '../redux/filter/ActionCreators';
 import { initChat } from '../redux/chats/ActionCreators';
+import { socket } from "../util/socket";
 
 const mapStateToProps = (state) => {
     return {
@@ -34,6 +35,9 @@ const Header = (props) => {
     const path = props.location.pathname;
 
     useEffect(() => {
+        if (props.login.isLogged) {
+            socket.emit('log_in', props.login.nickname);
+        }
         if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
             history.push('/login');
     }, [path, props.login.isLogged, history]);
