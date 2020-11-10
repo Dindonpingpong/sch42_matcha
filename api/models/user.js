@@ -469,12 +469,12 @@ const getLogs = (params) => {
   return db.any(sql, params)
 }
 
-const addLog = (params) => {
+const addLog = (notification) => {
   const sql = `INSERT INTO Logs (idFrom, idTo, event, message) VALUES
-  (myId($1), myId($2), $3, $4);
+  (myId($1), myId($2), $3, $4)
   RETURNING id`;
 
-  return db.one(sql, params);
+  return db.one(sql, Object.values(notification));
 }
 
 exports.sign = sign;

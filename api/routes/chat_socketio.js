@@ -1,5 +1,5 @@
 
-const { setStatus } = require('../models/user');
+const { setStatus, addLog } = require('../models/user');
 
 module.exports = function (io) {
     const mySpace = io.of('/socks');
@@ -22,8 +22,19 @@ module.exports = function (io) {
         });
 
         socket.on('notification', (data) => {
-            console.log(data);
-            mySpace.emit('new_notification', data);
+            let notification = new Object();
+            console.log('1', data);
+            notification.nickto = data.me;
+            notification.nickname = data.you;
+            if (data.event === 'like' || data.event === 'unlike' || data.event === 'ignore') {
+                notification.event = data.status;
+                notification.message = `${data.status}d your profile`;
+            } 
+            
+            addLog(notification)
+                .then(() => {
+                    mySpace.emit('new_notification', notification);
+                })
         })
 
         socket.on('disconnect', () => {

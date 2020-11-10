@@ -42,10 +42,10 @@ function NotificationList(props) {
     let listItems;
 
     if (props.notifications.length > 0) {
-        listItems = props.notifications.map((notificaiton, key) => {
+        listItems = props.notifications.map((notificaiton, item) => {
             const ChatMessage = notificaiton.event === 'message' ? 'New message from ' : '';
             return (
-                <DropdownItem>
+                <DropdownItem key={item}>
                     {ChatMessage}
                     <span className="nickname">{notificaiton.nickname}</span>
                     <div className="message">{notificaiton.message}</div>

@@ -162,7 +162,6 @@ router.get('/profile/likes/:nickname', async (req, res) => {
 
         getLikes(nickname)
             .then(data => {
-                console.log(data);
                 if (data.length > 0) {
                     res.status(200).json({
                         result: data,
@@ -700,11 +699,9 @@ router.post('/profile/report', async (req, res) => {
 
 router.get('/notifications/:nickname', async (req, res) => {
     const login = req.params.nickname;
-    console.log(login);
 
     getLogs([login])
         .then(data => {
-            console.log(data);
             res.status(200).json({
                 data: data,
                 success: true
