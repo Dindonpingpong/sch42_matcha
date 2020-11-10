@@ -35,5 +35,13 @@
 --     ('rkina123', 'Dima', 'Ng', 'd_nfdsag@mail.ru', '1998-07-03', 'male', ''male'b'rkina'0$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE),
 --     ('rkina12341', 'Dima', 'Ng', 'd_nfdsag@mail.ru', '1998-07-03', 'male', ''male'b'rkina'0$QbsxNU1tXUDH4Q4e13U.tuEfs4PrGEsX8tFwCbqQqXxS8SRpwW1nW' , ARRAY['Russia','Moscow'], point(55.751244,37.618423), TRUE)
 
-UPDATE Users SET status = 'Online', lastVisit = CURRENT_TIMESTAMP WHERE nickName = 'rkina';
-UPDATE Users SET status = 'Offline', lastVisit = CURRENT_TIMESTAMP WHERE nickName = 'rkina';
+INSERT INTO Logs (idFrom, idTo, event, message) VALUES
+  (myId('rkina'), myId('mgrass'), 'message', 'kusmene'),
+  (myId('mgrass'), myId('rkina'), 'message', 'kus:3'),
+  (myId('rkina'), myId('mgrass'), 'like', 'liked you'),
+  (myId('mgrass'), myId('rkina'), 'view', 'visited your profile'),
+  (myId('rkina'), myId('mgrass'), 'ignore', 'ingored your profile');
+
+SELECT 
+  (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
+  FROM Logs AS l WHERE idTo = myId('mgrass');

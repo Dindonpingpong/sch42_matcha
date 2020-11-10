@@ -1,0 +1,23 @@
+.nickname {
+    font-weight: bold;
+    color: #5a6268;
+}
+
+.time {
+    margin-left: auto;
+    opacity: 0.5;
+}
+
+.message {
+    font-style: italic;
+    max-width: 200px;
+    overflow: hidden;
+}
+
+.icon {
+    color: rgba(0, 0, 0, 0.5);
+}
+
+.icon:hover {
+    color: rgba(0, 0, 0, 0.7);
+}

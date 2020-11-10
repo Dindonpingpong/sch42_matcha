@@ -7,7 +7,8 @@ const NotFound = () => {
     return (
         <section className="page-state">
             <Container>
-                <Info message='gasd' isError={true} />
+                <div>NEt</div>
+                {/* <Info message='gasd' isError={true} /> */}
             </Container>
         </section>
     )

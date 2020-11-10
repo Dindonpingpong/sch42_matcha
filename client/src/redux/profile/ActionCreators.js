@@ -1,5 +1,6 @@
 import * as ActionTypes from './ActionTypes';
 import { request } from '../../util/http';
+import { socket } from "../../util/socket";
 
 export const profileLoading = () => ({
     type: ActionTypes.PROFILE_LOADING
@@ -98,11 +99,12 @@ export const fetchUpdateStatus = (me, you, status, newStatus) => (dispatch) => {
 
     return request('/api/user/profile/status/update', data, 'POST')
         .then(response => response.json())
-        // .then(result => dispatch(statusAdd(result)))
         .then(result => {
-            console.log('gere',result);
+            console.log('like', data);
             if (result.message === 'Ok') {
                 dispatch(statusAdd(result));
+                data.event = data.status; 
+                socket.emit('notification', data);
             }
             else {
                 dispatch(statusFailed(result.message));

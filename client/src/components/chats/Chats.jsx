@@ -52,14 +52,10 @@ const ChatMessages = (props) => {
 
     useEffect(scrollToBottom, [props.chat.chats]);
 
-    const { pushChatMessage } = props;
     const me = props.me;
     const you = props.you;
 
     useEffect(() => {
-        // socket.on(`new_message_${me}_${you}`, (data) => {
-        //     pushChatMessage(data);
-        // });
 
         return function unsubscribe() {
             socket.off(`new_message_${me}_${you}`);
@@ -149,6 +145,7 @@ function CurrentChat(props) {
     useEffect(() => {
         if (nicknameTo) {
             socket.on(`new_message_${nicknameFrom}_${nicknameTo}`, (data) => {
+                if ((data.nick === nicknameFrom && data.nickto === nicknameTo) || (data.nick === nicknameTo && data.nickto === nicknameFrom))
                 props.props.pushChatMessage(data);
             });
             fetchCountPages(nicknameFrom, nicknameTo);

@@ -9,6 +9,7 @@ DROP TABLE IF EXISTS User_Tags CASCADE;
 DROP TABLE IF EXISTS Reports CASCADE;
 DROP TABLE IF EXISTS Report_Type CASCADE;
 DROP TABLE IF EXISTS User_Reports CASCADE;
+DROP TABLE IF EXISTS Logs CASCADE;
 DROP TYPE IF EXISTS sexType;
 CREATE TYPE sexType AS ENUM ('male', 'female');
 DROP TYPE IF EXISTS preferences;
@@ -107,7 +108,19 @@ CREATE TABLE User_Reports (
     FOREIGN KEY (idFrom) REFERENCES Users (id),
     FOREIGN KEY (idTo) REFERENCES Users (id),
     FOREIGN KEY (idReport) REFERENCES Reports (id)
-); 
+);
+
+CREATE TABLE Logs (
+    id SERIAL, 
+    idFrom int,
+    idTo int,
+    event text,
+    message text,
+    time timestamp DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (idFrom) REFERENCES Users (id),
+    FOREIGN KEY (idTo) REFERENCES Users (id)
+);
 
 CREATE OR REPLACE FUNCTION myId(login text) RETURNS integer 
 AS 'SELECT id FROM Users WHERE nickName = $1' 

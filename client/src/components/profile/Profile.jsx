@@ -258,7 +258,7 @@ function AsideButton(props) {
 
 const Profile = (props) => {
     const login = props.login.me.nickname;
-    const logged = props.profile.info.loggedStatus;
+    // const logged = props.profile.info.loggedstatus;
     const { nickname } = props.match.params;
     const { status } = props.profile;
     const { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView } = props;
@@ -271,7 +271,7 @@ const Profile = (props) => {
             fetchStatus(login, nickname);
             fetchUpdateView(login, nickname);
         }
-    }, [nickname, login, status, fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView, logged]);
+    }, [nickname, login, status, fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView]);
 
     const [activeTab, setActiveTab] = useState('1');
     const toggle = tab => {
@@ -315,8 +315,8 @@ const Profile = (props) => {
                         status={props.profile.status}
                         me={props.login.me.nickname}
                         you={props.match.params.nickname}
-                        loggedStatus={props.profile.info.loggedStatus}
-                        lastVisit={props.profile.info.lastVisit}
+                        loggedStatus={props.profile.info.loggedstatus}
+                        lastVisit={props.profile.info.lastvisit}
                         fetchUpdateStatus={props.fetchUpdateStatus}
                         fetchReport={props.fetchReport}
                     />

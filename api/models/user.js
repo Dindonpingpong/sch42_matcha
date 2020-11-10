@@ -43,7 +43,7 @@ const getLogin = (login) => {
 
 const getProfile = (nickname) => {
   const sql = `SELECT nickName, firstName, lastName, email, date_part('year', age(dateBirth::date)) AS age, count_reports,
-  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, 
+  sexPreferences, sex, rate, about, photos, location[1] AS country, location[2] AS city, loggedStatus, lastVisit,
   (SELECT array_agg(t.tag) FROM Tags t JOIN User_Tags ut ON ut.idTag = t.id WHERE ut.idUser = (SELECT id FROM Users WHERE nickName = $1)) AS tags
   FROM Users WHERE nickName=$1`;
 
@@ -443,11 +443,11 @@ const getConnectedUsers = (params) => {
           AND a.idFrom = b.idTo 
           AND a.idTo = b.idFrom 
           AND (idFrom = myId($1) OR idTo = myId($1))
-      )
+          )
   ) as res
   WHERE nickName != $1
   ORDER BY createdAt DESC`;
-
+  
   return db.any(sql, params);
 }
 
@@ -461,6 +461,21 @@ const setStatus = (params) => {
   return db.one(sql, params);
 }
 
+const getLogs = (params) => {
+  const sql = `SELECT 
+  $1 AS nickTo, (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
+  FROM Logs AS l WHERE idTo = myId($1)`;
+
+  return db.any(sql, params)
+}
+
+const addLog = (params) => {
+  const sql = `INSERT INTO Logs (idFrom, idTo, event, message) VALUES
+  (myId($1), myId($2), $3, $4);
+  RETURNING id`;
+
+  return db.one(sql, params);
+}
 
 exports.sign = sign;
 exports.getPassword = getPassword;
@@ -506,3 +521,5 @@ exports.updateCountReports = updateCountReports;
 exports.updateRate = updateRate;
 exports.getConnectedUsers = getConnectedUsers;
 exports.setStatus = setStatus;
+exports.getLogs = getLogs;
+exports.addLog = addLog;

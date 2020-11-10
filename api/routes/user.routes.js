@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { getPassword, getProfile, getViews, getLikes,
     getCards, getStatus, getTimeView, updateViewFailed, insertViewFailed,
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
-    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, setStatus } = require('../models/user');
+    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, setStatus, getLogs } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -696,6 +696,26 @@ router.post('/profile/report', async (req, res) => {
             success: false
         })
     }
+})
+
+router.get('/notifications/:nickname', async (req, res) => {
+    const login = req.params.nickname;
+    console.log(login);
+
+    getLogs([login])
+        .then(data => {
+            console.log(data);
+            res.status(200).json({
+                data: data,
+                success: true
+            })
+        })
+        .catch((e) => {
+            res.status(200).json({
+                message: e.message,
+                success: false
+            })
+        })
 })
 
 module.exports = router;

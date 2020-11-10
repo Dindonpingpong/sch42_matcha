@@ -3,13 +3,13 @@ import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import Login from './login/Login';
 import Sign from './sign/Sign';
 import NotFound from './notFound';
-import Header from './header';
-import Users from './users/users';
+import Header from './header/Header';
+import Users from './users/Users';
 import Profile from './profile/Profile';
 import EditProfile from './profile/EditProfile';
 import Footer from './Footer';
-import Remind from './remind/remind';
-import Restore from './restore/restore';
+import Remind from './remind/Remind';
+import Restore from './profile/restore/restore';
 import Chats from "./chats/Chats";
 
 export function Main() {
@@ -17,7 +17,7 @@ export function Main() {
     return (
         <div>
             <Router>
-            <Header />
+                <Header />
                 <Switch>
                     <Route exact={true} path='/login' component={Login} />
                     <Route path='/login/:nickname/:hash' component={Login} />
