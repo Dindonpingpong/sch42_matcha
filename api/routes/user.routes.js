@@ -708,6 +708,7 @@ router.get('/notifications/:nickname', async (req, res) => {
             })
         })
         .catch((e) => {
+            console.log('e', e.message);
             res.status(200).json({
                 message: e.message,
                 success: false

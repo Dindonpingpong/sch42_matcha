@@ -213,3 +213,6 @@ AND location[2] = (SELECT location[2] FROM Users WHERE nickName='rkina')
 ORDER BY count DESC, rate DESC, age ASC;
 
 select * from (select EXTRACT(YEAR FROM age(dateBirth)) as age FROM Users) s where age > 18;
+
+SELECT 'test10' AS nickTo, (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
+FROM Logs AS l WHERE idTo = 10 order by l.time desc limit 10;

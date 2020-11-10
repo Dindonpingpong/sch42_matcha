@@ -464,7 +464,9 @@ const setStatus = (params) => {
 const getLogs = (params) => {
   const sql = `SELECT 
   $1 AS nickTo, (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
-  FROM Logs AS l WHERE idTo = myId($1)`;
+  FROM Logs AS l WHERE idTo = myId($1) ORDER BY l.time DESC LIMIT 10`;
+
+  console.log(sql);
 
   return db.any(sql, params)
 }

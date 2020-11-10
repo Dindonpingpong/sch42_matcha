@@ -4,7 +4,7 @@ const { setStatus, addLog } = require('../models/user');
 module.exports = function (io) {
     const mySpace = io.of('/socks');
     let users = new Object();
-    
+
     function getKeyByValue(object, value) {
         return Object.keys(object).find(key => object[key] === value);
     }
@@ -26,11 +26,12 @@ module.exports = function (io) {
             console.log('1', data);
             notification.nickto = data.me;
             notification.nickname = data.you;
-            if (data.event === 'like' || data.event === 'unlike' || data.event === 'ignore') {
-                notification.event = data.status;
-                notification.message = `${data.status}d your profile`;
-            } 
-            
+            if (data.status && (data.status === 'like' || data.status === 'unlike' || data.status === 'ignore')) {
+                data.event = data.newStatus;
+            }
+            notification.event = (data.event === 'view') ? `${data.event}ed` : `${data.event}d`;
+            notification.message = `${data.me} ${notification.event} your profile`;
+
             addLog(notification)
                 .then(() => {
                     mySpace.emit('new_notification', notification);
@@ -39,7 +40,7 @@ module.exports = function (io) {
 
         socket.on('disconnect', () => {
             const nickname = getKeyByValue(users, socket.id);
-            
+
             if (users && nickname)
                 setStatus(["Offline", nickname]);
         })
