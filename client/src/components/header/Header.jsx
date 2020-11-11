@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 import { initFilter } from '../../redux/filter/ActionCreators';
 import { initChat } from '../../redux/chats/ActionCreators';
-import { fetchNotifications, pushNotification } from '../../redux/notification/ActionCreators';
+import { fetchNotifications, setHasNew } from '../../redux/notification/ActionCreators';
 import { socket } from "../../util/socket";
 import moment from 'moment';
 import './Header.css';
@@ -32,7 +32,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     fetchNotifications: (login) => dispatch(fetchNotifications(login)),
-    pushNotification: (notificaiton) => dispatch(pushNotification(notificaiton)),
+    setHasNew: (status) => dispatch(setHasNew(status)),
     logOut: () => dispatch(logOut()),
     clearFilter: () => dispatch(initFilter()),
     clearChat: () => dispatch(initChat())
@@ -66,10 +66,19 @@ function NotificationList(props) {
 }
 
 function Notification(props) {
-
+    console.log('3: ', props.hasNew);
+    function handleClick() {
+        props.fetchNotif(props.me);
+        props.set(false);
+    }
     return (
         <UncontrolledButtonDropdown>
-            <DropdownToggle color="none">
+            <DropdownToggle color="none" onClick={handleClick}>
+                {
+                    (props.hasNew)
+                        ? <span className="notification" />
+                        : ''
+                }
                 <i className="icon fa fa-bell"></i>
             </DropdownToggle>
             <DropdownMenu modifiers={{
@@ -100,21 +109,26 @@ const Header = (props) => {
     const name = props.login.isLogged === 'true' ? <i className="fa fa-sign-out"></i> : <i className="fa fa-sign-in"></i>;
     const urls = ['/login', '/register', '/remind', '/confirm'];
     const path = props.location.pathname;
-    const fetchNotif = props.fetchNotifications;
     const me = props.login.nickname;
+    console.log('1: ', props.notification);
 
     useEffect(() => {
         if (props.login.isLogged) {
             socket.emit('log_in', me);
             socket.on('new_notification', (data) => {
-                if (data.nickTo)
-                    props.pushNotification(data);
+                console.log('wow', data);
+                console.log('2: ',props.notification);
+                if (data.you === me)
+                    props.setHasNew(true);
             });
-            fetchNotif(me);
+    
+            return function unsub() {
+                socket.off('new_notification');
+            };
         }
         if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
             history.push('/login');
-    }, [path, props.login.isLogged, history, fetchNotif, me]);
+    }, [path, props.login.isLogged, history, me]);
 
     return (
         <Navbar color="light" light expand="xs">
@@ -123,7 +137,12 @@ const Header = (props) => {
                 <Nav className="ml-auto" navbar>
                     {!urls.includes(path) &&
                         <NavItem>
-                            <Notification notifications={props.notification.notifications} />
+                            <Notification 
+                            me={me}
+                            notifications={props.notification.notifications}
+                            hasNew={props.notification.hasNew}
+                            fetchNotif={props.fetchNotifications} 
+                            set={props.setHasNew}/>
                         </NavItem>
                     }
                     {!urls.includes(path) &&

@@ -167,7 +167,7 @@ const getTimeView = (params) => {
   return db.any(sql, params);
 }
 
-const updateViewFailed = (params) => {
+const updateView = (params) => {
   const sql =
     `UPDATE History SET visiTime = CURRENT_TIMESTAMP
   WHERE idVisitor = (SELECT id FROM Users WHERE nickName = $1)
@@ -176,7 +176,7 @@ const updateViewFailed = (params) => {
   return db.one(sql, params);
 }
 
-const insertViewFailed = (params) => {
+const insertView = (params) => {
   const sql =
     `INSERT INTO History (idVisitor, idVisited, visiTime)
   VALUES(
@@ -466,8 +466,6 @@ const getLogs = (params) => {
   $1 AS nickTo, (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
   FROM Logs AS l WHERE idTo = myId($1) ORDER BY l.time DESC LIMIT 10`;
 
-  console.log(sql);
-
   return db.any(sql, params)
 }
 
@@ -477,6 +475,15 @@ const addLog = (notification) => {
   RETURNING id`;
 
   return db.one(sql, Object.values(notification));
+}
+
+const checkConnect = (params) => {
+  const sql = `
+  SELECT status, idFrom, idTo FROM Connections WHERE idFrom = myId($2) AND idTo = myId($1) AND status = 'like'
+  UNION 
+  SELECT status, idFrom, idTo FROM Connections WHERE idFrom = myId($1) AND idTo = myId($2) AND status = 'like'`;
+
+  return db.any(sql, params);
 }
 
 exports.sign = sign;
@@ -498,8 +505,8 @@ exports.putImage = putImage;
 exports.getImage = getImage;
 exports.getChatImage = getChatImage;
 exports.getTimeView = getTimeView;
-exports.updateViewFailed = updateViewFailed;
-exports.insertViewFailed = insertViewFailed;
+exports.updateView = updateView;
+exports.insertView = insertView;
 exports.editProfile = editProfile;
 exports.deleteTags = deleteTags;
 exports.insertTags = insertTags;
@@ -525,3 +532,4 @@ exports.getConnectedUsers = getConnectedUsers;
 exports.setStatus = setStatus;
 exports.getLogs = getLogs;
 exports.addLog = addLog;
+exports.checkConnect = checkConnect;

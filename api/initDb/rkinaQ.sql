@@ -45,3 +45,7 @@ INSERT INTO Logs (idFrom, idTo, event, message) VALUES
 SELECT 
   (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
   FROM Logs AS l WHERE idTo = myId('mgrass');
+
+
+SELECT idFrom, idTo, status FROM Connections WHERE idFrom = 4 AND idTo = 1 AND status = 'like';
+SELECT idFrom, idTo, status FROM Connections WHERE idFrom = 1 AND idTo = 4 AND status = 'like';

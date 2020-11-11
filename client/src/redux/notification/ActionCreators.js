@@ -15,13 +15,13 @@ export const notificationsFailed = (msg) => ({
     payload: msg
 });
 
-export const push = (data) => ({
-    type: ActionTypes.NOTIFICATIONS_PUSH,
-    notification: data
+export const setNew = (data) => ({
+    type: ActionTypes.NOTIFICATIONS_NEW,
+    status: data
 });
 
-export const pushNotification = (data) => (dispatch) => {
-    return dispatch(push(data));
+export const setHasNew = (status) => (dispatch) => {
+    return dispatch(setNew(status));
 }
 
 export const fetchNotifications = (login) => (dispatch) => {

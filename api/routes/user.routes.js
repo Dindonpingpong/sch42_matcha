@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const { getPassword, getProfile, getViews, getLikes,
-    getCards, getStatus, getTimeView, updateViewFailed, insertViewFailed,
+    getCards, getStatus, getTimeView, updateView, insertView,
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
-    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, setStatus, getLogs } = require('../models/user');
+    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, setStatus, getLogs, addLog, checkConnect } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -237,20 +237,48 @@ router.post('/profile/status/update', async (req, res) => {
         promise
             .then(data => {
                 if (data) {
-                    updateRate([value, you])
-                        .then((data) => {
-                            res.status(200).json({
-                                result: newStatus,
-                                message: "Ok",
-                                success: true
+                    let promise1 = addLog([me, you, newStatus, `${you} ${newStatus}d your profile`]);
+                    const promise2 = updateRate([value, you]);
+
+                    if (newStatus === 'like') {
+                        checkConnect([me, you])
+                            .then((data) => {
+                                console.log(data);
+                                if (data.length == 2)
+                                    promise1 = addLog([me, you, newStatus, `You connected with ${you}`]);
+
+                                Promise.all([promise1, promise2])
+                                    .then(() => {
+                                        res.status(200).json({
+                                            result: newStatus,
+                                            message: "Ok",
+                                            success: true
+                                        })
+                                    })
+                                    .catch((e) => {
+                                        res.status(200).json({
+                                            message: e.message,
+                                            success: false
+                                        })
+                                    })
                             })
-                        })
-                        .catch((e) => {
-                            res.status(200).json({
-                                message: e.message,
-                                success: false
+                    }
+                    else {
+                        promise2
+                            .then(() => {
+                                res.status(200).json({
+                                    result: newStatus,
+                                    message: "Ok",
+                                    success: true
+                                })
                             })
-                        })
+                            .catch((e) => {
+                                res.status(200).json({
+                                    message: e.message,
+                                    success: false
+                                })
+                            })
+                    }
                 }
             })
             .catch((e) => {
@@ -276,38 +304,22 @@ router.post('/profile/view', async (req, res) => {
         if (me != you) {
             getTimeView([me, you])
                 .then(data => {
-                    if (data.length > 0) {
-                        updateViewFailed([me, you])
-                            .then(data => {
-                                if (data)
-                                    res.status(200).json({
-                                        message: "Ok",
-                                        success: true
-                                    });
+                    const promise1 = addLog([me, you, 'view', `${you} visited you profile`]);
+                    const promise2 = (data.length > 0) ? updateView([me, you]) : insertView([me, you]);
+
+                    Promise.all([promise1, promise2])
+                        .then(() => {
+                            res.status(200).json({
+                                message: "Ok",
+                                success: true
+                            });
+                        })
+                        .catch(() => {
+                            res.status(200).json({
+                                message: e.message,
+                                success: false
                             })
-                            .catch((e) => {
-                                res.status(200).json({
-                                    message: e.message,
-                                    success: false
-                                })
-                            })
-                    }
-                    else {
-                        insertViewFailed([me, you])
-                            .then(data => {
-                                if (data)
-                                    res.status(200).json({
-                                        message: "Ok",
-                                        success: true
-                                    });
-                            })
-                            .catch((e) => {
-                                res.status(200).json({
-                                    message: e.message,
-                                    success: false
-                                })
-                            })
-                    }
+                        })
                 })
         }
     }
@@ -708,7 +720,6 @@ router.get('/notifications/:nickname', async (req, res) => {
             })
         })
         .catch((e) => {
-            console.log('e', e.message);
             res.status(200).json({
                 message: e.message,
                 success: false

@@ -100,10 +100,8 @@ export const fetchUpdateStatus = (me, you, status, newStatus) => (dispatch) => {
     return request('/api/user/profile/status/update', data, 'POST')
         .then(response => response.json())
         .then(result => {
-            console.log('like', data, result);
             if (result.message === 'Ok') {
                 dispatch(statusAdd(result));
-                data.event = result.result;
                 socket.emit('notification', data);
             }
             else {
@@ -128,9 +126,8 @@ export const fetchUpdateView = (me, you) => (dispatch) => {
 
     return request('/api/user/profile/view', data, 'POST')
         .then(response => response.json())
-        .then(res => {
+        .then(() => {
             data.event = 'view';
-            data.message = `${you} visited you profile`;
             socket.emit('notification', data);
         })
         .catch(error => dispatch(updateViewFailed(error.message)));

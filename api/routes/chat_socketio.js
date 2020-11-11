@@ -22,20 +22,7 @@ module.exports = function (io) {
         });
 
         socket.on('notification', (data) => {
-            let notification = new Object();
-            console.log('1', data);
-            notification.nickto = data.me;
-            notification.nickname = data.you;
-            if (data.status && (data.status === 'like' || data.status === 'unlike' || data.status === 'ignore')) {
-                data.event = data.newStatus;
-            }
-            notification.event = (data.event === 'view') ? `${data.event}ed` : `${data.event}d`;
-            notification.message = `${data.me} ${notification.event} your profile`;
-
-            addLog(notification)
-                .then(() => {
-                    mySpace.emit('new_notification', notification);
-                })
+            mySpace.emit('new_notification', data);
         })
 
         socket.on('disconnect', () => {
