@@ -239,11 +239,14 @@ function AsideButton(props) {
                             : moment(props.lastVisit).fromNow()
                     }
                 </span>
-                <Button color="danger"
-                    value={props.status === 'like' ? 'unlike' : 'like'}
-                    onClick={changeStatus}>
-                    {props.status === 'like' ? 'Unlike' : 'Like'}
-                </Button>
+                {
+                    (props.avatar !== '1.jpg') &&
+                    <Button color="danger"
+                        value={props.status === 'like' ? 'unlike' : 'like'}
+                        onClick={changeStatus}>
+                        {props.status === 'like' ? 'Unlike' : 'Like'}
+                    </Button>
+                }
                 <Button color="secondary"
                     className={props.status === 'ignore' ? 'disabled-button' : ''}
                     value='ignore'
@@ -315,6 +318,7 @@ const Profile = (props) => {
                         status={props.profile.status}
                         me={props.login.me.nickname}
                         you={props.match.params.nickname}
+                        avatar={props.login.me.photos[0][1]}
                         loggedStatus={props.profile.info.loggedstatus}
                         lastVisit={props.profile.info.lastvisit}
                         fetchUpdateStatus={props.fetchUpdateStatus}

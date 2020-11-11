@@ -56,11 +56,10 @@ const ChatMessages = (props) => {
     const you = props.you;
 
     useEffect(() => {
-
         return function unsubscribe() {
             socket.off(`new_message_${me}_${you}`);
         }
-    }, []);
+    }, [me, you]);
 
     if (props.chat) {
         messagesOfThisChat = props.chat.chats.sort((a, b) => (a.id - b.id)).map((message, item) =>
@@ -140,18 +139,18 @@ function CurrentChat(props) {
 
     const nicknameFrom = props.props.login.me.nickname;
     const nicknameTo = props.props.chat.nicknameTo;
-    const { fetchCountPages, fetchChatMessages, initMessages } = props.props;
+    const { fetchCountPages, fetchChatMessages, initMessages, pushChatMessage } = props.props;
 
     useEffect(() => {
         if (nicknameTo) {
             socket.on(`new_message_${nicknameFrom}_${nicknameTo}`, (data) => {
                 if ((data.nick === nicknameFrom && data.nickto === nicknameTo) || (data.nick === nicknameTo && data.nickto === nicknameFrom))
-                props.props.pushChatMessage(data);
+                    pushChatMessage(data);
             });
             fetchCountPages(nicknameFrom, nicknameTo);
             fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
         }
-    }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages]);
+    }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages, pushChatMessage]);
 
     useEffect(() => {
         initMessages();

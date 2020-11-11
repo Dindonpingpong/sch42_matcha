@@ -6,10 +6,8 @@ const Info = (props) => {
     const color = props.isSuccess ? 'success' : 'danger';
 
     useEffect(() => {
-        let interval = null;
-
         if (isVisible) {
-            interval = window.setTimeout(() => {
+            window.setTimeout(() => {
                 setClose(!isVisible);
             }, 5000);
         }

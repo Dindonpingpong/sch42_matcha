@@ -110,25 +110,24 @@ const Header = (props) => {
     const urls = ['/login', '/register', '/remind', '/confirm'];
     const path = props.location.pathname;
     const me = props.login.nickname;
-    console.log('1: ', props.notification);
+    const isLogged = props.login.isLogged;
+    const { setHasNew } = props;
 
     useEffect(() => {
-        if (props.login.isLogged) {
+        if (isLogged) {
             socket.emit('log_in', me);
             socket.on('new_notification', (data) => {
-                console.log('wow', data);
-                console.log('2: ',props.notification);
                 if (data.you === me)
-                    props.setHasNew(true);
+                    setHasNew(true);
             });
     
             return function unsub() {
                 socket.off('new_notification');
             };
         }
-        if (!props.login.isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
+        if (!isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
             history.push('/login');
-    }, [path, props.login.isLogged, history, me]);
+    }, [path, isLogged, history, me, setHasNew]);
 
     return (
         <Navbar color="light" light expand="xs">
