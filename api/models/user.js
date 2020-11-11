@@ -463,7 +463,7 @@ const setStatus = (params) => {
 
 const getLogs = (params) => {
   const sql = `SELECT 
-  $1 AS nickTo, (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time
+  $1 AS nickTo, (SELECT nickname FROM Users WHERE id = l.idFrom), l.event, l.message, l.time, l.viewed
   FROM Logs AS l WHERE idTo = myId($1) ORDER BY l.time DESC LIMIT 10`;
 
   return db.any(sql, params)
@@ -475,6 +475,14 @@ const addLog = (notification) => {
   RETURNING id`;
 
   return db.one(sql, Object.values(notification));
+}
+
+const updateLogs = (login) => {
+  const sql = `UPDATE Logs SET viewed = true WHERE idTo = myId($1)
+  RETURNING (SELECT nickname FROM Users WHERE id = idFrom), 
+  (SELECT nickname FROM Users WHERE id = idTo), event, message, viewed;`;
+
+  return db.any(sql, login);
 }
 
 const checkConnect = (params) => {
@@ -532,4 +540,5 @@ exports.getConnectedUsers = getConnectedUsers;
 exports.setStatus = setStatus;
 exports.getLogs = getLogs;
 exports.addLog = addLog;
+exports.updateLogs = updateLogs;
 exports.checkConnect = checkConnect;

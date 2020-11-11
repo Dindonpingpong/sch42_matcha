@@ -13,7 +13,9 @@ module.exports = function (io) {
 
         socket.on('log_in', (nickname) => {
             users[nickname] = socket.id;
-            setStatus(["Online", nickname]);
+            setStatus(["Online", nickname])
+                .then()
+                .catch();
         });
 
         socket.on('send_message', (data) => {
@@ -34,7 +36,9 @@ module.exports = function (io) {
             const nickname = getKeyByValue(users, socket.id);
 
             if (users && nickname)
-                setStatus(["Offline", nickname]);
+                setStatus(["Offline", nickname])
+                    .then()
+                    .catch();
         })
     })
 

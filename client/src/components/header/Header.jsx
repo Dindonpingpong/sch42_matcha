@@ -42,18 +42,19 @@ function NotificationList(props) {
     let listItems;
 
     if (props.notifications.length > 0) {
-        listItems = props.notifications.map((notificaiton, item) => {
-            const ChatMessage = notificaiton.event === 'message' ? 'New message from ' : '';
+        listItems = props.notifications.map((notification, item) => {
+            const ChatMessage = notification.event === 'message' ? 'New message from ' : '';
             return (
                 <DropdownItem key={item}>
                     {ChatMessage}
-                    <span className="nickname">{notificaiton.nickname}</span>
-                    <div className="message">{notificaiton.message}</div>
-                    <div className="time">{moment(notificaiton.time).fromNow()}</div>
+                    <span className="nickname">{notification.nickname}</span>
+                    <div className="message">{notification.message}</div>
+                    <div className="time">{moment(notification.time).fromNow()}</div>
                 </DropdownItem>
-            );
+            )
         }
         );
+
         return (
             <label>{listItems}</label>
         );
@@ -66,7 +67,6 @@ function NotificationList(props) {
 }
 
 function Notification(props) {
-
     function handleClick() {
         props.fetchNotif(props.me);
         props.set(false);
@@ -112,16 +112,19 @@ const Header = (props) => {
     const path = props.location.pathname;
     const me = props.login.nickname;
     const isLogged = props.login.isLogged;
-    const { setHasNew } = props;
+    const { setHasNew, fetchNotifications } = props;
 
     useEffect(() => {
+
         if (isLogged) {
             socket.emit('log_in', me);
-            
+
             socket.on('new_notification', (data) => {
                 if (data.you === me)
                     setHasNew(true);
             });
+
+            fetchNotifications(me);
 
             return function unsub() {
                 socket.off('new_notification');
@@ -129,7 +132,7 @@ const Header = (props) => {
         }
         if (!isLogged && !path.includes('/register') && !path.includes('/remind') && !path.includes('/confirm'))
             history.push('/login');
-    }, [path, isLogged, history, me, setHasNew]);
+    }, [path, isLogged, history, me, setHasNew, fetchNotifications]);
 
     return (
         <Navbar color="light" light expand="xs">
@@ -138,12 +141,12 @@ const Header = (props) => {
                 <Nav className="ml-auto" navbar>
                     {!urls.includes(path) &&
                         <NavItem>
-                            <Notification 
-                            me={me}
-                            notifications={props.notification.notifications}
-                            hasNew={props.notification.hasNew}
-                            fetchNotif={props.fetchNotifications} 
-                            set={props.setHasNew}/>
+                            <Notification
+                                me={me}
+                                notifications={props.notification.notifications}
+                                hasNew={props.notification.hasNew}
+                                fetchNotif={props.fetchNotifications}
+                                set={props.setHasNew} />
                         </NavItem>
                     }
                     {!urls.includes(path) &&

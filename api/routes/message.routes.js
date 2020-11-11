@@ -15,7 +15,10 @@ router.post('/message', async (req, res) => {
             message
         ];
 
-        sendMessage(params)
+        const promise1 = addLog([params[0], params[1], 'message', 'sent you message']);
+        const promise2 = sendMessage(params);
+
+        Promise.all([promise1, promise2])
             .then(data => {
                 data.path = path
                 res.status(200).json({
@@ -29,7 +32,6 @@ router.post('/message', async (req, res) => {
                     success: false
                 })
             })
-
     } catch (e) {
         res.status(200).json({
             message: e.message,
@@ -137,10 +139,13 @@ router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
         const finalImg = new Buffer.from(encode_image, 'base64');
         const newPath = `${from}_${to}_${new Date().getTime()}`;
 
-        fs.writeFile((`${destFolder}/${newPath}`), finalImg, function(err) {});
+        fs.writeFile((`${destFolder}/${newPath}`), finalImg, function () { });
         fs.unlinkSync(path);
 
-        sendFileMessage([ from, to, message, mimetype, newPath])
+        const promise1 = addLog([from, to, 'message', 'sent you image']);
+        const promise2 = sendFileMessage([from, to, message, mimetype, newPath]);
+
+        Promise.all([promise1, promise2])
             .then(data => {
                 data.path = avatar;
                 res.json({
@@ -175,26 +180,6 @@ router.get('/image/:path', async (req, res) => {
                 res.contentType(data[0].type)
                 res.send(finalImg);
             })
-    } catch (e) {
-        res.status(500).json({
-            message: e.message,
-            success: false
-        })
-    }
-})
-
-router.post('/getsound', async (req, res) => {
-    try {
-        let name = req.body.name;
-        let path = `../sound/${name}`;
-        res.sendFile(path, { root: '.' });
-        //res.status(200).json({success:true})
-        /*
-                let image = req.body.img;
-                let path = `${destFolder}/${image}`;
-                var img2 = fs.readFileSync(path);
-                var encode_image = img2.toString('base64');
-                res.status(200).json({img:encode_image,success:true})*/
     } catch (e) {
         res.status(500).json({
             message: e.message,

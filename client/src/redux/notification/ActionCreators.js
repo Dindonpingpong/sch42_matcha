@@ -32,6 +32,33 @@ export const fetchNotifications = (login) => (dispatch) => {
         .then(result => {
             if (result.success === true) {
                 dispatch(notificationsAdd(result.data));
+                let check;
+
+                for (let notification of result.data) {
+                    if (!notification.viewed)
+                        check = true;
+                };
+
+                if (check) {
+                    dispatch(setHasNew(true));
+                }
+
+            }
+            else {
+                dispatch(notificationsFailed(result.message));
+            }
+        })
+        .catch(error => dispatch(notificationsFailed(error.message)));
+}
+
+export const updateNotifications = (login) => (dispatch) => {
+    dispatch(notificationsLoading());
+
+    return request('/api/user/notifications/update' + login)
+        .then(res => res.json())
+        .then(result => {
+            if (result.success === true) {
+                dispatch(notificationsAdd(result.data));
             }
             else {
                 dispatch(notificationsFailed(result.message));

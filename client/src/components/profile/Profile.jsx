@@ -216,13 +216,7 @@ function AsideButton(props) {
     if (props.check) {
         return (
             <Row className="aside-button">
-                <span className="logged-status">
-                    {
-                        props.loggedStatus === 'Online'
-                            ? 'Online'
-                            : moment(props.lastVisit).fromNow()
-                    }
-                </span>
+                <span className="logged-status">Online</span>
                 <Link to="/edit" className="btn btn-secondary ml-auto d-block">
                     Edit profile
                 </Link>

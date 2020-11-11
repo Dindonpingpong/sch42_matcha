@@ -116,6 +116,7 @@ CREATE TABLE Logs (
     idTo int,
     event text,
     message text,
+    viewed boolean DEFAULT false,
     time timestamp DEFAULT CURRENT_TIMESTAMP,
     PRIMARY KEY (id),
     FOREIGN KEY (idFrom) REFERENCES Users (id),

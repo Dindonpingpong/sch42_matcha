@@ -49,3 +49,6 @@ SELECT
 
 SELECT idFrom, idTo, status FROM Connections WHERE idFrom = 4 AND idTo = 1 AND status = 'like';
 SELECT idFrom, idTo, status FROM Connections WHERE idFrom = 1 AND idTo = 4 AND status = 'like';
+
+UPDATE Logs SET viewed = true WHERE idTo = myId('rkina')
+RETURNING (SELECT nickname FROM Users WHERE id = idFrom), (SELECT nickname FROM Users WHERE id = idTo), event, message, viewed;
