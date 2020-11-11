@@ -230,6 +230,7 @@ router.post('/profile/status/update', async (req, res) => {
         const { me, you, status, newStatus } = req.body;
         const promise = (status === 'like' || status === 'ignore' || status === 'unlike') ? updateStatus([me, you, newStatus]) : insertStatus([me, you, newStatus]);
         let value = 10;
+        let result = newStatus;
 
         if (newStatus === 'unlike' || newStatus === 'ignore')
             value = -10;
@@ -237,20 +238,25 @@ router.post('/profile/status/update', async (req, res) => {
         promise
             .then(data => {
                 if (data) {
-                    let promise1 = addLog([me, you, newStatus, `${you} ${newStatus}d your profile`]);
-                    const promise2 = updateRate([value, you]);
+                    const promise1 = updateRate([value, you]);
+                    let promise2 = addLog([me, you, newStatus, `${newStatus}d your profile`]);
 
                     if (newStatus === 'like') {
                         checkConnect([me, you])
                             .then((data) => {
-                                console.log(data);
-                                if (data.length == 2)
-                                    promise1 = addLog([me, you, newStatus, `You connected with ${you}`]);
+                                let promises = [promise1];
+                                if (data.length == 2) {
+                                    promise2 = addLog([me, you, newStatus, 'connected with you']);
+                                    const promise3 = addLog([you, me, newStatus, 'connected with you`']);
+                                    result = 'connect';
+                                    promises.push(promise3);
+                                }
+                                promises.push(promise2);
 
-                                Promise.all([promise1, promise2])
+                                Promise.all(promises)
                                     .then(() => {
                                         res.status(200).json({
-                                            result: newStatus,
+                                            data: result,
                                             message: "Ok",
                                             success: true
                                         })
@@ -264,7 +270,7 @@ router.post('/profile/status/update', async (req, res) => {
                             })
                     }
                     else {
-                        promise2
+                        promise1
                             .then(() => {
                                 res.status(200).json({
                                     result: newStatus,
@@ -304,7 +310,7 @@ router.post('/profile/view', async (req, res) => {
         if (me != you) {
             getTimeView([me, you])
                 .then(data => {
-                    const promise1 = addLog([me, you, 'view', `${you} visited you profile`]);
+                    const promise1 = addLog([me, you, 'view', `visited you profile`]);
                     const promise2 = (data.length > 0) ? updateView([me, you]) : insertView([me, you]);
 
                     Promise.all([promise1, promise2])

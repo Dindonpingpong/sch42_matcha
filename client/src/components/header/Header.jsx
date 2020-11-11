@@ -66,11 +66,12 @@ function NotificationList(props) {
 }
 
 function Notification(props) {
-    console.log('3: ', props.hasNew);
+
     function handleClick() {
         props.fetchNotif(props.me);
         props.set(false);
     }
+
     return (
         <UncontrolledButtonDropdown>
             <DropdownToggle color="none" onClick={handleClick}>
@@ -116,11 +117,12 @@ const Header = (props) => {
     useEffect(() => {
         if (isLogged) {
             socket.emit('log_in', me);
+            
             socket.on('new_notification', (data) => {
                 if (data.you === me)
                     setHasNew(true);
             });
-    
+
             return function unsub() {
                 socket.off('new_notification');
             };

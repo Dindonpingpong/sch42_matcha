@@ -22,6 +22,11 @@ module.exports = function (io) {
         });
 
         socket.on('notification', (data) => {
+            if (data.newStatus === 'connect') {
+                let tmp = data;
+                [tmp.me, tmp.you] = [tmp.you, tmp.me];
+                mySpace.emit('new_notification', tmp);
+            }
             mySpace.emit('new_notification', data);
         })
 
