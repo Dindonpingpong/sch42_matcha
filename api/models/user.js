@@ -479,8 +479,7 @@ const addLog = (notification) => {
 
 const updateLogs = (login) => {
   const sql = `UPDATE Logs SET viewed = true WHERE idTo = myId($1)
-  RETURNING (SELECT nickname FROM Users WHERE id = idFrom), 
-  (SELECT nickname FROM Users WHERE id = idTo), event, message, viewed;`;
+  RETURNING id`;
 
   return db.any(sql, login);
 }

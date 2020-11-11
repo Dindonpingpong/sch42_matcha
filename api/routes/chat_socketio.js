@@ -29,6 +29,7 @@ module.exports = function (io) {
                 [tmp.me, tmp.you] = [tmp.you, tmp.me];
                 mySpace.emit('new_notification', tmp);
             }
+            console.log(data);
             mySpace.emit('new_notification', data);
         })
 

@@ -20,8 +20,16 @@ export const setNew = (data) => ({
     status: data
 });
 
+export const clear = () => ({
+    type: ActionTypes.NOTIFICATIONS_CLEAR,
+});
+
 export const setHasNew = (status) => (dispatch) => {
     return dispatch(setNew(status));
+}
+
+export const clearNotification = () => (dispatch) => {
+    return dispatch(clear());
 }
 
 export const fetchNotifications = (login) => (dispatch) => {
@@ -42,7 +50,6 @@ export const fetchNotifications = (login) => (dispatch) => {
                 if (check) {
                     dispatch(setHasNew(true));
                 }
-
             }
             else {
                 dispatch(notificationsFailed(result.message));
@@ -54,9 +61,10 @@ export const fetchNotifications = (login) => (dispatch) => {
 export const updateNotifications = (login) => (dispatch) => {
     dispatch(notificationsLoading());
 
-    return request('/api/user/notifications/update' + login)
+    return request('/api/user/notif/update/' + login)
         .then(res => res.json())
         .then(result => {
+            console.log(result);
             if (result.success === true) {
                 dispatch(notificationsAdd(result.data));
             }

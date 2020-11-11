@@ -18,7 +18,7 @@ import { useHistory } from "react-router-dom";
 import { useEffect } from 'react';
 import { initFilter } from '../../redux/filter/ActionCreators';
 import { initChat } from '../../redux/chats/ActionCreators';
-import { fetchNotifications, setHasNew } from '../../redux/notification/ActionCreators';
+import { fetchNotifications, updateNotifications, setHasNew, clearNotification } from '../../redux/notification/ActionCreators';
 import { socket } from "../../util/socket";
 import moment from 'moment';
 import './Header.css';
@@ -32,9 +32,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => ({
     fetchNotifications: (login) => dispatch(fetchNotifications(login)),
+    updateNotifications: (login) => dispatch(updateNotifications(login)),
     setHasNew: (status) => dispatch(setHasNew(status)),
     logOut: () => dispatch(logOut()),
     clearFilter: () => dispatch(initFilter()),
+    clearNotification: () => dispatch(clearNotification()),
     clearChat: () => dispatch(initChat())
 });
 
@@ -68,7 +70,7 @@ function NotificationList(props) {
 
 function Notification(props) {
     function handleClick() {
-        props.fetchNotif(props.me);
+        props.updateNotifications(props.me);
         props.set(false);
     }
 
@@ -120,10 +122,12 @@ const Header = (props) => {
             socket.emit('log_in', me);
 
             socket.on('new_notification', (data) => {
-                if (data.you === me)
+                if (data.you === me) {
                     setHasNew(true);
+                    fetchNotifications(me);
+                }
             });
-
+            
             fetchNotifications(me);
 
             return function unsub() {
@@ -145,7 +149,7 @@ const Header = (props) => {
                                 me={me}
                                 notifications={props.notification.notifications}
                                 hasNew={props.notification.hasNew}
-                                fetchNotif={props.fetchNotifications}
+                                updateNotifications={props.updateNotifications}
                                 set={props.setHasNew} />
                         </NavItem>
                     }
@@ -175,6 +179,7 @@ const Header = (props) => {
                             <NavLink href='/login' onClick={() => {
                                 props.clearFilter();
                                 props.clearChat();
+                                props.clearNotification();
                                 props.logOut();
                             }}>
                                 {name}

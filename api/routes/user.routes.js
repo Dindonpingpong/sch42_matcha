@@ -2,7 +2,7 @@ const router = require('express').Router();
 const { getPassword, getProfile, getViews, getLikes,
     getCards, getStatus, getTimeView, updateView, insertView,
     updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
-    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, getLogs, addLog, checkConnect } = require('../models/user');
+    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, getLogs, addLog, checkConnect, updateLogs } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -273,7 +273,7 @@ router.post('/profile/status/update', async (req, res) => {
                         promise1
                             .then(() => {
                                 res.status(200).json({
-                                    result: newStatus,
+                                    data: newStatus,
                                     message: "Ok",
                                     success: true
                                 })
@@ -492,11 +492,6 @@ router.post('/edit/location/:nickname', async (req, res) => {
 
 router.post('/users/page', async (req, res) => {
     try {
-        // console.log(req.body);
-        // const nickname = req.body.nickname;
-        // const page = (req.body.page * 6);
-        // const sort = req.body.sort;
-
         const { nickname, mySex, mySexpref, page, sortType, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
         let sqlSort = '',
             sqlFilter = '',
@@ -733,16 +728,25 @@ router.get('/notifications/:nickname', async (req, res) => {
         })
 })
 
-router.get('/notifications/update/:nickname', async (req, res) => {
+router.get('/notif/update/:nickname', async (req, res) => {
     const login = req.params.nickname;
 
     updateLogs([login])
-        .then(data => {
+        .then((data) => {
             console.log(data);
-            res.status(200).json({
-                data: data,
-                success: true
-            })
+            getLogs([login])
+                .then(data => {
+                    res.status(200).json({
+                        data: data,
+                        success: true
+                    })
+                })
+                .catch((e) => {
+                    res.status(200).json({
+                        message: e.message,
+                        success: false
+                    })
+                })
         })
         .catch((e) => {
             res.status(200).json({

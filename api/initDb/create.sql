@@ -212,13 +212,6 @@ INSERT INTO User_Tags (idUser, idTag) VALUES
     ('3', '4'),
     ('3', '5');
 
-INSERT INTO Tags (Tag) VALUES
-    ('pornography'),
-    ('spam'),
-    ('offensive behavior'),
-    ('fraud');
-
-
 INSERT INTO User_Tags (idUser, idTag) VALUES 
     ('8', '2'),
     ('9', '2'),
@@ -234,7 +227,8 @@ INSERT INTO Reports (report) VALUES
     ('pornography'),
     ('spam'),
     ('offensive behavior'),
-    ('fraud');
+    ('fraud'),
+    ('fake');
 
 UPDATE Users SET rate = 499 WHERE id = 14;
 UPDATE Users SET rate = 99 WHERE id = 3;

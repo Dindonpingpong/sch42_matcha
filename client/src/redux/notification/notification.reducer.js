@@ -22,6 +22,9 @@ export const NotificationReducer = (state = initialState, action) => {
         case ActionTypes.NOTIFICATIONS_NEW:
             return { ...state, isLoading: false, errMsg: null, hasNew: action.status };
 
+        case ActionTypes.NOTIFICATIONS_CLEAR:
+            return { ...initialState };
+
         default:
             return state;
     }

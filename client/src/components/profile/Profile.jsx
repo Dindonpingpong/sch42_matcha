@@ -194,6 +194,7 @@ function Report(props) {
                         <option value="spam">Spam</option>
                         <option value="offensive behavior">Offensive behavior</option>
                         <option value="fraud">Fraud</option>
+                        <option value="fake">Fake account</option>
                     </Input>
                     <Input type="textarea" placeholder="Descride the reason for the report" rows={5} onChange={e => setMessage(e.target.value)} />
                 </ModalBody>

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Alert, Input, Col, Label, Card, CardBody } from 'reactstrap';
 import { useParams } from 'react-router-dom';
-import { Loading } from '../../Loading';
-import { request } from '../../../util/http';
+import { Loading } from '../Loading';
+import { request } from '../../util/http';
 import Button from 'reactstrap/lib/Button';
-import { isValidInput } from '../../../util/check';
+import { isValidInput } from '../../util/check';
 import FormFeedback from 'reactstrap/lib/FormFeedback';
 
 function InputForm(props) {

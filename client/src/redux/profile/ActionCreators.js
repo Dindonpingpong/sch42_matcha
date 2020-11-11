@@ -102,6 +102,7 @@ export const fetchUpdateStatus = (me, you, status, newStatus) => (dispatch) => {
         .then(result => {
             if (result.message === 'Ok') {
                 dispatch(statusAdd(result));
+                data.event = 'like';
                 data.newStatus = result.data;
                 socket.emit('notification', data);
             }
