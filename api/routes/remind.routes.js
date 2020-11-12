@@ -83,7 +83,7 @@ router.post('/restore', async (req, res) => {
         })
         .catch((e) => {
             res.status(200).json({
-                message: e.message,
+                message: "Ooops! Something went wrong",
                 success: false
             })
         })

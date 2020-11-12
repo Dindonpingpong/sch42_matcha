@@ -24,7 +24,7 @@
     "bcrypt": "^5.0.0",
     "concurrently": "^5.3.0",
     "multer": "^1.4.2",
-    "nodemailer": "^6.4.15",
+    "nodemailer": "^6.4.16",
     "nodemon": "^2.0.6",
     "pg-promise": "^10.7.3"
   }

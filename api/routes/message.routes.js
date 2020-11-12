@@ -28,13 +28,13 @@ router.post('/message', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -63,13 +63,13 @@ router.get('/message/:from/:to/:page', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -91,13 +91,13 @@ router.get('/messages/:from/:to', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -117,13 +117,13 @@ router.get('/users/:nickname', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -155,13 +155,13 @@ router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -182,7 +182,7 @@ router.get('/image/:path', async (req, res) => {
             })
     } catch (e) {
         res.status(500).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }

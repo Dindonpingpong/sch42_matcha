@@ -51,13 +51,13 @@ router.post('/login', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -77,13 +77,13 @@ router.get('/login/:nickname', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -136,13 +136,13 @@ router.post('/users/page', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -179,13 +179,13 @@ router.post('/users/count/pages', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -222,13 +222,13 @@ router.post('/users/count/pages', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -250,14 +250,14 @@ router.post('/profile/report', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     }
     catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -275,7 +275,7 @@ router.get('/notifications/:nickname', async (req, res) => {
         })
         .catch((e) => {
             res.status(200).json({
-                message: e.message,
+                message: "Ooops! Something went wrong",
                 success: false
             })
         })
@@ -295,14 +295,14 @@ router.get('/notif/update/:nickname', async (req, res) => {
                 })
                 .catch((e) => {
                     res.status(200).json({
-                        message: e.message,
+                        message: "Ooops! Something went wrong",
                         success: false
                     })
                 })
         })
         .catch((e) => {
             res.status(200).json({
-                message: e.message,
+                message: "Ooops! Something went wrong",
                 success: false
             })
         })

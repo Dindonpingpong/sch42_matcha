@@ -1,0 +1,9 @@
+{
+    "port": "5000",
+	"sockPort": "5001",
+    "urlDb": "postgres://rkina:wwq@localhost:5432/rkina",
+    "salt": "_271kweV77",
+    "email": "matcha.rm.nd@gmail.com",
+    "emailPass": "wwqfd123",
+    "apiKey": "74b2ed32-1340-405d-be18-ab91a877defe"
+}

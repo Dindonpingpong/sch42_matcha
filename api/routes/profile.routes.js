@@ -29,13 +29,13 @@ router.get('/:nickname', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -63,13 +63,13 @@ router.get('/views/:nickname', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -97,13 +97,13 @@ router.get('/likes/:nickname', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -131,14 +131,14 @@ router.post('/status', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     }
     catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -182,7 +182,7 @@ router.post('/status/update', async (req, res) => {
                                     })
                                     .catch((e) => {
                                         res.status(200).json({
-                                            message: e.message,
+                                            message: "Ooops! Something went wrong",
                                             success: false
                                         })
                                     })
@@ -199,7 +199,7 @@ router.post('/status/update', async (req, res) => {
                             })
                             .catch((e) => {
                                 res.status(200).json({
-                                    message: e.message,
+                                    message: "Ooops! Something went wrong",
                                     success: false
                                 })
                             })
@@ -208,7 +208,7 @@ router.post('/status/update', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
@@ -216,7 +216,7 @@ router.post('/status/update', async (req, res) => {
     }
     catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -241,7 +241,7 @@ router.post('/view', async (req, res) => {
                         })
                         .catch(() => {
                             res.status(200).json({
-                                message: e.message,
+                                message: "Ooops! Something went wrong",
                                 success: false
                             })
                         })
@@ -250,7 +250,7 @@ router.post('/view', async (req, res) => {
     }
     catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -298,7 +298,7 @@ router.post('/edit/:nickname', async (req, res) => {
         })
         .catch(e => {
             res.status(200).json({
-                message: e.message,
+                message: "Ooops! Something went wrong",
                 success: false
             })
         })
@@ -334,7 +334,7 @@ router.post('/edit/tags/:nickname', async (req, res) => {
         })
         .catch((e) => {
             res.status(200).json({
-                msg: e.message,
+                msg: "Ooops! Something went wrong",
                 success: false
             })
         })
@@ -396,14 +396,14 @@ router.post('/edit/location/:nickname', async (req, res) => {
                 })
                 .catch((e) => {
                     res.status(200).json({
-                        message: e.message,
+                        message: "Ooops! Something went wrong",
                         success: false
                     })
                 })
         })
         .catch((e) => {
             res.status(200).json({
-                message: e.message,
+                message: "Ooops! Something went wrong",
                 success: false
             })
         })

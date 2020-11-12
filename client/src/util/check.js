@@ -1,8 +1,5 @@
 const isValidPassword = (value) => {
-    return (value.length > 0);
-    // if (value.length > 0)
-    //     return true;
-    // return false;
+    return (value.length > 7 && value.match(/\W+$/));
 }
 
 const isValidInput = (type, value) => {

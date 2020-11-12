@@ -19,13 +19,13 @@ router.post('/:nickname/:position', upload.single('photo'), async (req, res) => 
             })
             .catch(e => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -45,13 +45,13 @@ router.get('/:nickname/:position/:path', async (req, res) => {
             })
             .catch(e => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }

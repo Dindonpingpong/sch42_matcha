@@ -226,7 +226,7 @@ function Filter(props) {
                                 onClick={() => { toggleModal(); props.filter.clearFilter(); }}>
                                 Clear
                             </Button>
-                            <Button color="secondary" onClick={toggleModal}>Cancel</Button>
+                            <Button color="secondary" onClick={toggleModal}>Back</Button>
                         </ModalFooter>
                     </ModalBody>
                 </Modal>

@@ -73,13 +73,13 @@ router.post('/check/pass', async (req, res) => {
             })
             .catch(e => {
                 res.status(500).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
         res.status(500).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -123,7 +123,7 @@ router.post('/', async (req, res) => {
                         })
                         .catch((e) => {
                             res.status(200).json({
-                                message: e.message,
+                                message: "Ooops! Something went wrong",
                                 success: false
                             })
                         })
@@ -131,14 +131,14 @@ router.post('/', async (req, res) => {
             })
             .catch((e) => {
                 res.status(200).json({
-                    message: e.message,
+                    message: "Ooops! Something went wrong",
                     success: false
                 })
             })
 
     } catch (e) {
         res.status(200).json({
-            message: e.message,
+            message: "Ooops! Something went wrong",
             success: false
         })
     }
@@ -167,7 +167,7 @@ router.post('/location/:nickname', async (req, res) => {
         })
         .catch((e) => {
             res.status(200).json({
-                message: e.message,
+                message: "Ooops! Something went wrong",
                 success: false
             })
         })
