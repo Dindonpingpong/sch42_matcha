@@ -131,12 +131,12 @@ export const initFormEdit = () => (dispatch) => {
 export const fetchEditProfile = (data, login) => (dispatch) => {
     dispatch(editProfileLoading());
 
-    const p1 = request(`/api/user/edit/tags/${login}`, data, 'POST');
-    const p2 = request(`api/user/edit/location/${login}`, data, 'POST');
+    const p1 = request(`/api/profile/edit/tags/${login}`, data, 'POST');
+    const p2 = request(`api/profile/edit/location/${login}`, data, 'POST');
 
     Promise.all([p1, p2])
         .then(() => {
-            request(`/api/user/edit/${login}`, data, 'POST')
+            request(`/api/profile/edit/${login}`, data, 'POST')
                 .then(response => response.json())
                 .then(result => {
                     console.log(result);

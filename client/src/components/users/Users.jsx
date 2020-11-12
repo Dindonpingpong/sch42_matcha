@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Link, withRouter, useHistory } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import {
     Container, Row, Col, ListGroup, ListGroupItem, Nav, Button, Card, CardBody, CardImg, CardTitle, Badge,
@@ -11,6 +11,7 @@ import {
     setAgeFrom, setAgeTo, setRateFrom, setRateTo, setSex, setTags, setDistance, setSort
 } from '../../redux/filter/ActionCreators';
 import { Loading } from '../Loading';
+import InfoSpan from '../infoSpan';
 import './Users.css'
 import { useState } from 'react';
 
@@ -43,22 +44,19 @@ function InputForm(props) {
 
     const inputChange = (e) => {
         const { name, value } = e.target;
-        // добавить проверку на A > B?
 
         let isAge = (value.match(/^\d{2,3}$/)) ? true : false;
         let isRate = (value.match(/^\d{1,4}$/)) ? true : false;
 
-        // console.log('ic', props);
-
         if (isAge) {
             if (name === 'agefrom') {
                 return (value < 18 || value > 120)
-                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only 1"))
+                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only"))
                     : (toggleValid('is-valid'), props.set(value));
             }
             if (name === 'ageto') {
                 return (value < 18 || value > 120)
-                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only 2"))
+                    ? (toggleValid('is-invalid'), setFeedback("Age range 18 - 130 only"))
                     : (toggleValid('is-valid'), props.set(value));
             }
         }
@@ -68,12 +66,12 @@ function InputForm(props) {
         if (isRate) {
             if (name === 'ratefrom') {
                 return (value < 0 || value > 1000)
-                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only 1"))
+                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only"))
                     : (toggleValid('is-valid'), props.set(value));
             }
             if (name === 'rateto') {
                 return (value < 0 || value > 1000)
-                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only 2"))
+                    ? (toggleValid('is-invalid'), setFeedback("Rate range 0 - 1000 only"))
                     : (toggleValid('is-valid'), props.set(value));
             }
         }
@@ -121,8 +119,6 @@ function DistanceFrom(props) {
 }
 
 function Filter(props) {
-    const history = useHistory();
-
     const [show, setModal] = useState(false);
     const toggleModal = () => setModal(!show);
 
@@ -227,8 +223,8 @@ function Filter(props) {
                             <Button
                                 color="success"
                                 className={isValidInput ? '' : 'disabled-button'}
-                                onClick={() => { toggleModal(); props.filter.setFilterStatus('active'); history.push('/users/page/1') }}>
-                                Save
+                                onClick={() => { toggleModal(); props.filter.clearFilter(); }}>
+                                Clear
                             </Button>
                             <Button color="secondary" onClick={toggleModal}>Cancel</Button>
                         </ModalFooter>
@@ -243,9 +239,6 @@ function TagsList(props) {
     let listItems;
     if (props.tags) {
         listItems = props.tags.map((tag, item) =>
-            // <NavItem className="tags" key={item}>
-            //     <Link to="#">#{tag}</Link>
-            // </NavItem>
             <span className="tags" key={item}>#{tag}</span>
         );
     }
@@ -388,12 +381,7 @@ const Users = (props) => {
     }
     else if (props.filter.errMsg) {
         return (
-            <Container>
-                <Row>
-                    {/* <h4>{props.profile.errProfile}</h4> */}
-                    <h4>Error</h4>
-                </Row>
-            </Container>
+            <InfoSpan />
         );
     }
     else if (props.filter.info != null) {
@@ -412,7 +400,7 @@ const Users = (props) => {
             <section className="users">
                 <Container>
                     <Filter filter={props} />
-                    <h2>Not</h2>
+                    <span className="font-profile-head font-message">There is no such persons :C</span>
                 </Container>
             </section>
         );

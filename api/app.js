@@ -1,6 +1,7 @@
 const express = require('express');
 const config = require('config');
 const PORT = config.get('port');
+const SOCKET_PORT = config.get('sockPort');
 const cors = require('cors');
 const app = express();
 app.use(express.static('public'))
@@ -10,6 +11,7 @@ app.use(cors())
 app.use(express.json());
 
 app.use('/api/user', require('./routes/user.routes'));
+app.use('/api/profile', require('./routes/profile.routes'));
 app.use('/api/register', require('./routes/sign.routes'));
 app.use('/api/image', require('./routes/image.routes'));
 app.use('/api/remind', require('./routes/remind.routes'));
@@ -23,6 +25,4 @@ const io = require('socket.io')(httpServer);
 
 require('./routes/chat_socketio')(io);
 
-httpServer.listen(3001, () => {
-  console.log('Socket on 3001');
-});
+httpServer.listen(SOCKET_PORT, () => console.log('Socket on ' + SOCKET_PORT));

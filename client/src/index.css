@@ -7,9 +7,15 @@ body {
   margin-bottom: 60px;
 }
 
-/* .header .container {
-  margin: 0 10px;
-} */
+.navbar .navbar-brand {
+  font-weight: 700;
+  opacity: 0.7;
+  padding-left: 10px;
+}
+
+.navbar .navbar-nav {
+  padding-right: 10px;
+}
 
 .footer {
   position: absolute;
@@ -21,4 +27,21 @@ body {
 .page-state {
   text-align: center;
   padding-top: 100px;
+}
+
+.font-message {
+  display: block;
+  text-align: center;
+  margin: 0 auto;
+  padding-top: 50px;
+  opacity: 0.5;
+}
+
+.footer .row {
+  padding: 15px 0;
+}
+
+.footer a {
+  color: #000;
+  font-weight: 700;
 }

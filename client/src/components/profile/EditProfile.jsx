@@ -9,6 +9,7 @@ import { Loading } from '../Loading';
 import moment from 'moment';
 import { YMaps, Map, Placemark, ZoomControl, GeolocationControl } from 'react-yandex-maps';
 import { initFormEdit, fetchEditProfile, setLogin, setFirstName, setLastName, setDate, setEmail, setAbout, setSex, setSexPref, setTags, setNewPassword, setCoords } from '../../redux/editProfile/ActionCreators';
+import InfoSpan from '../infoSpan';
 
 const mapStateToProps = (state) => {
     return {
@@ -186,9 +187,7 @@ const EditProfile = (props) => {
             newpass: props.edit.newpass
         }
 
-        // if (data) {
         props.fetchEditProfile(data, props.login.me.nickname);
-        // }
         props.clearForm();
     }
 
@@ -211,10 +210,6 @@ const EditProfile = (props) => {
             toggleBtn(true);
     }
 
-    // if (props.edit.editProfileStatus !== null) {
-    //     history.push(`/users/${props.login.me.nickname}`);
-    // }
-
     if (props.login.isLoading) {
         return (
             <Loading />
@@ -222,12 +217,7 @@ const EditProfile = (props) => {
     }
     else if (props.login.errMsg) {
         return (
-            <Container>
-                <Row>
-                    {/* <h4>{props.profile.errProfile}</h4> */}
-                    <h4>Error</h4>
-                </Row>
-            </Container>
+            <InfoSpan />
         );
     }
     else if (props.login.me != null) {
@@ -239,7 +229,6 @@ const EditProfile = (props) => {
                 }
 
                 <Container>
-                    {/* <ModalBody className="text-center"> */}
                     <InputForm name='Login' me={props.login.me.nickname} label='Username' feedback='Invalid login' set={props.setLogin} checkBtn={checkBtn} />
                     <InputForm name='firstName' me={props.login.me.firstname} label='First name' feedback='Only symbols are required' set={props.setFirstName} checkBtn={checkBtn} />
                     <InputForm name='lastName' me={props.login.me.lastname} label='Last name' feedback='Only symbols are required' set={props.setLastName} checkBtn={checkBtn} />
@@ -286,9 +275,7 @@ const EditProfile = (props) => {
                     <InputForm name='newPass' type='password' label='New password' placeholder="New password" feedback='Too weak password. 8 symbols is required' set={props.setNewPassword} checkBtn={checkBtn} />
 
                     <div className="d-flex justify-content-between align-items-center">
-                        {/* <Button href="#" as="input" type="button" value="Save" className="btn-success">Save</Button> */}
                         <Button href="#" className="btn-success" disabled={isActiveBtn} value="Save" onClick={handleSubmit} >Save</Button>
-                        {/* ml-auto d-block */}
                         <Link to={`/users/${props.login.me.nickname}`} className="btn btn-secondary">Close</Link>
                     </div>
                 </Container>

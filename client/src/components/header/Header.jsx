@@ -45,10 +45,8 @@ function NotificationList(props) {
 
     if (props.notifications.length > 0) {
         listItems = props.notifications.map((notification, item) => {
-            const ChatMessage = notification.event === 'message' ? 'New message from ' : '';
             return (
                 <DropdownItem key={item}>
-                    {ChatMessage}
                     <span className="nickname">{notification.nickname}</span>
                     <div className="message">{notification.message}</div>
                     <div className="time">{moment(notification.time).fromNow()}</div>

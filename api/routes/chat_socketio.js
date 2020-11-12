@@ -19,8 +19,8 @@ module.exports = function (io) {
         });
 
         socket.on('send_message', (data) => {
-            mySpace.emit(`new_message_${data.nick}_${data.nickto}`, data);
-            mySpace.emit(`new_message_${data.nickto}_${data.nick}`, data);
+            console.log('new_msg',data);
+            mySpace.emit(`new_message`, data);
         });
 
         socket.on('notification', (data) => {
@@ -29,7 +29,6 @@ module.exports = function (io) {
                 [tmp.me, tmp.you] = [tmp.you, tmp.me];
                 mySpace.emit('new_notification', tmp);
             }
-            console.log(data);
             mySpace.emit('new_notification', data);
         })
 

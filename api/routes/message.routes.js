@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { getMessage, getCountMessage, sendMessage, getConnectedUsers, sendFileMessage, getChatImage } = require('../models/user');
+const { getMessage, getCountMessage, sendMessage, getConnectedUsers, sendFileMessage, getChatImage, addLog } = require('../models/user');
 const multer = require('multer');
 const destFolder = "uploadChatFiles";
 const upload = multer({ dest: destFolder });

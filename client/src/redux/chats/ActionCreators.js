@@ -53,8 +53,16 @@ export const setNameTo = (data) => (dispatch) => {
     dispatch(nameAdd(data));
 };
 
-export const pushChatMessage = (data) => (dispatch) => {
-    dispatch(pushChat(data));
+export const pushChatMessage = (messages, newMessage) => (dispatch) => {
+    let isNew = true;
+
+    for (let message of messages) {
+        if (message.id === newMessage.id)
+            isNew = false; 
+    };
+
+    if (isNew)
+        dispatch(pushChat(newMessage));
 };
 
 export const initChat = () => (dispatch) => {

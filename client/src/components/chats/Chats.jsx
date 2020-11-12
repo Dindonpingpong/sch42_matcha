@@ -11,6 +11,7 @@ import sendmsg from "../../sound/msg_send.mp3"
 import useSound from "use-sound";
 import { Loading } from '../Loading';
 import NotFound from '../notFound';
+import InfoSpan from "../infoSpan";
 import moment from 'moment';
 import './Chats.css'
 
@@ -139,18 +140,21 @@ function CurrentChat(props) {
 
     const nicknameFrom = props.props.login.me.nickname;
     const nicknameTo = props.props.chat.nicknameTo;
+    const messages = props.props.chat.chats;
     const { fetchCountPages, fetchChatMessages, initMessages, pushChatMessage } = props.props;
 
     useEffect(() => {
         if (nicknameTo) {
-            socket.on(`new_message_${nicknameFrom}_${nicknameTo}`, (data) => {
-                if ((data.nick === nicknameFrom && data.nickto === nicknameTo) || (data.nick === nicknameTo && data.nickto === nicknameFrom))
-                    pushChatMessage(data);
-            });
             fetchCountPages(nicknameFrom, nicknameTo);
             fetchChatMessages(nicknameFrom, nicknameTo, currentPage);
         }
     }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages, pushChatMessage]);
+
+    useEffect(() => {
+        socket.on(`new_message_${nicknameFrom}_${nicknameTo}`, (newMessage) => {
+            pushChatMessage(messages, newMessage);
+        });
+    }, [nicknameTo, nicknameFrom, messages]);
 
     useEffect(() => {
         initMessages();
@@ -248,12 +252,7 @@ const Chats = (props) => {
     }
     else if (props.chat.errProfile) {
         return (
-            <Container>
-                <Row>
-                    {/* <h4>{props.profile.errProfile}</h4> */}
-                    <h4>Error</h4>
-                </Row>
-            </Container>
+            <InfoSpan />
         );
     }
     else if (props.chat.names != null) {

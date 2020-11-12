@@ -14,6 +14,7 @@ import NotFound from '../notFound';
 import { request } from '../../util/http';
 import moment from 'moment';
 import './Profile.css';
+import InfoSpan from '../infoSpan';
 
 const mapStateToProps = (state) => {
     return {
@@ -49,12 +50,18 @@ function TagsList(props) {
 }
 
 function PhotoList(props) {
+    const [errItem, setCur] = useState(null);
+    const [info, setInfo] = useState(null);
+    const [isOpen, toggle] = useState(false);
+
     function putPhoto(e, item) {
         if (e.target.files && e.target.files[0]) {
             const file = e.target.files[0];
             const type = e.target.files[0].type;
             if (!type.match("image/png") && !type.match("image/jpeg") && !type.match("image/jpg")) {
-                alert('Wrong format!');
+                setInfo('Ooops! Wrong file format');
+                setCur(item - 1);
+                toggle(!isOpen);
                 return;
             }
             let formData = new FormData();
@@ -67,7 +74,7 @@ function PhotoList(props) {
                     }
                 })
                 .catch(e => {
-                    alert(e.message);
+                    setInfo(e.message);
                 })
         }
     }
@@ -77,6 +84,10 @@ function PhotoList(props) {
         listItems = props.photos.map((photo, item) =>
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
+                    {
+                        (errItem == item) &&
+                        <Alert isOpen={isOpen} color="danger" onClick={() => toggle(!isOpen)}>{info}</Alert>
+                    }
                     <CardImg src={`/api/image/${props.me}/${item + 1}/${photo[1]}`} alt={"Photo profile"} />
                     {
                         props.check &&
@@ -124,11 +135,9 @@ function ViewsList(props) {
     }
     else
         return (
-            <div>Not</div>
+            <span className="font-profile-head font-message">Eventually...</span>
         );
 }
-
-
 
 function LikesList(props) {
     if (props.mylikes.length > 0) {
@@ -155,7 +164,7 @@ function LikesList(props) {
     }
     else
         return (
-            <div>Not</div>
+            <span className="font-profile-head font-message">Eventually...</span>
         );
 }
 
@@ -241,14 +250,16 @@ function AsideButton(props) {
                         onClick={changeStatus}>
                         {props.status === 'like' ? 'Unlike' : 'Like'}
                     </Button>
+                    &&
+                    <Button color="secondary"
+                        className={props.status === 'ignore' ? 'disabled-button' : ''}
+                        value='ignore'
+                        onClick={changeStatus}>
+                        Ignore
+                    </Button>
+                    &&
+                    <Report onClick={changeStatus} me={props.me} you={props.you} fetch={props.fetchReport} />
                 }
-                <Button color="secondary"
-                    className={props.status === 'ignore' ? 'disabled-button' : ''}
-                    value='ignore'
-                    onClick={changeStatus}>
-                    Ignore
-                </Button>
-                <Report onClick={changeStatus} me={props.me} you={props.you} fetch={props.fetchReport} />
             </Row>
         );
     }
@@ -256,7 +267,6 @@ function AsideButton(props) {
 
 const Profile = (props) => {
     const login = props.login.me.nickname;
-    // const logged = props.profile.info.loggedstatus;
     const { nickname } = props.match.params;
     const { status } = props.profile;
     const { fetchProfile, fetchView, fetchLike, fetchStatus, fetchUpdateView } = props;
@@ -283,12 +293,7 @@ const Profile = (props) => {
     }
     else if (props.profile.errProfile) {
         return (
-            <Container>
-                <Row>
-                    {/* <h4>{props.profile.errProfile}</h4> */}
-                    <h4>Error</h4>
-                </Row>
-            </Container>
+            <InfoSpan />
         );
     }
     else if (props.profile.info != null && props.profile.info.count_reports > 2) {
@@ -353,7 +358,13 @@ const Profile = (props) => {
                     }
 
                     <p className="font-profile-head">Photo</p>
-                    <PhotoList photos={props.profile.info.photos} check={isMe} me={props.profile.info.nickname} fetchProfile={props.fetchProfile} fetchUpdateLogin={props.fetchUpdateLogin} />
+                    <PhotoList
+                        photos={props.profile.info.photos}
+                        check={isMe}
+                        me={props.profile.info.nickname}
+                        fetchProfile={props.fetchProfile}
+                        fetchUpdateLogin={props.fetchUpdateLogin}
+                    />
 
                     <Row className="profile-tabs">
                         <Col>
