@@ -1,21 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Alert } from "reactstrap";
 
 const Info = (props) => {
     const [isVisible, setClose] = useState(true);
     const color = props.isSuccess ? 'success' : 'danger';
 
-    useEffect(() => {
-        if (isVisible) {
-            window.setTimeout(() => {
-                setClose(!isVisible);
-            }, 5000);
-        }
-    }, [isVisible]);
-
     return (
         <div>
-            <Alert isOpen={isVisible} color={color}>{props.message}</Alert>
+            <Alert isOpen={isVisible} color={color} onClick={() => setClose(false)}>{props.message}</Alert>
         </div>
     )
 }

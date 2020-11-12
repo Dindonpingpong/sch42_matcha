@@ -455,10 +455,10 @@ const setStatus = (params) => {
   const sql = `UPDATE Users 
   SET loggedStatus = $1, 
   lastVisit = CURRENT_TIMESTAMP 
-  WHERE nickName =$2
-  RETURNING nickName`;
+  WHERE nickName = $2
+  RETURNING id`;
 
-  return db.one(sql, params);
+  return db.any(sql, params);
 }
 
 const getLogs = (params) => {

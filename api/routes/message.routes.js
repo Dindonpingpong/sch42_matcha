@@ -7,7 +7,8 @@ const fs = require('fs');
 
 router.post('/message', async (req, res) => {
     try {
-        const { from, to, message, path } = req.body;
+        const { from, to, message, newpath } = req.body;
+        let result;
 
         const params = [
             from,
@@ -20,13 +21,14 @@ router.post('/message', async (req, res) => {
 
         Promise.all([promise1, promise2])
             .then(data => {
-                data.path = path
+                result = data[1];
+                result.path = newpath;
                 res.status(200).json({
-                    data: data,
+                    data: result,
                     success: true
                 })
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -61,7 +63,7 @@ router.get('/message/:from/:to/:page', async (req, res) => {
                         success: true
                     })
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -89,7 +91,7 @@ router.get('/messages/:from/:to', async (req, res) => {
                     success: true
                 })
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -115,7 +117,7 @@ router.get('/users/:nickname', async (req, res) => {
                     success: true
                 })
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -138,6 +140,7 @@ router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
         const encode_image = img.toString('base64');
         const finalImg = new Buffer.from(encode_image, 'base64');
         const newPath = `${from}_${to}_${new Date().getTime()}`;
+        let result;
 
         fs.writeFile((`${destFolder}/${newPath}`), finalImg, function () { });
         fs.unlinkSync(path);
@@ -147,13 +150,14 @@ router.post('/image/:from/:to', upload.single('photo'), async (req, res) => {
 
         Promise.all([promise1, promise2])
             .then(data => {
-                data.path = avatar;
+                result = data[1];
+                result.path = avatar;
                 res.json({
-                    data: data,
+                    data: result,
                     success: true
                 })
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false

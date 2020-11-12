@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     insertRemind([hash, time, email])
         .then(() => {
             const newHash = hash.replace(/\//g, "slash");
-            sendMail(email, "Remind", 'You have 10 minutes to restore your account', `<a href='http://localhost:3000/remind/${email}/${newHash}'>Wow</a>`);
+            sendMail(email, "Remind", 'You have 10 minutes to restore your account', `<a href='http://localhost:3000/remind/${email}/${newHash}'>You have 10 minutes to restore your account</a>`);
             res.status(200).json({
                 message: "You have 10 minutes to restore your account",
                 success: true

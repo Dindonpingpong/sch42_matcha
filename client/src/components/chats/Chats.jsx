@@ -31,7 +31,7 @@ const mapDispatchToProps = (dispatch) => ({
     fetchChatMessages: (nicknameTo, nicknameFrom, page) => dispatch(fetchChatMessages(nicknameTo, nicknameFrom, page)),
     fetchSendFile: (nicknameTo, nicknameFrom, data) => dispatch(fetchSendFile(nicknameTo, nicknameFrom, data)),
     setNameTo: (name) => dispatch(setNameTo(name)),
-    pushChatMessage: (msg) => dispatch(pushChatMessage(msg))
+    pushChatMessage: (messages, newMessage) => dispatch(pushChatMessage(messages, newMessage))
 });
 
 const ImageThumb = ({ image }) => {
@@ -58,7 +58,7 @@ const ChatMessages = (props) => {
 
     useEffect(() => {
         return function unsubscribe() {
-            socket.off(`new_message_${me}_${you}`);
+            socket.off(`new_message`);
         }
     }, [me, you]);
 
@@ -151,10 +151,14 @@ function CurrentChat(props) {
     }, [nicknameTo, nicknameFrom, currentPage, fetchCountPages, fetchChatMessages, pushChatMessage]);
 
     useEffect(() => {
-        socket.on(`new_message_${nicknameFrom}_${nicknameTo}`, (newMessage) => {
+        socket.on(`new_message`, (newMessage) => {
             pushChatMessage(messages, newMessage);
         });
-    }, [nicknameTo, nicknameFrom, messages]);
+
+        return function unsubscribe() {
+            socket.off(`new_message`);
+        }
+    }, [nicknameTo, nicknameFrom, messages, pushChatMessage]);
 
     useEffect(() => {
         initMessages();

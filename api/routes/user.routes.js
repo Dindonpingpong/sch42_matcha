@@ -1,8 +1,6 @@
 const router = require('express').Router();
-const { getPassword, getProfile, getViews, getLikes,
-    getCards, getStatus, getTimeView, updateView, insertView,
-    updateStatus, insertStatus, editProfile, deleteTags, insertTags, insertLocation,
-    getCountCards, getCities, getCountires, getInfoLogin, updateRate, insertReport, updateCountReports, getLogs, addLog, checkConnect, updateLogs } = require('../models/user');
+const { getPassword, 
+ getCards, getInfoLogin, getCountCards, insertReport, updateCountReports, updateLogs, getLogs } = require('../models/user');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const API_KEY = config.get('apiKey');
@@ -49,7 +47,7 @@ router.post('/login', async (req, res) => {
                     })
                 }
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -91,6 +89,7 @@ router.get('/login/:nickname', async (req, res) => {
 
 router.post('/users/page', async (req, res) => {
     try {
+
         const { nickname, mySex, mySexpref, page, sortType, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
         let sqlSort = '',
             sqlFilter = '',
@@ -111,7 +110,6 @@ router.post('/users/page', async (req, res) => {
         if (sortType === 'locationAsc' || sortType === 'locationDesc')
             sqlSort = (sortType === 'locationAsc') ? 'distance ASC, age ASC, rate DESC, count DESC' : 'distance DESC, age ASC, rate DESC, count DESC';
 
-        // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
             : `AND sex = '${sex}' `;
@@ -134,7 +132,7 @@ router.post('/users/page', async (req, res) => {
                         success: false
                     })
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -154,50 +152,6 @@ router.post('/users/count/pages', async (req, res) => {
         let sqlFilter = '',
             params = [nickname, mySex, mySexpref, tags];
 
-        // тут проверку на A > B?
-        sqlFilter = (sex === 'both')
-            ? "AND (sex = 'female' OR sex = 'male') "
-            : `AND sex = '${sex}' `;
-        sqlFilter += `AND age > ${ageFrom} AND age < ${ageTo} AND rate > ${rateFrom} AND rate < ${rateTo} AND distance <= ${distance} `;
-        if (tags.length > 0)
-            sqlFilter += `AND tags && $4`;
-
-        getCountCards(params, sqlFilter)
-            .then(data => {
-                if (data.length > 0) {
-                    res.status(200).json({
-                        result: data.length,
-                        message: "Ok",
-                        success: true
-                    });
-                }
-                else
-                    res.status(200).json({
-                        message: "No users",
-                        success: false
-                    })
-            })
-            .catch((e) => {
-                res.status(200).json({
-                    message: "Ooops! Something went wrong",
-                    success: false
-                })
-            })
-    } catch (e) {
-        res.status(200).json({
-            message: "Ooops! Something went wrong",
-            success: false
-        })
-    }
-})
-
-router.post('/users/count/pages', async (req, res) => {
-    try {
-        const { nickname, mySex, mySexpref, ageFrom, ageTo, rateFrom, rateTo, sex, tags, distance } = req.body;
-        let sqlFilter = '',
-            params = [nickname, mySex, mySexpref, tags];
-
-        // тут проверку на A > B?
         sqlFilter = (sex === 'both')
             ? "AND (sex = 'female' OR sex = 'male') "
             : `AND sex = '${sex}' `;
@@ -248,7 +202,7 @@ router.post('/profile/report', async (req, res) => {
                     success: true
                 });
             })
-            .catch((e) => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
@@ -273,7 +227,7 @@ router.get('/notifications/:nickname', async (req, res) => {
                 success: true
             })
         })
-        .catch((e) => {
+        .catch(() => {
             res.status(200).json({
                 message: "Ooops! Something went wrong",
                 success: false
@@ -285,7 +239,7 @@ router.get('/notif/update/:nickname', async (req, res) => {
     const login = req.params.nickname;
 
     updateLogs([login])
-        .then((data) => {
+        .then(() => {
             getLogs([login])
                 .then(data => {
                     res.status(200).json({
@@ -293,14 +247,14 @@ router.get('/notif/update/:nickname', async (req, res) => {
                         success: true
                     })
                 })
-                .catch((e) => {
+                .catch(() => {
                     res.status(200).json({
                         message: "Ooops! Something went wrong",
                         success: false
                     })
                 })
         })
-        .catch((e) => {
+        .catch(() => {
             res.status(200).json({
                 message: "Ooops! Something went wrong",
                 success: false

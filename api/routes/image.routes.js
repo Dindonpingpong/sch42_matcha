@@ -17,7 +17,7 @@ router.post('/:nickname/:position', upload.single('photo'), async (req, res) => 
                     success: true
                 })
             })
-            .catch(e => {
+            .catch(() => {
                 res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false

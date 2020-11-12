@@ -1,5 +1,5 @@
 
-const { setStatus, addLog } = require('../models/user');
+const { setStatus } = require('../models/user');
 
 module.exports = function (io) {
     const mySpace = io.of('/socks');
@@ -19,7 +19,6 @@ module.exports = function (io) {
         });
 
         socket.on('send_message', (data) => {
-            console.log('new_msg',data);
             mySpace.emit(`new_message`, data);
         });
 

@@ -85,7 +85,7 @@ function PhotoList(props) {
             <Col md="4" key={item}>
                 <Card className="mb-4 shadow-sm">
                     {
-                        (errItem == item) &&
+                        (errItem === item) &&
                         <Alert isOpen={isOpen} color="danger" onClick={() => toggle(!isOpen)}>{info}</Alert>
                     }
                     <CardImg src={`/api/image/${props.me}/${item + 1}/${photo[1]}`} alt={"Photo profile"} />
@@ -250,14 +250,18 @@ function AsideButton(props) {
                         onClick={changeStatus}>
                         {props.status === 'like' ? 'Unlike' : 'Like'}
                     </Button>
-                    &&
+                }
+                {
+                    (props.avatar !== '1.jpg') &&
                     <Button color="secondary"
                         className={props.status === 'ignore' ? 'disabled-button' : ''}
                         value='ignore'
                         onClick={changeStatus}>
                         Ignore
                     </Button>
-                    &&
+                }
+                {
+                    (props.avatar !== '1.jpg') &&
                     <Report onClick={changeStatus} me={props.me} you={props.you} fetch={props.fetchReport} />
                 }
             </Row>

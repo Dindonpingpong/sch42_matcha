@@ -72,13 +72,13 @@ router.post('/check/pass', async (req, res) => {
                 }
             })
             .catch(e => {
-                res.status(500).json({
+                res.status(200).json({
                     message: "Ooops! Something went wrong",
                     success: false
                 })
             })
     } catch (e) {
-        res.status(500).json({
+        res.status(200).json({
             message: "Ooops! Something went wrong",
             success: false
         })
@@ -113,7 +113,7 @@ router.post('/', async (req, res) => {
                         .then(() => {
                             sendMail(email, 'Confirmation',
                                 'You have 1 day to confirm your account',
-                                `<a href='http://localhost:3000/login/${nickName}/${confirmHash}'>1 day to confirm</a>`);
+                                `<a href='http://localhost:3000/login/${nickName}/${confirmHash}'>You have 1 day to confirm</a>`);
                             res.status(200).json({
                                 message: "Check your email &)",
                                 login: login,
@@ -121,7 +121,7 @@ router.post('/', async (req, res) => {
                             })
                             return;
                         })
-                        .catch((e) => {
+                        .catch(() => {
                             res.status(200).json({
                                 message: "Ooops! Something went wrong",
                                 success: false

@@ -55,12 +55,13 @@ export const setNameTo = (data) => (dispatch) => {
 
 export const pushChatMessage = (messages, newMessage) => (dispatch) => {
     let isNew = true;
+    console.log('fdsa', messages, newMessage);
 
     for (let message of messages) {
         if (message.id === newMessage.id)
             isNew = false; 
     };
-
+    console.log('ne', isNew);
     if (isNew)
         dispatch(pushChat(newMessage));
 };
@@ -83,7 +84,6 @@ export const fetchNames = (nickname) => (dispatch) => {
 };
 
 export const fetchCountPages = (me, you) => (dispatch) => {
-    // dispatch(chatLoading());
 
     return request(`/api/chat/messages/${me}/${you}`)
         .then(response => response.json())
@@ -92,7 +92,6 @@ export const fetchCountPages = (me, you) => (dispatch) => {
 };
 
 export const fetchChatMessages = (me, you, page) => (dispatch) => {
-    // dispatch(chatLoading());
 
     return request(`/api/chat/message/${me}/${you}/${page}`)
         .then(response => response.json())
@@ -110,13 +109,12 @@ export const fetchChatMessages = (me, you, page) => (dispatch) => {
 };
 
 export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
-    // dispatch(chatLoading());
 
     const data = {
         from: me,
         to: you,
         message: message,
-        path: path
+        newpath: path
     };
 
     return request('/api/chat/message/', data, 'POST')
@@ -132,7 +130,6 @@ export const fetchSendMessage = (me, you, message, path) => (dispatch) => {
 };
 
 export const fetchSendFile = (me, you, formData) => (dispatch) => {
-    // dispatch(chatLoading());
 
     request(`/api/chat/image/${me}/${you}`, formData, 'POST', 'image')
         .then(response => response.json())

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { withRouter, useHistory } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Row, Input, Button, FormFeedback, Alert } from 'reactstrap';
+import { Container, Input, Button, FormFeedback, Alert } from 'reactstrap';
 import { isValidInput } from '../../util/check';
 import { request } from '../../util/http';
 import { Loading } from '../Loading';

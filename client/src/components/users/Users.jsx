@@ -350,7 +350,6 @@ const Users = (props) => {
     const mySex = props.login.me.sex,
         mySexpref = props.login.me.sexpreferences;
 
-    console.log(sortType);
     useEffect(() => {
         const data = {
             mySex,
