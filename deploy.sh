@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 case "$1" in
     "packages")
@@ -9,6 +9,7 @@ case "$1" in
     ;;
     "psql")
     psql rkina < api/initDB/init.sql
+    psql rkina -tc "SELECT 1 FROM pg_database WHERE datname = 'matcha'" | grep -q 1 | psql rkina -c "CREATE DATABASE matcha"
     psql rkina < api/initDB/createTables.sql
     psql rkina < api/initDB/addUsers.sql
     psql rkina < api/initDB/updateUsers.sql
