@@ -19,7 +19,8 @@ For this project you need:
 Install all packages for this project
 `sh deploy.sh packages`
 
-Create database, tables 1000 users
+Create database, tables, 
+1000 users (all users has default password '1234567*')
 `sh deploy.sh psql YOUR_DB_ACCOUNT YOUR_DB_NAME`
 
 Before launch server fill the info in /api/config/default.json
@@ -37,3 +38,6 @@ Before launch server fill the info in /api/config/default.json
 ```
 Launch servers (node js and react)
 `sh deploy.sh run`
+
+# Docker
+Is coming...
