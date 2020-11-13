@@ -1,9 +1,9 @@
 {
     "port": "5000",
 	"sockPort": "5001",
-    "urlDb": "postgres://rkina:wwq@localhost:5432/rkina",
+    "urlDb": "postgres://YOUR_DB_NICKNAME:YOUR_DB_PASS@localhost:5432/YOUR_DB_NAME",
     "salt": "_271kweV77",
-    "email": "matcha.rm.nd@gmail.com",
-    "emailPass": "wwqfd123",
-    "apiKey": "74b2ed32-1340-405d-be18-ab91a877defe"
+    "email": "YOUR_EMAIL",
+    "emailPass": "YOUR_EMAIL_PASS",
+    "apiKey": "YOUR_API_KEY_FROM_YANDEX_MAP"
 }

@@ -3,16 +3,16 @@
 case "$1" in
     "packages")
     cd api
-    npm i create-react-app express config bcrypt concurrently nodemon pg-promise nodemailer multer node-fetch cors socket.io
+    npm i
     cd ../client
-    npm i bootstrap react-router-dom jquery reactstrap font-awesome moment redux react-redux redux-thunk redux-logger react-yandex-maps use-sound socket.io-client react-hook-form deep-clone
+    npm i
     ;;
     "psql")
-    psql rkina < api/initDB/init.sql
-    psql rkina -tc "SELECT 1 FROM pg_database WHERE datname = 'rkina'" | grep -q 1 | psql rkina -c "CREATE DATABASE rkina"
-    psql rkina < api/initDB/createTables.sql
-    psql rkina < api/initDB/addUsers.sql
-    psql rkina < api/initDB/updateUsers.sql
+    psql $2 < api/initDB/init.sql
+    psql $2 -tc "SELECT 1 FROM pg_database WHERE datname = $3" | grep -q 1 | psql $2 -c "CREATE DATABASE $3"
+    psql $2 < api/initDB/createTables.sql
+    psql $2 < api/initDB/addUsers.sql
+    psql $2 < api/initDB/updateUsers.sql
     ;;
     "run")
     cd api
@@ -20,7 +20,7 @@ case "$1" in
     ;;
     *)
     echo "Usage:"
-    echo "packages - install npm packages for node js and react"
-    echo "psql - deploy database"
-    echo "run - run servers"
+    echo "sh deploy.sh packages - install npm packages for node js and react"
+    echo "sh deploy.sh psql YOUR_DATABASE_ACCOUNT YOUR_DATABASE_NAME - deploy database"
+    echo "sh deploy.sh run - run servers"
 esac

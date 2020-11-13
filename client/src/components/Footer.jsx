@@ -1,12 +1,16 @@
 import React from "react";
-import { Container } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 
 function Footer() {
 
     return (
-        <div className="footer bg-light">
+        <div className="footer bg-light text-break">
             <Container>
-                <h2>footer</h2>
+                <Row>
+                    <Col>
+                        <span>created by <a href="https://github.com/Dindonpingpong">rkina</a> & <a href="https://github.com/NyaMilk">mgrass</a></span>
+                    </Col>
+                </Row>
             </Container>
         </div>
     )
