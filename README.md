@@ -27,7 +27,7 @@ Before launch server fill the info in /api/config/default.json
 ``` json
 {
     "port": "5000",
-	  "sockPort": "5001",
+    "sockPort": "5001",
     "urlDb": "postgres://YOUR_DB_NICKNAME:YOUR_DB_PASS@localhost:5432/YOUR_DB_NAME",
     "salt": "YOUR_SALT_FOR_PSW",
     "email": "YOUR_EMAIL",
