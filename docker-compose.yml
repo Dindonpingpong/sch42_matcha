@@ -9,16 +9,16 @@ services:
       - db
     container_name: api
   client:
-    build: ./frontend
+    build: ./client
     ports:
-      - "3000:3000"
+      - "80:80"
     container_name: front
   db:
     image: postgres
     environment: 
       POSTGRES_USER: super
       POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: hypertube
+      POSTGRES_DB: matcha
     ports:
       - "5432:5432"
     container_name: psql
