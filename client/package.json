@@ -47,7 +47,11 @@
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "react-router-dom": "^5.2.0",
+<<<<<<< HEAD
     "reactstrap": "^8.7.1",
+=======
+    "reactstrap": "^8.7.0",
+>>>>>>> 6375795667452ea8ca968192edf6eb2e471eb16c
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0"
   }
