@@ -7,12 +7,12 @@ services:
       - "5001:5001"
     depends_on:
       - db
-    container_name: api
+    container_name: api_matcha
   client:
     build: ./client
     ports:
       - "80:80"
-    container_name: front
+    container_name: front_matcha
   db:
     image: postgres
     environment: 
@@ -21,4 +21,4 @@ services:
       POSTGRES_DB: matcha
     ports:
       - "5432:5432"
-    container_name: psql
+    container_name: psql_matcha
