@@ -44,10 +44,14 @@ Docker compose consist of 2 container and postgresql
 
 # Pages
 
+## Login page
 ![Login page](https://github.com/Dindonpingpong/sch42_matcha/blob/master/media_for_readme/login.gif)
 
+## Main page
 ![Main page](https://github.com/Dindonpingpong/sch42_matcha/blob/master/media_for_readme/main.gif)
 
+## Connected notification
 ![Connected notification](https://github.com/Dindonpingpong/sch42_matcha/blob/master/media_for_readme/connect.gif)
 
+## Edit
 ![Edit](https://github.com/Dindonpingpong/sch42_matcha/blob/master/media_for_readme/edit.gif)
