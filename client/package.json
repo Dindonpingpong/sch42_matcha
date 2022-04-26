@@ -13,7 +13,7 @@
     "react-dom": "^16.13.1",
     "react-hook-form": "^6.11.0",
     "react-redux": "^7.2.2",
-    "react-scripts": "^4.0.0",
+    "react-scripts": "^5.0.1",
     "react-yandex-maps": "^4.4.0",
     "redux": "^4.0.5",
     "reverse-geocoding": "^3.0.2",
@@ -47,11 +47,7 @@
     "bootstrap": "^4.5.3",
     "jquery": "^3.5.1",
     "react-router-dom": "^5.2.0",
-<<<<<<< HEAD
-    "reactstrap": "^8.7.1",
-=======
     "reactstrap": "^8.7.0",
->>>>>>> 6375795667452ea8ca968192edf6eb2e471eb16c
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0"
   }
